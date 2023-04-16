@@ -14,31 +14,24 @@ public class ExampleServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/xml");
+        response.setContentType("application/json");
         response.setHeader("Cache-Control", "no-store");
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setStatus(HttpServletResponse.SC_OK);
 
         PrintWriter writer = response.getWriter();
-        writer.println("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-        writer.println("<gml:FeatureCollection xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" gml:id=\"foo\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:cop=\"urn:turnertech:thw:cop\">");
-        writer.println("<gml:featureMember>");
-        writer.println("<cop:Unit fid=\"TheFuRnRId\">");
-        writer.println("<geometry>");
-        writer.println("<gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\">");
-        writer.println("<gml:coordinates>0.0,0.0</gml:coordinates>");
-        writer.println("</gml:Point>");
-        writer.println("</geometry>");
-        writer.println("</cop:Unit>");
-        writer.println("</gml:featureMember>");
-        writer.println("<gml:featureMember>");
-        writer.println("<cop:Danger fid=\"TheFuRnRId2\">");
-        writer.println("<geometry>");
-        writer.println("<gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\">");
-        writer.println("<gml:coordinates>0.0,10.0</gml:coordinates>");
-        writer.println("</gml:Point>");
-        writer.println("</geometry>");
-        writer.println("</cop:Danger>");
-        writer.println("</gml:featureMember>");
-        writer.println("</gml:FeatureCollection>");
+        writer.println("{");
+        writer.println("\"type\": \"FeatureCollection\",");
+        writer.println("\"features\": [{");
+        writer.println("\"type\": \"Feature\",");
+        writer.println("\"geometry\": {");
+        writer.println("\"type\": \"Point\",");
+        writer.println("\"coordinates\": [0.0, 0.0]");
+        writer.println("},");
+        writer.println("\"properties\": {");
+        writer.println("\"prop0\": \"value0\"");
+        writer.println("}");
+        writer.println("}]");
+        writer.println("}");
     }
 }

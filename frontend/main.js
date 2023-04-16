@@ -1,11 +1,22 @@
 import { Map, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
+import GeoJSON from 'ol/format/GeoJSON.js';
+import TileLayer from 'ol/layer/Tile.js';
+import VectorLayer from 'ol/layer/Vector.js';
 import { get as getProjection } from 'ol/proj.js';
+import VectorSource from 'ol/source/Vector.js';
 import XYZ from 'ol/source/XYZ.js';
+import { Circle, Fill, Style } from 'ol/style.js';
 import TileGrid from 'ol/tilegrid/TileGrid.js';
 import './style.css';
 
 const projection = getProjection('EPSG:3857');
+
+const myStyle = new Style({
+  image: new Circle({
+    fill: new Fill({color: 'red'}),
+    radius: 5,
+  }),
+});
 
 const map = new Map({
   target: 'map',
@@ -27,9 +38,16 @@ const map = new Map({
         })
       }),
     }),
+    new VectorLayer({
+      source: new VectorSource({
+        url: 'https://cop.turnertech.de',
+        format: new GeoJSON(),
+      }),
+      style: myStyle
+    })
   ],
   view: new View({
-    center: [0, 0],
-    zoom: 2
+    center: [1000000, 6650300],
+    zoom: 6
   })
 });
