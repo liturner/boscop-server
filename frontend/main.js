@@ -18,6 +18,14 @@ const myStyle = new Style({
   }),
 });
 
+const copLayer = new VectorLayer({
+  source: new VectorSource({
+    url: '/cop',
+    format: new GeoJSON(),
+  }),
+  style: myStyle
+});
+
 const map = new Map({
   target: 'map',
   layers: [
@@ -38,13 +46,7 @@ const map = new Map({
         })
       }),
     }),
-    new VectorLayer({
-      source: new VectorSource({
-        url: 'https://cop.turnertech.de',
-        format: new GeoJSON(),
-      }),
-      style: myStyle
-    })
+    copLayer
   ],
   view: new View({
     center: [1000000, 6650300],

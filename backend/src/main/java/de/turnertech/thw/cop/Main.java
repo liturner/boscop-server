@@ -1,21 +1,19 @@
 package de.turnertech.thw.cop;
 
-import java.util.Set;
-
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
-import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.security.authentication.DigestAuthenticator;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 
 public class Main {
     
-    public static final String REALM = "thwCopRealm";
+    public static final String REALM = "urn:de:turnertech:cop";
 
     public class Roles {
         public static final String USER = "user";
@@ -30,14 +28,11 @@ public class Main {
         loginService.setName(REALM);
         loginService.setConfig(Main.class.getResource("/users.txt").toString());
 
-        Constraint constraint = new Constraint(Constraint.__DIGEST_AUTH, Roles.USER);
-        //constraint.setName(Constraint.__BASIC_AUTH);
-        //		constraint.setRoles(new String[] { "getRole", "postRole", "allRole" });
-        //constraint.setRoles(new String[]{Constraint.ANY_AUTH, "getRole", "postRole", "allRole"});
-        constraint.setAuthenticate(true);
+        Constraint constraintDigest = new Constraint(Constraint.__DIGEST_AUTH, Roles.USER);
+        constraintDigest.setAuthenticate(true);
 
         ConstraintMapping constraintMapping = new ConstraintMapping();
-        constraintMapping.setConstraint(constraint);
+        constraintMapping.setConstraint(constraintDigest);
         constraintMapping.setPathSpec("/*");
 
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
@@ -48,11 +43,25 @@ public class Main {
         securityHandler.addRole(Roles.USER);
         securityHandler.addConstraintMapping(constraintMapping);
 
-        ExampleServlet copServlet = new ExampleServlet();
+        CopServlet copServlet = new CopServlet();
         ServletHolder copServletHolder = new ServletHolder(copServlet);
         
+        TokenServlet tokenServlet = new TokenServlet();
+        ServletHolder tokenServletHolder = new ServletHolder(tokenServlet);
+
+        TrackerServlet trackerServlet = new TrackerServlet();
+        ServletHolder trackerServletHolder = new ServletHolder(trackerServlet);
+
+        ServletHolder defaultServletHolder = new ServletHolder("default", DefaultServlet.class);
+        defaultServletHolder.setInitParameter("dirAllowed","true");
+
         ServletContextHandler handler = new ServletContextHandler();
-        handler.addServlet(copServletHolder, "/cop");        
+        handler.setBaseResource(Resource.newClassPathResource("webapp"));
+        handler.addServlet(defaultServletHolder, "/");
+        handler.addServlet(copServletHolder, "/cop");
+        handler.addServlet(tokenServletHolder, "/token");
+        handler.addServlet(trackerServletHolder, "/tracker");
+        
         handler.setSecurityHandler(securityHandler);
 
         server.addBean(loginService);
