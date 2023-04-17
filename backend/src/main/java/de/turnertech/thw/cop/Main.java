@@ -6,6 +6,7 @@ import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.security.authentication.DigestAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
@@ -29,7 +30,7 @@ public class Main {
         loginService.setName(REALM);
         loginService.setConfig(Main.class.getResource("/users.txt").toString());
 
-        Constraint constraint = new Constraint(Constraint.__BASIC_AUTH, Roles.USER);
+        Constraint constraint = new Constraint(Constraint.__DIGEST_AUTH, Roles.USER);
         //constraint.setName(Constraint.__BASIC_AUTH);
         //		constraint.setRoles(new String[] { "getRole", "postRole", "allRole" });
         //constraint.setRoles(new String[]{Constraint.ANY_AUTH, "getRole", "postRole", "allRole"});
@@ -40,7 +41,7 @@ public class Main {
         constraintMapping.setPathSpec("/*");
 
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
-        securityHandler.setAuthenticator(new BasicAuthenticator());
+        securityHandler.setAuthenticator(new DigestAuthenticator());
         securityHandler.setRealmName(REALM);
         securityHandler.setLoginService(loginService);
         securityHandler.addRole(Roles.ADMIN);
