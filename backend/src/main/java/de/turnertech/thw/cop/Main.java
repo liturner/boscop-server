@@ -14,18 +14,25 @@ import org.eclipse.jetty.util.security.Constraint;
 
 public class Main {
     
+    public static final String REALM = "thwCopRealm";
+
+    public class Roles {
+        public static final String USER = "user";
+        public static final String ADMIN = "admin";
+    }
+
     public static void main(String[] args) {
         Server server = new Server(8080);
 
         // See: https://www.programcreek.com/java-api-examples/?api=org.eclipse.jetty.security.ConstraintSecurityHandler
         HashLoginService loginService = new HashLoginService();
-        loginService.setName("thwCopRealm");
-        loginService.setConfig(Main.class.getResource("/thwCopRealm.txt").toString());
+        loginService.setName(REALM);
+        loginService.setConfig(Main.class.getResource("/users.txt").toString());
 
-        Constraint constraint = new Constraint();
-        constraint.setName(Constraint.__BASIC_AUTH);
+        Constraint constraint = new Constraint(Constraint.__BASIC_AUTH, Roles.USER);
+        //constraint.setName(Constraint.__BASIC_AUTH);
         //		constraint.setRoles(new String[] { "getRole", "postRole", "allRole" });
-        constraint.setRoles(new String[]{Constraint.ANY_AUTH, "getRole", "postRole", "allRole"});
+        //constraint.setRoles(new String[]{Constraint.ANY_AUTH, "getRole", "postRole", "allRole"});
         constraint.setAuthenticate(true);
 
         ConstraintMapping constraintMapping = new ConstraintMapping();
@@ -34,11 +41,10 @@ public class Main {
 
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
         securityHandler.setAuthenticator(new BasicAuthenticator());
-        securityHandler.setRealmName("thwCopRealm");
+        securityHandler.setRealmName(REALM);
         securityHandler.setLoginService(loginService);
-        securityHandler.addRole("admin");
-        securityHandler.addRole("user");
-        securityHandler.addRole("tracker");
+        securityHandler.addRole(Roles.ADMIN);
+        securityHandler.addRole(Roles.USER);
         securityHandler.addConstraintMapping(constraintMapping);
 
         ExampleServlet copServlet = new ExampleServlet();
@@ -48,7 +54,8 @@ public class Main {
         handler.addServlet(copServletHolder, "/cop");        
         handler.setSecurityHandler(securityHandler);
 
-        server.setHandler(handler);  
+        server.addBean(loginService);
+        server.setHandler(handler);
         
         try {
             server.start();
