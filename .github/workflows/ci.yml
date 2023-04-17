@@ -22,4 +22,6 @@ jobs:
     - name: Publish build
       uses: actions/upload-artifact@v3
       with:
-        path: fred-jpackage/target/fred*.exe
+        path: | 
+          target/cop-server.jar
+          target/lib
