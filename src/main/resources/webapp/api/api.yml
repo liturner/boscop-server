@@ -1,0 +1,95 @@
+openapi: 3.0.3
+info:
+  title: THW Common Operational Picture (COP) API
+  description: |-
+    The THW COP service collects and displays an overview of THW relevant mission information. It accepts GPS position input and allows for the creation and modification of information.
+  termsOfService: https://cop.turnertech.de/terms/
+  contact:
+    email: turnertech@outlook.de
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: https://cop.turnertech.de
+tags:
+  - name: COP
+    description: Access to the Common Operational Picture
+    externalDocs:
+      description: What is a COP?
+      url: https://en.wikipedia.org/wiki/Common_operational_picture
+  - name: tracker
+    description: The GPS tracker API
+paths:
+  /cop:
+    get:
+      tags:
+        - COP
+      summary: Get the image
+      description: Gets the COP as a GeoJSON
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/COP'          
+      security:
+        - cop_auth:
+            - user
+  /tracker:
+    get:
+      tags:
+        - tracker
+      summary: List the known trackers
+      description: Lists the known GPS trackers as JSON. Note that this interface will only return trackers for which you are authorised!
+      responses:
+        '200':
+          description: Successful operation
+    post:
+      tags:
+        - tracker
+      summary: Create or Update a tracker
+      description: For simplicity, the creation and updating of trackers uses the same interface.
+      responses:
+        '200':
+          description: Successful operation
+components:
+  schemas:
+    COP:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          example: FeatureCollection
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                example: Feature
+              geometry:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: Point
+                  coordinates:
+                    type: array
+                    items:
+                      type: number
+                      example: [23.123, 32.254]
+              properties:
+                type: object
+                properties:
+                  OPTA:
+                    type: string
+                    example: BUTHWL  OBNA 2110
+  securitySchemes:
+    cop_auth:
+      type: http
+      scheme: digest

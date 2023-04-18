@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Main",
+            "request": "launch",
+            "mainClass": "de.turnertech.thw.cop/de.turnertech.thw.cop.Main",
+            "projectName": "cop-server"
+        }
+    ]
+}
