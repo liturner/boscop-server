@@ -7,8 +7,8 @@ info:
   contact:
     email: turnertech@outlook.de
   license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    name: Commercial License
+    url: http://todo
   version: 1.0.11
 servers:
   - url: https://cop.turnertech.de
@@ -20,6 +20,8 @@ tags:
       url: https://en.wikipedia.org/wiki/Common_operational_picture
   - name: tracker
     description: The GPS tracker API
+security:
+  - digest: []
 paths:
   /cop:
     get:
@@ -33,10 +35,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/COP'          
-      security:
-        - cop_auth:
-            - user
+                $ref: '#/components/schemas/COP'
   /tracker:
     get:
       tags:
@@ -46,6 +45,10 @@ paths:
       responses:
         '200':
           description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackerList'
     post:
       tags:
         - tracker
@@ -71,12 +74,22 @@ paths:
       responses:
         '200':
           description: Successful operation
+        '400':
+          description: User failure in request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Error Description
+      security:
+        - apiKey:
+            - user
 components:
   schemas:
     COP:
+      type: object
       required:
         - type
-      type: object
       properties:
         type:
           type: string
@@ -106,7 +119,39 @@ components:
                   OPTA:
                     type: string
                     example: BUTHWL  OBNA 2110
+    Tracker:
+      type: object
+      required:
+        - opta
+        - lon
+        - lat
+      properties:
+        opta:
+          type: string
+          example: BUTHWL  OBNA 2110
+        token:
+          type: string
+          example: bWFnZ2llOnN1bW1lcnM=
+        lon:
+          type: number
+          example: 43.32
+        lat:
+          type: number
+          example: 23.32
+    TrackerList:
+      type: object
+      required:
+        - trackers
+      properties:
+        trackers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tracker'
   securitySchemes:
-    cop_auth:
+    digest:
       type: http
-      scheme: digest
+      scheme: basic
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key

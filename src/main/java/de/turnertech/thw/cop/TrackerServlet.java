@@ -21,7 +21,7 @@ public class TrackerServlet extends HttpServlet {
             PrintWriter writer = response.getWriter();
             writer.println("{\"trackers\":[");
             for (Tracker tracker : Tracker.TRACKERS) {
-                writer.println("{\"OPTA\":\"" + tracker.getOpta() + "\"},");
+                writer.println("{\"opta\":\"" + tracker.getOpta() + "\"},");
             }
             writer.println("]}");
         }
@@ -30,21 +30,26 @@ public class TrackerServlet extends HttpServlet {
         protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
             PrintWriter writer = response.getWriter();
 
-            String latString = request.getParameter("Lat");
+            String latString = request.getParameter("lat");
             if(latString == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                writer.println("Lat parameter was not present");
+                writer.println("'lat' parameter was not present");
                 return;
             }
 
-            String lonString = request.getParameter("Lon");
+            String lonString = request.getParameter("lon");
             if(lonString == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                writer.println("Lon parameter was not present");
+                writer.println("'lon' parameter was not present");
                 return;
             }
 
-            String opta = request.getParameter("OPTA");
+            String opta = request.getParameter("opta");
+            if(opta == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                writer.println("'opta' parameter was not present");
+                return;
+            }
 
             Tracker newTracker = null;
             Boolean isNewTracker = true;
