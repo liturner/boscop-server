@@ -43,3 +43,9 @@ const map = new ol.Map({
     zoom: 6
   })
 });
+
+function refreshCopLayer() {
+  copLayer.getSource().refresh();
+}
+
+setInterval(refreshCopLayer, 5000);
