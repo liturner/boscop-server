@@ -51,6 +51,23 @@ paths:
         - tracker
       summary: Create or Update a tracker
       description: For simplicity, the creation and updating of trackers uses the same interface.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                opta:
+                  type: string
+                lon:
+                  type: number
+                lat:
+                  type: number
+              required:
+                - opta
+                - lon
+                - lat
       responses:
         '200':
           description: Successful operation
