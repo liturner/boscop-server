@@ -1,19 +1,44 @@
 // const projection = ol.get('EPSG:3857');
 //import "/ol/ol.js";
 
-const myStyle = new ol.style.Style({
-  image: new ol.style.Circle({
-    fill: new ol.style.Fill({color: 'red'}),
-    radius: 5,
-  }),
-});
+
+
+const styleCache = {};
+const styleFunction = function(feature) {
+  const opta = feature.get('OPTA');
+  let style = styleCache[opta];
+  if (!style) {
+    style = new ol.style.Style({
+      image: new ol.style.Icon({
+        src: 'tz/Zugtruppführer_TZ.png',
+        width: 64,
+        height: 64,
+      }),
+      text: new ol.style.Text({
+        text: 'ONEB',
+        textBaseline: 'top',
+        offsetY: 16,
+        font: 'bold 14px Calibri,sans-serif',
+        fill: new ol.style.Fill({
+          color: 'black',
+        }),
+        stroke: new ol.style.Stroke({
+          color: 'white',
+          width: 2,
+        }),
+      }),
+    });
+    styleCache[opta] = style;
+  }
+  return style;
+};
 
 const copLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: '/cop',
     format: new ol.format.GeoJSON(),
   }),
-  style: myStyle
+  style: styleFunction
 });
 
 const map = new ol.Map({
