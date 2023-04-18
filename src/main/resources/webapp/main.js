@@ -1,7 +1,26 @@
-// const projection = ol.get('EPSG:3857');
-//import "/ol/ol.js";
+class OptaStyle {
+  constructor(opta) {
+    this.opta = opta;
+  }
 
+  static ortsverband(opta) {
+    return opta.substring(8, 12);
+  }
 
+  static imageSrc(opta) {
+    const imageSrcMap = {
+      2110: 'tz/thw-ztrfu.png',
+      2200: 'tz/thw-b.png'
+    };
+
+    const id = opta.substring(13, 17);
+    let imageSrc = imageSrcMap[id];
+    if(!imageSrc) {
+      imageSrc = 'tz/thw-helfer.png'
+    }
+    return imageSrc;
+  }
+}
 
 const styleCache = {};
 const styleFunction = function(feature) {
@@ -10,12 +29,12 @@ const styleFunction = function(feature) {
   if (!style) {
     style = new ol.style.Style({
       image: new ol.style.Icon({
-        src: 'tz/Zugtruppführer_TZ.png',
+        src: OptaStyle.imageSrc(opta),
         width: 64,
         height: 64,
       }),
       text: new ol.style.Text({
-        text: 'ONEB',
+        text: OptaStyle.ortsverband(opta),
         textBaseline: 'top',
         offsetY: 16,
         font: 'bold 14px Calibri,sans-serif',
