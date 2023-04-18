@@ -15,8 +15,7 @@ public class TrackerServlet extends HttpServlet {
     
         @Override
         protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            response.setContentType("application/json");
-            response.setHeader("Cache-Control", "no-store");
+            response.setContentType("application/json; charset=utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
     
             PrintWriter writer = response.getWriter();

@@ -18,8 +18,7 @@ public class CopServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setHeader("Cache-Control", "no-store");
+        response.setContentType("application/json; charset=utf-8");
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setStatus(HttpServletResponse.SC_OK);
 

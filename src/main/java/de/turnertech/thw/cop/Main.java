@@ -11,6 +11,8 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 
+import de.turnertech.thw.cop.headers.HeadersHandler;
+
 public class Main {
     
     public static final String REALM = "urn:de:turnertech:cop";
@@ -55,17 +57,19 @@ public class Main {
         ServletHolder defaultServletHolder = new ServletHolder("default", DefaultServlet.class);
         defaultServletHolder.setInitParameter("dirAllowed","true");
 
-        ServletContextHandler handler = new ServletContextHandler();
-        handler.setBaseResource(Resource.newClassPathResource("webapp"));
-        handler.addServlet(defaultServletHolder, "/");
-        handler.addServlet(copServletHolder, "/cop");
-        handler.addServlet(tokenServletHolder, "/token");
-        handler.addServlet(trackerServletHolder, "/tracker");
-        
-        handler.setSecurityHandler(securityHandler);
+        ServletContextHandler contextHandler = new ServletContextHandler();
+        contextHandler.setBaseResource(Resource.newClassPathResource("webapp"));
+        contextHandler.addServlet(defaultServletHolder, "/");
+        contextHandler.addServlet(copServletHolder, "/cop");
+        contextHandler.addServlet(tokenServletHolder, "/token");
+        contextHandler.addServlet(trackerServletHolder, "/tracker");        
+        contextHandler.setSecurityHandler(securityHandler);
+
+        HeadersHandler headerHandler = new HeadersHandler();
+        headerHandler.setHandler(contextHandler);
 
         server.addBean(loginService);
-        server.setHandler(handler);
+        server.setHandler(headerHandler);
         
         try {
             server.start();

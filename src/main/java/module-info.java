@@ -9,4 +9,5 @@ module de.turnertech.thw.cop {
     requires java.logging;
     requires org.eclipse.jetty.server;
     requires org.eclipse.jetty.servlet;
+    requires org.eclipse.jetty.rewrite;
 }
