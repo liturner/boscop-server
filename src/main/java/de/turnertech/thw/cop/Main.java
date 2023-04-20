@@ -63,7 +63,7 @@ public class Main {
         contextHandler.addServlet(copServletHolder, "/cop");
         contextHandler.addServlet(tokenServletHolder, "/token");
         contextHandler.addServlet(trackerServletHolder, "/tracker");        
-        contextHandler.setSecurityHandler(securityHandler);
+        //contextHandler.setSecurityHandler(securityHandler); Uncomment to add Auth again
 
         HeadersHandler headerHandler = new HeadersHandler();
         headerHandler.setHandler(contextHandler);
