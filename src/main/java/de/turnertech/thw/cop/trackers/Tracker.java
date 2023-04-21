@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop;
+package de.turnertech.thw.cop.trackers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +50,9 @@ public class Tracker {
     }
 
     public static Optional<String> validate(Tracker tracker) {
-        if(tracker.opta == null) {
-            return Optional.of("Empty OPTA provided is not valid.");
-        } else if (tracker.opta.length() > 24) {
-            return Optional.of("Provided OPTA is longer than 24 charachters, and is not valid.");
+        if(!OPTA.isValid(tracker.opta)) {
+            // Todo: Make this a more exmplanatory error.
+            return Optional.of("OPTA is Invalid");
         }
         
         return Optional.empty();

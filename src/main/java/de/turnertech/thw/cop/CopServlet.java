@@ -3,6 +3,7 @@ package de.turnertech.thw.cop;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import de.turnertech.thw.cop.trackers.Tracker;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,6 @@ public class CopServlet extends HttpServlet {
         writer.println("{");
         writer.println("\"type\": \"FeatureCollection\",");
         writer.println("\"features\": [");
-
 
         for (int i = 0; i < Tracker.TRACKERS.size(); ++i) {
             Tracker tracker = Tracker.TRACKERS.get(i);

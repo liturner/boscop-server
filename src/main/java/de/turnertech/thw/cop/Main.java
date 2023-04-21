@@ -1,26 +1,30 @@
 package de.turnertech.thw.cop;
 
+import java.util.EnumSet;
+
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.authentication.DigestAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 
+import de.turnertech.thw.cop.Constants.Roles;
 import de.turnertech.thw.cop.headers.HeadersHandler;
+import de.turnertech.thw.cop.trackers.TrackerAccessFilter;
+import de.turnertech.thw.cop.trackers.TrackerServlet;
+import de.turnertech.thw.cop.trackers.TrackerSubServlet;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
 
 public class Main {
     
     public static final String REALM = "urn:de:turnertech:cop";
-
-    public class Roles {
-        public static final String USER = "user";
-        public static final String ADMIN = "admin";
-    }
 
     public static void main(String[] args) {
         Server server = new Server(8080);
@@ -30,12 +34,24 @@ public class Main {
         loginService.setName(REALM);
         loginService.setConfig(Main.class.getResource("/users.txt").toString());
 
-        Constraint constraintDigest = new Constraint(Constraint.__DIGEST_AUTH, Roles.USER);
+        Constraint constraintDigest = new Constraint(Constraint.__DIGEST_AUTH, Constants.Roles.USER);
         constraintDigest.setAuthenticate(true);
 
+        Constraint constraintNoAuth = new Constraint();
+        constraintNoAuth.setAuthenticate(false);
+
+        // Default auth is DIGEST for everything
         ConstraintMapping constraintMapping = new ConstraintMapping();
         constraintMapping.setConstraint(constraintDigest);
         constraintMapping.setPathSpec("/*");
+
+        ConstraintMapping trackerRootResourceConstraintMapping = new ConstraintMapping();
+        trackerRootResourceConstraintMapping.setConstraint(constraintDigest);
+        trackerRootResourceConstraintMapping.setPathSpec(Constants.Paths.TRACKER_USER);
+
+        ConstraintMapping trackerSubResourceConstraintMapping = new ConstraintMapping();
+        trackerSubResourceConstraintMapping.setConstraint(constraintNoAuth);
+        trackerSubResourceConstraintMapping.setPathSpec(Constants.Paths.TRACKER_API);
 
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
         securityHandler.setAuthenticator(new DigestAuthenticator());
@@ -44,15 +60,16 @@ public class Main {
         securityHandler.addRole(Roles.ADMIN);
         securityHandler.addRole(Roles.USER);
         securityHandler.addConstraintMapping(constraintMapping);
+        securityHandler.addConstraintMapping(trackerRootResourceConstraintMapping);
+        securityHandler.addConstraintMapping(trackerSubResourceConstraintMapping);
 
-        CopServlet copServlet = new CopServlet();
-        ServletHolder copServletHolder = new ServletHolder(copServlet);
-        
-        TokenServlet tokenServlet = new TokenServlet();
-        ServletHolder tokenServletHolder = new ServletHolder(tokenServlet);
+        Filter trackerAccessFilter = new TrackerAccessFilter();
+        FilterHolder trackerAccessFilterHolder = new FilterHolder(trackerAccessFilter);
 
-        TrackerServlet trackerServlet = new TrackerServlet();
-        ServletHolder trackerServletHolder = new ServletHolder(trackerServlet);
+        ServletHolder copServletHolder = new ServletHolder(new CopServlet());
+        ServletHolder tokenServletHolder = new ServletHolder(new TokenServlet());
+        ServletHolder trackerServletHolder = new ServletHolder(new TrackerServlet());
+        ServletHolder trackerSubServletHolder = new ServletHolder(new TrackerSubServlet());
 
         ServletHolder defaultServletHolder = new ServletHolder("default", DefaultServlet.class);
         defaultServletHolder.setInitParameter("dirAllowed","true");
@@ -62,8 +79,10 @@ public class Main {
         contextHandler.addServlet(defaultServletHolder, "/");
         contextHandler.addServlet(copServletHolder, "/cop");
         contextHandler.addServlet(tokenServletHolder, "/token");
-        contextHandler.addServlet(trackerServletHolder, "/tracker");        
-        //contextHandler.setSecurityHandler(securityHandler); Uncomment to add Auth again
+        contextHandler.addServlet(trackerServletHolder, Constants.Paths.TRACKER_USER);
+        contextHandler.addServlet(trackerSubServletHolder, Constants.Paths.TRACKER_API);
+        contextHandler.addFilter(trackerAccessFilterHolder, Constants.Paths.TRACKER_API, EnumSet.of(DispatcherType.REQUEST));
+        contextHandler.setSecurityHandler(securityHandler);
 
         HeadersHandler headerHandler = new HeadersHandler();
         headerHandler.setHandler(contextHandler);
@@ -75,8 +94,7 @@ public class Main {
             server.start();
             server.join();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logging.LOG.severe("Could not start server.");
         }
     }
 
