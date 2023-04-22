@@ -22,4 +22,8 @@ public class Constants {
         public static final String CONTENT_TYPE = "Content-Type";
         public static final String X_API_KEY = "X-API-Key";
     }
+
+    public class ContentTypes {
+        public static final String XML = "application/xml; charset=utf-8";
+    }
 }
