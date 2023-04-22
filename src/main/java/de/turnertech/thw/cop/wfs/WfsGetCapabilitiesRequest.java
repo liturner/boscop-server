@@ -14,7 +14,7 @@ public class WfsGetCapabilitiesRequest {
         
     }
 
-    public static void doGetCapabilities(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public static void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType(Constants.ContentTypes.XML);
         PrintWriter writer = response.getWriter();
         writer.write("""
@@ -202,7 +202,7 @@ public class WfsGetCapabilitiesRequest {
                         <ows:Keyword>group</ows:Keyword>
                         <ows:Keyword>unit</ows:Keyword>
                     </ows:Keywords>
-                    <DefaultCRS>http://www.opengis.net/def/crs/epsg/0/6269</DefaultCRS>
+                    <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
                     <ows:WGS84BoundingBox>
                         <ows:LowerCorner>-180 -90</ows:LowerCorner>
                         <ows:UpperCorner>180 90</ows:UpperCorner>

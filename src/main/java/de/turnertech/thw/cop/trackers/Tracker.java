@@ -58,4 +58,22 @@ public class Tracker {
         return Optional.empty();
     }
 
+    public String toGmlString() {
+        final String gmlId = getOpta().replace(' ', '_');
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<boscop:Unit gml:id=\"");
+        stringBuilder.append(gmlId);
+        stringBuilder.append("\"><geometry><Point srsName=\"urn:ogc:def:crs:EPSG::4326\" gml:id=\"");
+        stringBuilder.append(gmlId);
+        stringBuilder.append("-geometry\"><pos>");
+        stringBuilder.append(String.valueOf(getLatitude()));
+        stringBuilder.append(" ");
+        stringBuilder.append(String.valueOf(getLongitude()));
+        stringBuilder.append("</pos></Point></geometry><opta>");
+        stringBuilder.append(getOpta());
+        stringBuilder.append("</opta></boscop:Unit>");
+        return stringBuilder.toString();
+    }
+
 }
