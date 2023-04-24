@@ -18,12 +18,13 @@ public class WfsFilter implements Filter {
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         final String contentType = httpRequest.getContentType();
+        final String wfsRequestString = WfsRequestParameter.findValue(httpRequest, WfsRequestParameter.REQUEST).orElse(WfsRequestParameter.NONE.toString());
+        WfsRequestValue wfsRequestValue = WfsRequestValue.valueOfIgnoreCase(wfsRequestString);
 
-        if(true) {
-            chain.doFilter(request, response);
+        if(wfsRequestValue == WfsRequestValue.NONE) {
+            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, ExceptionCode.OPERATION_NOT_SUPPORTED.toString());
         } else {
-            // ToDo: This needs to take in error codes and messages etc.
-            OwsExceptionReport.doGet(httpRequest, httpResponse);
-        }  
+            chain.doFilter(request, response);
+        }
     }
 }
