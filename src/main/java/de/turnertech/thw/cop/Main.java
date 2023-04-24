@@ -19,6 +19,7 @@ import de.turnertech.thw.cop.headers.HeadersHandler;
 import de.turnertech.thw.cop.trackers.TrackerAccessFilter;
 import de.turnertech.thw.cop.trackers.TrackerServlet;
 import de.turnertech.thw.cop.trackers.TrackerSubServlet;
+import de.turnertech.thw.cop.wfs.WfsFilter;
 import de.turnertech.thw.cop.wfs.WfsServlet;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
@@ -67,12 +68,13 @@ public class Main {
         Filter trackerAccessFilter = new TrackerAccessFilter();
         FilterHolder trackerAccessFilterHolder = new FilterHolder(trackerAccessFilter);
 
-        ServletHolder copServletHolder = new ServletHolder("COP-Servlet", new CopServlet());
+        Filter wfsFilter = new WfsFilter();
+        FilterHolder wfsFilterHolder = new FilterHolder(wfsFilter);
+
         ServletHolder tokenServletHolder = new ServletHolder(new TokenServlet());
         ServletHolder trackerServletHolder = new ServletHolder(new TrackerServlet());
         ServletHolder trackerSubServletHolder = new ServletHolder(new TrackerSubServlet());
         ServletHolder wfsServletHolder = new ServletHolder("WFS-Servlet", new WfsServlet());
-
 
         ServletHolder defaultServletHolder = new ServletHolder("default", DefaultServlet.class);
         defaultServletHolder.setInitParameter("dirAllowed","true");
@@ -80,10 +82,9 @@ public class Main {
         ServletContextHandler contextHandler = new ServletContextHandler();
         contextHandler.setBaseResource(Resource.newClassPathResource("webapp"));
         contextHandler.addServlet(defaultServletHolder, "/");
-        contextHandler.addServlet(copServletHolder, "/cop");
         contextHandler.addServlet(tokenServletHolder, "/token");
-        contextHandler.addServlet(wfsServletHolder, "/wfs");
-    
+        contextHandler.addServlet(wfsServletHolder, Constants.Paths.WFS);
+        contextHandler.addFilter(wfsFilterHolder, Constants.Paths.WFS, EnumSet.of(DispatcherType.REQUEST));
         contextHandler.addServlet(trackerServletHolder, Constants.Paths.TRACKER_USER);
         contextHandler.addServlet(trackerSubServletHolder, Constants.Paths.TRACKER_API);
         contextHandler.addFilter(trackerAccessFilterHolder, Constants.Paths.TRACKER_API, EnumSet.of(DispatcherType.REQUEST));

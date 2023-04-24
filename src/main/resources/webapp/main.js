@@ -24,7 +24,7 @@ class OptaStyle {
 
 const styleCache = {};
 const styleFunction = function(feature) {
-  const opta = feature.get('OPTA');
+  const opta = feature.get('opta');
   let style = styleCache[opta];
   if (!style) {
     style = new ol.style.Style({
@@ -52,11 +52,25 @@ const styleFunction = function(feature) {
   return style;
 };
 
-const copLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    url: '/cop',
-    format: new ol.format.GeoJSON(),
+const copWfsSource = new ol.source.Vector({
+  format: new ol.format.GML32({
+    srsName: 'urn:ogc:def:crs:EPSG::4326'
   }),
+  url: function (extent) {
+    return (
+      'http://localhost:8080/wfs?SERVICE=WFS&' +
+      'VERSION=2.0.2&REQUEST=GetFeature&TYPENAME=boscop:Unit&' +
+      'SRSNAME=urn:ogc:def:crs:EPSG::4326&' +
+      'BBOX=' +
+      extent.join(',') +
+      ',urn:ogc:def:crs:EPSG::4326'
+    );
+  },
+  strategy: ol.loadingstrategy.bbox
+});
+
+const copLayer = new ol.layer.Vector({
+  source: copWfsSource,
   style: styleFunction
 });
 
@@ -92,4 +106,4 @@ function refreshCopLayer() {
   copLayer.getSource().refresh();
 }
 
-setInterval(refreshCopLayer, 5000);
+setInterval(refreshCopLayer, 10000);

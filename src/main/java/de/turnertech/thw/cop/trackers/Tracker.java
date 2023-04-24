@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Tracker {
+import de.turnertech.thw.cop.util.PositionProvider;
+
+public class Tracker implements PositionProvider {
     
     public static final List<Tracker> TRACKERS = new ArrayList<>();
 
@@ -37,7 +39,7 @@ public class Tracker {
         this.latitude = latitude;
     }
 
-    public Double getLatitude() {
+    public double getLatitude() {
         return this.latitude;
     }
 
@@ -45,7 +47,7 @@ public class Tracker {
         this.longitude = longitude;
     }
 
-    public Double getLongitude() {
+    public double getLongitude() {
         return this.longitude;
     }
 
@@ -64,15 +66,15 @@ public class Tracker {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<boscop:Unit gml:id=\"");
         stringBuilder.append(gmlId);
-        stringBuilder.append("\"><geometry><Point srsName=\"urn:ogc:def:crs:EPSG::4326\" gml:id=\"");
+        stringBuilder.append("\"><boscop:geometry><gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\" gml:id=\"");
         stringBuilder.append(gmlId);
-        stringBuilder.append("-geometry\"><pos>");
+        stringBuilder.append("-geometry\"><gml:pos>");
         stringBuilder.append(String.valueOf(getLatitude()));
         stringBuilder.append(" ");
         stringBuilder.append(String.valueOf(getLongitude()));
-        stringBuilder.append("</pos></Point></geometry><opta>");
+        stringBuilder.append("</gml:pos></gml:Point></boscop:geometry><boscop:opta>");
         stringBuilder.append(getOpta());
-        stringBuilder.append("</opta></boscop:Unit>");
+        stringBuilder.append("</boscop:opta></boscop:Unit>");
         return stringBuilder.toString();
     }
 
