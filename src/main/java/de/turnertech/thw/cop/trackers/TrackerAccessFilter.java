@@ -30,7 +30,7 @@ public class TrackerAccessFilter implements Filter {
         } else if(!contentType.toLowerCase().startsWith("application/x-www-form-urlencoded")) {
             httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Content-Type must be 'application/x-www-form-urlencoded'");
         } else if(opta == null) {
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "opta parameter must be supplied");
+            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } else if(TrackerToken.isValid(opta, apiKey)) {  
             chain.doFilter(request, response);
         } else {

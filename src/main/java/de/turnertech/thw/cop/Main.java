@@ -8,6 +8,7 @@ import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.authentication.DigestAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -71,6 +72,7 @@ public class Main {
         Filter wfsFilter = new WfsFilter();
         FilterHolder wfsFilterHolder = new FilterHolder(wfsFilter);
 
+        ServletHolder errorServletHolder = new ServletHolder("Error-Servlet", new ErrorServlet());
         ServletHolder tokenServletHolder = new ServletHolder(new TokenServlet());
         ServletHolder trackerServletHolder = new ServletHolder(new TrackerServlet());
         ServletHolder trackerSubServletHolder = new ServletHolder(new TrackerSubServlet());
@@ -83,6 +85,7 @@ public class Main {
         contextHandler.setBaseResource(Resource.newClassPathResource("webapp"));
         contextHandler.addServlet(defaultServletHolder, "/");
         contextHandler.addServlet(tokenServletHolder, "/token");
+        contextHandler.addServlet(errorServletHolder, Constants.Paths.ERROR);        
         contextHandler.addServlet(wfsServletHolder, Constants.Paths.WFS);
         contextHandler.addFilter(wfsFilterHolder, Constants.Paths.WFS, EnumSet.of(DispatcherType.REQUEST));
         contextHandler.addServlet(trackerServletHolder, Constants.Paths.TRACKER_USER);
@@ -90,8 +93,14 @@ public class Main {
         contextHandler.addFilter(trackerAccessFilterHolder, Constants.Paths.TRACKER_API, EnumSet.of(DispatcherType.REQUEST));
         contextHandler.setSecurityHandler(securityHandler);
 
+        ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
+        errorHandler.addErrorPage(0, 999, Constants.Paths.ERROR);
+        contextHandler.setErrorHandler(errorHandler);
+
         HeadersHandler headerHandler = new HeadersHandler();
         headerHandler.setHandler(contextHandler);
+
+        
 
         server.addBean(loginService);
         server.setHandler(headerHandler);
