@@ -4,6 +4,11 @@ public class Constants {
     
     private Constants() {}
 
+    public class Model {
+        private Model() {}
+        public static final String NAMESPACE = "urn:ns:de:turnertech:boscop";
+    }
+
     public class Roles {
         private Roles() {}
         public static final String USER = "user";

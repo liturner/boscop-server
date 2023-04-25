@@ -9,6 +9,7 @@ import java.util.Optional;
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.trackers.Tracker;
 import de.turnertech.thw.cop.util.BoundingBox;
+import de.turnertech.thw.cop.wfs.model.area.Area;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -67,6 +68,11 @@ public class WfsGetFeatureRequest {
         for(Tracker tracker : Tracker.TRACKERS) {
             writer.write("<gml:featureMember>");
             writer.write(tracker.toGmlString());
+            writer.write("</gml:featureMember>");
+        }
+        for(Area area : Area.AREAS) {
+            writer.write("<gml:featureMember>");
+            writer.write(area.toGmlString());
             writer.write("</gml:featureMember>");
         }
         writer.write("</gml:FeatureCollection>");

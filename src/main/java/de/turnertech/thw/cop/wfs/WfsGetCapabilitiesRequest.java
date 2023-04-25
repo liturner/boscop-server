@@ -202,7 +202,21 @@ public class WfsGetCapabilitiesRequest {
                         <ows:Keyword>group</ows:Keyword>
                         <ows:Keyword>unit</ows:Keyword>
                     </ows:Keywords>
-                    <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+                    <DefaultCRS>EPSG:4326</DefaultCRS>
+                    <ows:WGS84BoundingBox>
+                        <ows:LowerCorner>-180 -90</ows:LowerCorner>
+                        <ows:UpperCorner>180 90</ows:UpperCorner>
+                    </ows:WGS84BoundingBox>
+                </FeatureType>
+                <FeatureType xmlns:boscop="urn:ns:de:turnertech:boscop">
+                    <Name>boscop:Area</Name>
+                    <Title>Area</Title>
+                    <Abstract>An Area, such as a flooded zone or fire</Abstract>
+                    <ows:Keywords>
+                        <ows:Keyword>group</ows:Keyword>
+                        <ows:Keyword>area</ows:Keyword>
+                    </ows:Keywords>
+                    <DefaultCRS>EPSG:4326</DefaultCRS>
                     <ows:WGS84BoundingBox>
                         <ows:LowerCorner>-180 -90</ows:LowerCorner>
                         <ows:UpperCorner>180 90</ows:UpperCorner>

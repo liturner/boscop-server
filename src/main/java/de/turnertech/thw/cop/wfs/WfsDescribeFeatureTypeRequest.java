@@ -20,6 +20,7 @@ public class WfsDescribeFeatureTypeRequest {
                 <xsd:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
                 <!-- ============================================= define global elements  ============================================= -->
                 <xsd:element name="Unit" type="boscop:UnitType" substitutionGroup="gml:AbstractFeature"/>
+                <xsd:element name="Area" type="boscop:AreaType" substitutionGroup="gml:AbstractFeature"/>
                 <!-- ============================================ define complex types (classes) ============================================ -->
                 <xsd:complexType name="UnitType">
                     <xsd:complexContent>
@@ -27,6 +28,15 @@ public class WfsDescribeFeatureTypeRequest {
                             <xsd:sequence>
                                 <xsd:element minOccurs="1" nillable="false" name="geometry" type="gml:PointPropertyType"/>
                                 <xsd:element minOccurs="1" nillable="false" name="opta" type="xsd:string"/>
+                            </xsd:sequence>
+                        </xsd:extension>
+                    </xsd:complexContent>
+                </xsd:complexType>
+                <xsd:complexType name="AreaType">
+                    <xsd:complexContent>
+                        <xsd:extension base="gml:AbstractFeatureType">
+                            <xsd:sequence>
+                                <xsd:element minOccurs="1" nillable="false" name="geometry" type="gml:SurfacePropertyType"/>
                             </xsd:sequence>
                         </xsd:extension>
                     </xsd:complexContent>
