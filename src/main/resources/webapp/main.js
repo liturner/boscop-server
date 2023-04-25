@@ -25,6 +25,9 @@ class OptaStyle {
 const styleCache = {};
 const styleFunction = function(feature) {
   const opta = feature.get('opta');
+  if(!opta) {
+    return new ol.layer.Vector().getStyleFunction()();
+  }
   let style = styleCache[opta];
   if (!style) {
     style = new ol.style.Style({
@@ -105,5 +108,41 @@ const map = new ol.Map({
 function refreshCopLayer() {
   copLayer.getSource().refresh();
 }
+
+let draw;
+document.getElementById('insert').addEventListener('click', function () {
+  draw = new ol.interaction.Draw({
+    source: copWfsSource,
+    type: 'Polygon'
+  });
+  draw.on('drawend', function (e) {
+    const formatWFS = new ol.format.WFS({
+      version: '2.0.0',
+      featureNS: 'urn:ns:de:turnertech:boscop'
+    });
+    const node = formatWFS.writeTransaction([e.feature], null, null, {
+      featureNS: 'urn:ns:de:turnertech:boscop',
+      featurePrefix: 'boscop',
+      featureType: 'Area',
+      srsName: 'urn:ogc:def:crs:EPSG::4326',
+      version: '2.0.0',
+      gmlOptions: {
+        featureNS: 'urn:ns:de:turnertech:boscop',
+        featureType: 'Area',
+        srsName: 'urn:ogc:def:crs:EPSG::4326'
+      }
+    });
+    const xs = new XMLSerializer();
+    const payload = xs.serializeToString(node);
+
+    fetch('http://localhost:8080/wfs?SERVICE=WFS&VERSION=2.0.2&REQUEST=Transaction', {
+      method: "POST",
+      body: payload
+    }).then(text => console.log('Fetch Done'));
+  });
+  map.addInteraction(draw);
+});
+
+
 
 setInterval(refreshCopLayer, 10000);

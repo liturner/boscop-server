@@ -9,42 +9,36 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class WfsServlet extends HttpServlet {
     
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.log("###########");
         this.log(request.getRequestURL().toString() + "?" + request.getQueryString());
 
         final String wfsRequest = WfsRequestParameter.findValue(request, WfsRequestParameter.REQUEST).get();
-        final WfsRequestType wfsRequestType = WfsRequestType.valueOfIgnoreCase(wfsRequest);
+        final WfsRequestValue wfsRequestType = WfsRequestValue.valueOfIgnoreCase(wfsRequest);
 
-        if(WfsRequestType.GET_CAPABILITIES.equals(wfsRequestType)) {
+        if(WfsRequestValue.GET_CAPABILITIES.equals(wfsRequestType)) {
             WfsGetCapabilitiesRequest.doGet(request, response);
-        } else if(WfsRequestType.DESCRIBE_FEATURE_TYPE.equals(wfsRequestType)) {
+        } else if(WfsRequestValue.DESCRIBE_FEATURE_TYPE.equals(wfsRequestType)) {
             WfsDescribeFeatureTypeRequest.doGet(request, response);
-        } else if(WfsRequestType.GET_FEATURE.equals(wfsRequestType)) {
+        } else if(WfsRequestValue.GET_FEATURE.equals(wfsRequestType)) {
             WfsGetFeatureRequest.doGet(request, response);
         }
         this.log("###########");
     }
 
-    private enum WfsRequestType {
-        GET_CAPABILITIES("GetCapabilities"),
-        DESCRIBE_FEATURE_TYPE("DescribeFeatureType"),
-        GET_FEATURE("GetFeature"),
-        NONE("");
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        this.log("-----------");
+        this.log(request.getRequestURL().toString() + "?" + request.getQueryString());
 
-        private final String parameter;
+        final String wfsRequest = WfsRequestParameter.findValue(request, WfsRequestParameter.REQUEST).get();
+        final WfsRequestValue wfsRequestType = WfsRequestValue.valueOfIgnoreCase(wfsRequest);
 
-        private WfsRequestType(final String parameter) {
-            this.parameter = parameter;
+        if(WfsRequestValue.TRANSACTION.equals(wfsRequestType)) {
+            WfsTransactionRequest.doPost(request, response);
         }
 
-        public static WfsRequestType valueOfIgnoreCase(final String parameter) {
-            for(WfsRequestType wfsRequestType : WfsRequestType.values()) {
-                if(wfsRequestType.parameter.equalsIgnoreCase(parameter)) {
-                    return wfsRequestType;
-                }
-            }
-            return NONE;
-        }
+        this.log("-----------");
     }
 }

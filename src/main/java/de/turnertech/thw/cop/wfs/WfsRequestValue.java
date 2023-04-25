@@ -3,6 +3,8 @@ package de.turnertech.thw.cop.wfs;
 public enum WfsRequestValue {
     GET_CAPABILITIES("GetCapabilities"),
     GET_FEATURE("GetFeature"),
+    DESCRIBE_FEATURE_TYPE("DescribeFeatureType"),
+    TRANSACTION("Transaction"),
     NONE("");
 
     private final String parameter;
