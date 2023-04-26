@@ -202,7 +202,7 @@ public class WfsGetCapabilitiesRequest {
                         <ows:Keyword>group</ows:Keyword>
                         <ows:Keyword>unit</ows:Keyword>
                     </ows:Keywords>
-                    <DefaultCRS>EPSG:4326</DefaultCRS>
+                    <DefaultCRS>http://www.opengis.net/def/crs/EPSG/0/4326</DefaultCRS>
                     <ows:WGS84BoundingBox>
                         <ows:LowerCorner>-180 -90</ows:LowerCorner>
                         <ows:UpperCorner>180 90</ows:UpperCorner>
@@ -216,7 +216,7 @@ public class WfsGetCapabilitiesRequest {
                         <ows:Keyword>group</ows:Keyword>
                         <ows:Keyword>area</ows:Keyword>
                     </ows:Keywords>
-                    <DefaultCRS>EPSG:4326</DefaultCRS>
+                    <DefaultCRS>http://www.opengis.net/def/crs/EPSG/0/4326</DefaultCRS>
                     <ows:WGS84BoundingBox>
                         <ows:LowerCorner>-180 -90</ows:LowerCorner>
                         <ows:UpperCorner>180 90</ows:UpperCorner>

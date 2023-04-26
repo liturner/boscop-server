@@ -66,7 +66,7 @@ public class Tracker implements PositionProvider {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<boscop:Unit gml:id=\"");
         stringBuilder.append(gmlId);
-        stringBuilder.append("\"><boscop:geometry><gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\" gml:id=\"");
+        stringBuilder.append("\"><boscop:geometry><gml:Point srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\" gml:id=\"");
         stringBuilder.append(gmlId);
         stringBuilder.append("-geometry\"><gml:pos>");
         stringBuilder.append(String.valueOf(getLatitude()));

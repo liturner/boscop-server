@@ -24,6 +24,7 @@ class OptaStyle {
 
 const styleCache = {};
 const styleFunction = function(feature) {
+  console.log(feature)
   const opta = feature.get('opta');
   let style = styleCache[opta];
   if (!style) {
@@ -58,16 +59,16 @@ const styleFunction = function(feature) {
 
 const copWfsSource = new ol.source.Vector({
   format: new ol.format.GML32({
-    srsName: 'EPSG:4326'
+    srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
   }),
   url: function (extent) {
     return (
       'http://localhost:8080/wfs?SERVICE=WFS&' +
       'VERSION=2.0.2&REQUEST=GetFeature&TYPENAME=boscop:Unit&' +
-      'SRSNAME=EPSG:4326&' +
+      'SRSNAME=http://www.opengis.net/def/crs/EPSG/0/4326&' +
       'BBOX=' +
       extent.join(',') +
-      ',EPSG:4326'
+      ',http://www.opengis.net/def/crs/EPSG/0/4326'
     );
   },
   strategy: ol.loadingstrategy.bbox
@@ -121,22 +122,26 @@ document.getElementById('insert').addEventListener('click', function () {
       version: '2.0.0',
       featureNS: 'urn:ns:de:turnertech:boscop'
     });
+    e.feature.setProperties({
+      "areaType": typeSelect.value
+    });
     e.feature.getGeometry().transform('EPSG:3857', 'EPSG:4326');
     const node = formatWFS.writeTransaction([e.feature], null, null, {
       featureNS: 'urn:ns:de:turnertech:boscop',
       featurePrefix: 'boscop',
       featureType: 'Area',
-      srsName: 'EPSG:4326',
+      srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326',
       version: '2.0.0',
       gmlOptions: {
         featureNS: 'urn:ns:de:turnertech:boscop',
         featureType: 'Area',
-        srsName: 'EPSG:4326'
+        srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
       }
     });
     e.feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
     const xs = new XMLSerializer();
     const payload = xs.serializeToString(node);
+    console.log(payload);
     fetch('http://localhost:8080/wfs?SERVICE=WFS&VERSION=2.0.2&REQUEST=Transaction', {
       method: "POST",
       body: payload

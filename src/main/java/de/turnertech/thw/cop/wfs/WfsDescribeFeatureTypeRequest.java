@@ -37,6 +37,7 @@ public class WfsDescribeFeatureTypeRequest {
                         <xsd:extension base="gml:AbstractFeatureType">
                             <xsd:sequence>
                                 <xsd:element minOccurs="1" nillable="false" name="geometry" type="gml:SurfacePropertyType"/>
+                                <xsd:element minOccurs="1" nillable="false" name="areaType" type="xsd:string"/>
                             </xsd:sequence>
                         </xsd:extension>
                     </xsd:complexContent>

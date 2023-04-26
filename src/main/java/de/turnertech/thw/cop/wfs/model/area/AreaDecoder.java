@@ -22,6 +22,8 @@ public class AreaDecoder {
             Element areaElement = (Element)areaElements.item(i);
             Area areaOut = new Area();
 
+            // Get geometry
+
             NodeList posListElements = areaElement.getElementsByTagName("posList");
             String posListString = posListElements.item(0).getTextContent();
 
@@ -32,8 +34,13 @@ public class AreaDecoder {
                 coordsOut.add(coord);
             }
 
+            // Get areaType
+            NodeList areaTypeElements = areaElement.getElementsByTagName("areaType");
+            String areaTypeString = areaTypeElements.item(0).getTextContent();
+            areaOut.setAreaType(areaTypeString);
+
             returnList.add(areaOut);
-            areaOut.setPolygon(coordsOut);
+            areaOut.setGeometry(coordsOut);
         }
 
         return returnList;

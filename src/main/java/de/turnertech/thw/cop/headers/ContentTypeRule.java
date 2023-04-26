@@ -12,9 +12,9 @@ public class ContentTypeRule extends Rule {
     @Override
     public String matchAndApply(String target, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException
     {
-        if(target.endsWith(".css")) {
+        if(target.endsWith(".css") || target.endsWith(".css.map")) {
             httpServletResponse.setContentType("text/css; charset=utf-8");
-        } else if(target.endsWith(".js")) {
+        } else if(target.endsWith(".js") || target.endsWith(".js.map")) {
             httpServletResponse.setContentType("text/javascript; charset=utf-8");
         } else if(target.equals("/")) {
             httpServletResponse.setContentType("text/html; charset=utf-8");
