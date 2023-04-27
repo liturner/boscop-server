@@ -15,7 +15,7 @@ public class AreaDecoder {
     }
 
     public static List<Area> getAreas(Element root) {
-        NodeList areaElements = root.getElementsByTagName(AreaType.NAME);
+        NodeList areaElements = root.getElementsByTagName(AreaModel.NAME);
         List<Area> returnList = new ArrayList<>(areaElements.getLength());
 
         for(int i = 0; i < areaElements.getLength(); ++i) {

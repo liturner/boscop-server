@@ -12,6 +12,8 @@ import java.util.Optional;
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.ows.model.area.Area;
 import de.turnertech.thw.cop.ows.model.area.AreaModel;
+import de.turnertech.thw.cop.ows.model.hazard.Hazard;
+import de.turnertech.thw.cop.ows.model.hazard.HazardModel;
 import de.turnertech.thw.cop.ows.model.unit.Unit;
 import de.turnertech.thw.cop.ows.model.unit.UnitModel;
 import de.turnertech.thw.cop.util.BoundingBox;
@@ -71,7 +73,7 @@ public class WfsGetFeatureRequest {
         int count = 0;
 
         List<Area> areas = null;
-        if(typenames.contains("boscop:Area")) {
+        if(typenames.contains(AreaModel.TYPENAME)) {
             if(boundingBoxLimit.isPresent()) {
                 areas = Collections.unmodifiableList(AreaModel.INSTANCE.filter(boundingBoxLimit.get()));
             } else {
@@ -81,7 +83,7 @@ public class WfsGetFeatureRequest {
             areas = Collections.emptyList();
         }
         List<Unit> units = null;
-        if(typenames.contains("boscop:Unit")) {
+        if(typenames.contains(UnitModel.TYPENAME)) {
             if(boundingBoxLimit.isPresent()) {
                 units = Collections.unmodifiableList(UnitModel.INSTANCE.filter(boundingBoxLimit.get()));
             } else {
@@ -90,9 +92,20 @@ public class WfsGetFeatureRequest {
         } else {
             units = Collections.emptyList();
         }
+        List<Hazard> hazards = null;
+        if(typenames.contains(HazardModel.TYPENAME)) {
+            if(boundingBoxLimit.isPresent()) {
+                hazards = Collections.unmodifiableList(HazardModel.INSTANCE.filter(boundingBoxLimit.get()));
+            } else {
+                hazards = Collections.unmodifiableList(HazardModel.INSTANCE.getAll());
+            }
+        } else {
+            hazards = Collections.emptyList();
+        }
 
         count += areas.size();
         count += units.size();
+        count += hazards.size();
         
         PrintWriter writer = response.getWriter();
         writer.write("<?xml version=\"1.0\"?>\n");
@@ -108,7 +121,7 @@ public class WfsGetFeatureRequest {
         int count = 0;
 
         List<Area> areas = null;
-        if(typenames.contains("boscop:Area")) {
+        if(typenames.contains(AreaModel.TYPENAME)) {
             if(boundingBox.isPresent()) {
                 areas = Collections.unmodifiableList(AreaModel.INSTANCE.filter(boundingBox.get()));
             } else {
@@ -118,7 +131,7 @@ public class WfsGetFeatureRequest {
             areas = Collections.emptyList();
         }
         List<Unit> units = null;
-        if(typenames.contains("boscop:Unit")) {
+        if(typenames.contains(UnitModel.TYPENAME)) {
             if(boundingBox.isPresent()) {
                 units = Collections.unmodifiableList(UnitModel.INSTANCE.filter(boundingBox.get()));
             } else {
@@ -127,9 +140,20 @@ public class WfsGetFeatureRequest {
         } else {
             units = Collections.emptyList();
         }
+        List<Hazard> hazards = null;
+        if(typenames.contains(HazardModel.TYPENAME)) {
+            if(boundingBox.isPresent()) {
+                hazards = Collections.unmodifiableList(HazardModel.INSTANCE.filter(boundingBox.get()));
+            } else {
+                hazards = Collections.unmodifiableList(HazardModel.INSTANCE.getAll());
+            }
+        } else {
+            hazards = Collections.emptyList();
+        }
 
         count += areas.size();
         count += units.size();
+        count += hazards.size();
 
         PrintWriter writer = response.getWriter();
         writer.write("<?xml version=\"1.0\"?>\n");
@@ -151,6 +175,11 @@ public class WfsGetFeatureRequest {
         for(Area area : areas) {
             writer.write("<gml:featureMember>");
             writer.write(area.toGmlString());
+            writer.write("</gml:featureMember>");
+        }
+        for(Hazard hazard : hazards) {
+            writer.write("<gml:featureMember>");
+            writer.write(hazard.toGmlString());
             writer.write("</gml:featureMember>");
         }
         writer.write("</gml:FeatureCollection>");

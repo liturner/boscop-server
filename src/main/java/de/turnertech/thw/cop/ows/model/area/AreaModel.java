@@ -13,7 +13,9 @@ public class AreaModel implements Model<Area>, BoundingBoxFilter {
     
     public static final AreaModel INSTANCE = new AreaModel();
 
-    public static final String TYPENAME = "boscop:Area";
+    public static final String NAME = "Area";
+
+    public static final String TYPENAME = "boscop:" + NAME;
 
     private static final List<Area> areas = new LinkedList<>();
 

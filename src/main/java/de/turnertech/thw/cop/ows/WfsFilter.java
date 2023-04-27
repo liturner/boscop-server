@@ -3,7 +3,9 @@ package de.turnertech.thw.cop.ows;
 import java.io.IOException;
 
 import de.turnertech.thw.cop.ErrorServlet;
+import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.ows.model.area.AreaModel;
+import de.turnertech.thw.cop.ows.model.hazard.HazardModel;
 import de.turnertech.thw.cop.ows.model.unit.UnitModel;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -55,7 +57,7 @@ public class WfsFilter implements Filter {
 
         String[] typenames = typenamesValue.split(",");
         for(String typename : typenames) {
-            if(!(AreaModel.TYPENAME.equalsIgnoreCase(typename) || UnitModel.TYPENAME.equalsIgnoreCase(typename))) {
+            if(!(AreaModel.TYPENAME.equalsIgnoreCase(typename) || UnitModel.TYPENAME.equalsIgnoreCase(typename) || HazardModel.TYPENAME.equalsIgnoreCase(typename))) {
                 response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.INVALID_PARAMETER_VALUE.toString(), WfsRequestParameter.TYPENAMES.toString(), "The value \"" + typename + "\" is not a known typeName"));
                 return;
             }
@@ -65,6 +67,8 @@ public class WfsFilter implements Filter {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.TYPENAMES.toString()));
             return;
         }
+
+        Logging.LOG.info("request=GetFeature&typeNames="+typenamesValue);
 
         chain.doFilter(request, response);
 

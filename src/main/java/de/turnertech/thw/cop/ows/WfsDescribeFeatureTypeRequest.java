@@ -21,6 +21,7 @@ public class WfsDescribeFeatureTypeRequest {
                 <!-- ============================================= define global elements  ============================================= -->
                 <xsd:element name="Unit" type="boscop:UnitType" substitutionGroup="gml:AbstractFeature"/>
                 <xsd:element name="Area" type="boscop:AreaType" substitutionGroup="gml:AbstractFeature"/>
+                <xsd:element name="Hazard" type="boscop:HazardType" substitutionGroup="gml:AbstractFeature"/>
                 <!-- ============================================ define complex types (classes) ============================================ -->
                 <xsd:complexType name="UnitType">
                     <xsd:complexContent>
@@ -38,6 +39,16 @@ public class WfsDescribeFeatureTypeRequest {
                             <xsd:sequence>
                                 <xsd:element minOccurs="1" nillable="false" name="geometry" type="gml:SurfacePropertyType"/>
                                 <xsd:element minOccurs="1" nillable="false" name="areaType" type="xsd:string"/>
+                            </xsd:sequence>
+                        </xsd:extension>
+                    </xsd:complexContent>
+                </xsd:complexType>
+                <xsd:complexType name="HazardType">
+                    <xsd:complexContent>
+                        <xsd:extension base="gml:AbstractFeatureType">
+                            <xsd:sequence>
+                                <xsd:element minOccurs="1" nillable="false" name="geometry" type="gml:PointPropertyType"/>
+                                <xsd:element minOccurs="1" nillable="false" name="hazardType" type="xsd:string"/>
                             </xsd:sequence>
                         </xsd:extension>
                     </xsd:complexContent>
