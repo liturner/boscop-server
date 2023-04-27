@@ -1,5 +1,5 @@
 import { basemap } from "./basemap.js";
-import { styleFunction } from "./style.js";
+import { AreaStyle, OptaStyle } from "./style.js";
 
 const copWfsSource = new ol.source.Vector({
   format: new ol.format.GML32({
@@ -8,7 +8,24 @@ const copWfsSource = new ol.source.Vector({
   url: function (extent) {
     return (
       '/ows?SERVICE=WFS&' +
-      'VERSION=2.0.2&REQUEST=GetFeature&TYPENAMES=boscop:Unit,boscop:Area&' +
+      'VERSION=2.0.2&REQUEST=GetFeature&TYPENAMES=boscop:Area&' +
+      'SRSNAME=http://www.opengis.net/def/crs/EPSG/0/4326&' +
+      'BBOX=' +
+      ol.proj.transformExtent(extent, 'EPSG:3857','EPSG:4326').join(',') +
+      ',http://www.opengis.net/def/crs/EPSG/0/4326'
+    );
+  },
+  strategy: ol.loadingstrategy.bbox
+});
+
+const unitSource = new ol.source.Vector({
+  format: new ol.format.GML32({
+    srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
+  }),
+  url: function (extent) {
+    return (
+      '/ows?SERVICE=WFS&' +
+      'VERSION=2.0.2&REQUEST=GetFeature&TYPENAMES=boscop:Unit&' +
       'SRSNAME=http://www.opengis.net/def/crs/EPSG/0/4326&' +
       'BBOX=' +
       ol.proj.transformExtent(extent, 'EPSG:3857','EPSG:4326').join(',') +
@@ -20,14 +37,20 @@ const copWfsSource = new ol.source.Vector({
 
 const copLayer = new ol.layer.Vector({
   source: copWfsSource,
-  style: styleFunction
+  style: AreaStyle.styleFunction
+});
+
+const unitLayer = new ol.layer.Vector({
+  source: unitSource,
+  style: OptaStyle.styleFunction
 });
 
 const map = new ol.Map({
   target: 'map',
   layers: [
     basemap,
-    copLayer
+    copLayer,
+    unitLayer
   ],
   view: new ol.View({
     center: [1000000, 6650300],

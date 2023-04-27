@@ -1,8 +1,6 @@
-export class OptaStyle {
-  constructor(opta) {
-    this.opta = opta;
-  }
+let styleCache = {};
 
+export class OptaStyle {
   static ortsverband(opta) {
     return opta.substring(8, 12);
   }
@@ -20,39 +18,51 @@ export class OptaStyle {
     }
     return imageSrc;
   }
+
+  static styleFunction(feature) {
+    console.log('Styling Opta');
+    const opta = feature.get('opta');
+    let style = styleCache[opta];
+    if (!style) {
+      if (!opta) {
+        style = new ol.layer.Vector().getStyleFunction()();
+      } else {
+        style = new ol.style.Style({
+          image: new ol.style.Icon({
+            src: OptaStyle.imageSrc(opta),
+            width: 64,
+            height: 64,
+          }),
+          text: new ol.style.Text({
+            text: OptaStyle.ortsverband(opta),
+            textBaseline: 'top',
+            offsetY: 16,
+            font: 'bold 14px Calibri,sans-serif',
+            fill: new ol.style.Fill({
+              color: 'black',
+            }),
+            stroke: new ol.style.Stroke({
+              color: 'white',
+              width: 2,
+            }),
+          }),
+        });
+      }
+      styleCache[opta] = style;
+    }
+    return style;
+  };
 }
 
-const styleCache = {};
-export const styleFunction = function (feature) {
-  console.log(feature.getProperties())
-  const opta = feature.get('opta');
-  let style = styleCache[opta];
-  if (!style) {
-    if (!opta) {
-      style = new ol.layer.Vector().getStyleFunction()();
-    } else {
-      style = new ol.style.Style({
-        image: new ol.style.Icon({
-          src: OptaStyle.imageSrc(opta),
-          width: 64,
-          height: 64,
-        }),
-        text: new ol.style.Text({
-          text: OptaStyle.ortsverband(opta),
-          textBaseline: 'top',
-          offsetY: 16,
-          font: 'bold 14px Calibri,sans-serif',
-          fill: new ol.style.Fill({
-            color: 'black',
-          }),
-          stroke: new ol.style.Stroke({
-            color: 'white',
-            width: 2,
-          }),
-        }),
-      });
-    }
-    styleCache[opta] = style;
+export class AreaStyle {
+  static styleCache = {};
+
+  static imageSrc(opta) {
+    return 'todo';
   }
-  return style;
-};
+
+  static styleFunction(feature) {
+    console.log('Styling Area');
+    return new ol.layer.Vector().getStyleFunction()();
+  };
+}
