@@ -21,6 +21,17 @@ public class BoundingBox {
         this.east = east;
     }
 
+    public boolean contains(List<? extends PositionProvider> positions) {
+        for(PositionProvider position : positions) {
+            if(this.contains(position)) return true;
+        }
+        return false;
+    }
+
+    public boolean contains(PositionProvider position) {
+        return contains(position.getLatitude(), position.getLongitude());
+    }
+
     public boolean contains(double latitude, double longitute) {
         return !(latitude > north || latitude < south || longitute > east || longitute < east);
     }
@@ -67,6 +78,15 @@ public class BoundingBox {
         }
 
         return Optional.of(new BoundingBox(maxSouth, maxWest, maxNorth, maxEast));
+    }
+
+    public void expandToFit(List<? extends PositionProvider> positions) {
+        for(PositionProvider position : positions) {
+            if(position.getLatitude() > north) north = position.getLatitude();
+            if(position.getLatitude() < south) south = position.getLatitude();
+            if(position.getLongitude() > east) east = position.getLongitude();
+            if(position.getLongitude() < west) west = position.getLongitude();
+        }
     }
 
 }

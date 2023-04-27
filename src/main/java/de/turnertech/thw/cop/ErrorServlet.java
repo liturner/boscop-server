@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-import de.turnertech.thw.cop.wfs.ExceptionCode;
+import de.turnertech.thw.cop.ows.ExceptionCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,9 +44,9 @@ public class ErrorServlet extends HttpServlet {
         response.setContentType(Constants.ContentTypes.XML);
  
         PrintWriter out = response.getWriter();
-        out.print("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-        out.print("<ows:ExceptionReport version=\"2.0.2\" lang=\"en-GB\" xmlns:ows=\"http://www.opengis.net/ows\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/ows http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd\">");
-        out.print("<ows:Exception exceptionCode=\"");
+        out.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        out.print("<ExceptionReport version=\"2.0.2\" lang=\"en-GB\" xmlns=\"http://www.opengis.net/ows/2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/ows/2.0 https://schemas.opengis.net/ows/2.0/owsAll.xsd\">");
+        out.print("<Exception exceptionCode=\"");
         out.print(owsExceptionCode.toString());
         out.print("\"");
         if(locator.isPresent()) {
@@ -55,14 +55,14 @@ public class ErrorServlet extends HttpServlet {
         
         if(exceptionText.isPresent()) {
             out.print(">");
-            out.print("<ows:ExceptionText>");
+            out.print("<ExceptionText>");
             out.print(exceptionText.get());
-            out.print("</ows:ExceptionText>");
-            out.print("</ows:Exception>");
+            out.print("</ExceptionText>");
+            out.print("</Exception>");
         } else {
             out.print("/>");
         }
-        out.print("</ows:ExceptionReport>");
+        out.print("</ExceptionReport>");
     }
     
     // Method to handle POST method request.

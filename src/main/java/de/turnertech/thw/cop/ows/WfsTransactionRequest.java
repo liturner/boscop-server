@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop.wfs;
+package de.turnertech.thw.cop.ows;
 
 import java.io.IOException;
 
@@ -9,8 +9,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import de.turnertech.thw.cop.Logging;
-import de.turnertech.thw.cop.wfs.model.area.Area;
-import de.turnertech.thw.cop.wfs.model.area.AreaDecoder;
+import de.turnertech.thw.cop.ows.model.area.AreaDecoder;
+import de.turnertech.thw.cop.ows.model.area.AreaModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,7 +42,7 @@ public class WfsTransactionRequest {
             Document document = builder.parse(request.getInputStream());
             Element root = document.getDocumentElement();
 
-            Area.AREAS.addAll(AreaDecoder.getAreas(root));
+            AreaModel.INSTANCE.addAll(AreaDecoder.getAreas(root));
         } catch (Exception e) {
             Logging.LOG.severe("Could not decode GML from Transaction");
         }

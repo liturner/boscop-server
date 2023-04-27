@@ -20,7 +20,7 @@ public class Constants {
 
     public class Paths {
         private Paths() {}
-        public static final String WFS = "/wfs";
+        public static final String WFS = "/ows";
         public static final String ERROR = "/error";
         public static final String TRACKER_USER = "/tracker";
         public static final String TRACKER_API = "/tracker/update";
@@ -35,4 +35,5 @@ public class Constants {
     public class ContentTypes {
         public static final String XML = "application/xml; charset=utf-8";
     }
+
 }

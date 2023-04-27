@@ -1,8 +1,10 @@
-package de.turnertech.thw.cop.wfs;
+package de.turnertech.thw.cop.ows;
 
 import java.io.IOException;
 
 import de.turnertech.thw.cop.ErrorServlet;
+import de.turnertech.thw.cop.ows.model.area.AreaModel;
+import de.turnertech.thw.cop.ows.model.unit.UnitModel;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -44,11 +46,27 @@ public class WfsFilter implements Filter {
     */
     private void doGetFeatureFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         final String typenamesParameterString = WfsRequestParameter.findValue(request, WfsRequestParameter.TYPENAMES).orElse(null);
+
+        String typenamesValue = WfsRequestParameter.findValue(request, WfsRequestParameter.TYPENAMES).orElse(null);
+        if(typenamesValue == null || typenamesValue.trim().equals("")) {
+            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.INVALID_PARAMETER_VALUE.toString(), WfsRequestParameter.TYPENAMES.toString(), "No value supplied"));
+            return;
+        }
+
+        String[] typenames = typenamesValue.split(",");
+        for(String typename : typenames) {
+            if(!(AreaModel.TYPENAME.equalsIgnoreCase(typename) || UnitModel.TYPENAME.equalsIgnoreCase(typename))) {
+                response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.INVALID_PARAMETER_VALUE.toString(), WfsRequestParameter.TYPENAMES.toString(), "The value \"" + typename + "\" is not a known typeName"));
+                return;
+            }
+        }
+
         if(typenamesParameterString == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.TYPENAMES.toString()));
-        } else {
-            chain.doFilter(request, response);
+            return;
         }
+
+        chain.doFilter(request, response);
 
     }
 }

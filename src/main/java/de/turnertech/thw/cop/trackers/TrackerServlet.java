@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.util.Optional;
 
 import de.turnertech.thw.cop.Logging;
+import de.turnertech.thw.cop.ows.model.unit.Unit;
+import de.turnertech.thw.cop.ows.model.unit.UnitModel;
 import de.turnertech.thw.cop.persistance.TrackerToken;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -22,7 +24,7 @@ public class TrackerServlet extends HttpServlet {
 
         PrintWriter writer = response.getWriter();
         writer.println("{\"trackers\":[");
-        for (Tracker tracker : Tracker.TRACKERS) {
+        for (Unit tracker : UnitModel.INSTANCE.getAll()) {
             Optional<String> trackerKey = TrackerToken.getKey(tracker.getOpta());
             if(trackerKey.isEmpty()) {
                 Logging.LOG.severe("Tracker found with no key!");
@@ -62,9 +64,9 @@ public class TrackerServlet extends HttpServlet {
             return;
         }
 
-        Tracker newTracker = null;
+        Unit newTracker = null;
         boolean isNewTracker = true;
-        for(Tracker tracker : Tracker.TRACKERS) {
+        for(Unit tracker : UnitModel.INSTANCE.getAll()) {
             if(tracker.getOpta().equals(opta)) {
                 newTracker = tracker;
                 isNewTracker = false;
@@ -73,14 +75,14 @@ public class TrackerServlet extends HttpServlet {
         }
 
         if(newTracker == null) {
-            newTracker = new Tracker();
+            newTracker = new Unit();
             TrackerToken.generateKey(opta);
         }
         newTracker.setLatitude(Double.valueOf(latString));
         newTracker.setLongitude(Double.valueOf(lonString));            
         newTracker.setOpta(opta);
 
-        Optional<String> validationError = Tracker.validate(newTracker);
+        Optional<String> validationError = Unit.validate(newTracker);
         if(validationError.isPresent()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             writer.println(validationError.get());
@@ -88,7 +90,7 @@ public class TrackerServlet extends HttpServlet {
         }
 
         if(isNewTracker) {
-            Tracker.TRACKERS.add(newTracker);
+            UnitModel.INSTANCE.add(newTracker);
         }
         
         response.setStatus(HttpServletResponse.SC_OK);

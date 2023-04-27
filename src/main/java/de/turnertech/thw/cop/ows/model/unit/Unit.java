@@ -1,15 +1,13 @@
-package de.turnertech.thw.cop.trackers;
+package de.turnertech.thw.cop.ows.model.unit;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+import de.turnertech.thw.cop.util.DataObject;
+import de.turnertech.thw.cop.util.OPTA;
 import de.turnertech.thw.cop.util.PositionProvider;
 
-public class Tracker implements PositionProvider {
+public class Unit implements PositionProvider, DataObject {
     
-    public static final List<Tracker> TRACKERS = new ArrayList<>();
-
     /**
      * See OPTA in THW-FuRnR.
      * 
@@ -21,7 +19,7 @@ public class Tracker implements PositionProvider {
 
     private Double longitude;
 
-    public Tracker() {
+    public Unit() {
         opta = "";
         latitude = 0.0;
         longitude = 0.0;
@@ -51,7 +49,7 @@ public class Tracker implements PositionProvider {
         return this.longitude;
     }
 
-    public static Optional<String> validate(Tracker tracker) {
+    public static Optional<String> validate(Unit tracker) {
         if(!OPTA.isValid(tracker.opta)) {
             // Todo: Make this a more exmplanatory error.
             return Optional.of("OPTA is Invalid");

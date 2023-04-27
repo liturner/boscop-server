@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop.wfs.model.area;
+package de.turnertech.thw.cop.ows.model.area;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

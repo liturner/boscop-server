@@ -7,11 +7,11 @@ const copWfsSource = new ol.source.Vector({
   }),
   url: function (extent) {
     return (
-      'http://localhost:8080/wfs?SERVICE=WFS&' +
-      'VERSION=2.0.2&REQUEST=GetFeature&TYPENAME=boscop:Unit&' +
+      'http://localhost:8080/ows?SERVICE=WFS&' +
+      'VERSION=2.0.2&REQUEST=GetFeature&TYPENAMES=boscop:Unit,boscop:Area&' +
       'SRSNAME=http://www.opengis.net/def/crs/EPSG/0/4326&' +
       'BBOX=' +
-      extent.join(',') +
+      ol.proj.transformExtent(extent, 'EPSG:3857','EPSG:4326').join(',') +
       ',http://www.opengis.net/def/crs/EPSG/0/4326'
     );
   },
@@ -75,7 +75,7 @@ document.getElementById('insert').addEventListener('click', function () {
     const xs = new XMLSerializer();
     const payload = xs.serializeToString(node);
     console.log(payload);
-    fetch('http://localhost:8080/wfs?SERVICE=WFS&VERSION=2.0.2&REQUEST=Transaction', {
+    fetch('http://localhost:8080/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=Transaction', {
       method: "POST",
       body: payload
     }).then(text => map.removeInteraction(draw));

@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop.wfs.model.area;
+package de.turnertech.thw.cop.ows.model.area;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,7 @@ public class AreaDecoder {
                 Coordinate coord = new Coordinate(Double.parseDouble(coordValues[j]), Double.parseDouble(coordValues[j+1]));
                 coordsOut.add(coord);
             }
+            areaOut.setGeometry(coordsOut);
 
             // Get areaType
             NodeList areaTypeElements = areaElement.getElementsByTagName("areaType");
@@ -40,7 +41,6 @@ public class AreaDecoder {
             areaOut.setAreaType(areaTypeString);
 
             returnList.add(areaOut);
-            areaOut.setGeometry(coordsOut);
         }
 
         return returnList;

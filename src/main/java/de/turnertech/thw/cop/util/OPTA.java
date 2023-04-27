@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop.trackers;
+package de.turnertech.thw.cop.util;
 
 public class OPTA {
     

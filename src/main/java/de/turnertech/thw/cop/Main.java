@@ -17,11 +17,11 @@ import org.eclipse.jetty.util.security.Constraint;
 
 import de.turnertech.thw.cop.Constants.Roles;
 import de.turnertech.thw.cop.headers.HeadersHandler;
+import de.turnertech.thw.cop.ows.WfsFilter;
+import de.turnertech.thw.cop.ows.WfsServlet;
 import de.turnertech.thw.cop.trackers.TrackerAccessFilter;
 import de.turnertech.thw.cop.trackers.TrackerServlet;
 import de.turnertech.thw.cop.trackers.TrackerSubServlet;
-import de.turnertech.thw.cop.wfs.WfsFilter;
-import de.turnertech.thw.cop.wfs.WfsServlet;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 

@@ -9,7 +9,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 import de.turnertech.thw.cop.Logging;
-import de.turnertech.thw.cop.trackers.OPTA;
+import de.turnertech.thw.cop.util.OPTA;
 
 /**
  * This class abstracts the storage and retrieval of Tracker and Token pairs from 

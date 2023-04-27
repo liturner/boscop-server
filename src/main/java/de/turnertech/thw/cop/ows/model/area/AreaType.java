@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop.wfs.model.area;
+package de.turnertech.thw.cop.ows.model.area;
 
 public class AreaType {
     

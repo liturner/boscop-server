@@ -1,15 +1,13 @@
-package de.turnertech.thw.cop.wfs.model.area;
+package de.turnertech.thw.cop.ows.model.area;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import de.turnertech.thw.cop.util.Coordinate;
+import de.turnertech.thw.cop.util.DataObject;
 
-public class Area {
+public class Area implements DataObject {
     
-    public static final List<Area> AREAS = new ArrayList<>();
-
     private String id;
 
     private List<Coordinate> geometry;

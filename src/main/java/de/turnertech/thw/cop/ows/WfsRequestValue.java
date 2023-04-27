@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop.wfs;
+package de.turnertech.thw.cop.ows;
 
 public enum WfsRequestValue {
     GET_CAPABILITIES("GetCapabilities"),
