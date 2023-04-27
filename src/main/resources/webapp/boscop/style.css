@@ -22,6 +22,14 @@ html, body {
   width: 200px;
 }
 
+#hazardSelect {
+  width: 200px;
+}
+
 #insert {
+  width: 75px;
+}
+
+#insertHazard {
   width: 75px;
 }

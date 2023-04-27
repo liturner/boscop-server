@@ -11,6 +11,8 @@ import org.w3c.dom.Element;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.ows.model.area.AreaDecoder;
 import de.turnertech.thw.cop.ows.model.area.AreaModel;
+import de.turnertech.thw.cop.ows.model.hazard.HazardDecoder;
+import de.turnertech.thw.cop.ows.model.hazard.HazardModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,6 +45,7 @@ public class WfsTransactionRequest {
             Element root = document.getDocumentElement();
 
             AreaModel.INSTANCE.addAll(AreaDecoder.getAreas(root));
+            HazardModel.INSTANCE.addAll(HazardDecoder.getHazards(root));
         } catch (Exception e) {
             Logging.LOG.severe("Could not decode GML from Transaction");
         }
