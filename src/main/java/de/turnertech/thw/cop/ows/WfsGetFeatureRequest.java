@@ -39,7 +39,7 @@ public class WfsGetFeatureRequest {
             return Optional.empty();
         }
         String[] parts = bboxTypeString.split(",", 5);
-        return Optional.of(new BoundingBox(Double.valueOf(parts[0]), Double.valueOf(parts[1]), Double.valueOf(parts[2]), Double.valueOf(parts[3])));
+        return Optional.of(new BoundingBox(Double.valueOf(parts[1]), Double.valueOf(parts[0]), Double.valueOf(parts[3]), Double.valueOf(parts[2])));
     }
 
     public static void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -17,3 +17,11 @@ html, body {
   width: 100%;
   background-color: blue;
 }
+
+#typeSelect {
+  width: 200px;
+}
+
+#insert {
+  width: 75px;
+}

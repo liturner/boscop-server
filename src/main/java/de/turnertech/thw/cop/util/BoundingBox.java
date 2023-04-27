@@ -33,7 +33,7 @@ public class BoundingBox {
     }
 
     public boolean contains(double latitude, double longitute) {
-        return !(latitude > north || latitude < south || longitute > east || longitute < east);
+        return !(latitude > north || latitude < south || longitute > east || longitute < west);
     }
 
     public String toGmlString() {
