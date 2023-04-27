@@ -27,14 +27,12 @@ import jakarta.servlet.Filter;
 
 public class Main {
     
-    public static final String REALM = "urn:de:turnertech:cop";
-
     public static void main(String[] args) {
         Server server = new Server(8080);
 
         // See: https://www.programcreek.com/java-api-examples/?api=org.eclipse.jetty.security.ConstraintSecurityHandler
         HashLoginService loginService = new HashLoginService();
-        loginService.setName(REALM);
+        loginService.setName(Constants.REALM);
         loginService.setConfig(Main.class.getResource("/users.txt").toString());
 
         Constraint constraintDigest = new Constraint(Constraint.__DIGEST_AUTH, Constants.Roles.USER);
@@ -58,7 +56,7 @@ public class Main {
 
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
         securityHandler.setAuthenticator(new DigestAuthenticator());
-        securityHandler.setRealmName(REALM);
+        securityHandler.setRealmName(Constants.REALM);
         securityHandler.setLoginService(loginService);
         securityHandler.addRole(Roles.ADMIN);
         securityHandler.addRole(Roles.USER);
@@ -99,9 +97,7 @@ public class Main {
 
         HeadersHandler headerHandler = new HeadersHandler();
         headerHandler.setHandler(contextHandler);
-
         
-
         server.addBean(loginService);
         server.setHandler(headerHandler);
         

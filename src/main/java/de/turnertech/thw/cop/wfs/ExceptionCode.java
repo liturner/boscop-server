@@ -4,7 +4,8 @@ public enum ExceptionCode {
     
     OPERATION_NOT_SUPPORTED("OperationNotSupported"),
     NO_APPLICABLE_CODE("NoApplicableCode"),
-    NONE("");
+    MISSING_PARAMETER_VALUE("MissingParameterValue"),
+    INVALID_PARAMETER_VALUE("InvalidParameterValue");
 
     private final String exceptionCode;
 
@@ -18,7 +19,7 @@ public enum ExceptionCode {
                 return exceptionCode;
             }
         }
-        return NONE;
+        return NO_APPLICABLE_CODE;
     }
 
     @Override

@@ -4,6 +4,8 @@ public class Constants {
     
     private Constants() {}
 
+    public static final String REALM = "urn:de:turnertech:cop";
+
     public class Model {
         private Model() {}
         public static final String NAMESPACE = "urn:ns:de:turnertech:boscop";

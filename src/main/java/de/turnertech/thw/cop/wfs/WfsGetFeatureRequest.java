@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import de.turnertech.thw.cop.Constants;
+import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.trackers.Tracker;
 import de.turnertech.thw.cop.util.BoundingBox;
 import de.turnertech.thw.cop.wfs.model.area.Area;
@@ -20,9 +24,24 @@ public class WfsGetFeatureRequest {
         
     }
 
+    private static List<String> getTypenames(HttpServletRequest request) {
+        String resultTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.TYPENAMES).orElse(null);
+        if(resultTypeString == null || resultTypeString.trim().equals("")) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(resultTypeString.split(","));
+    }
+
     public static void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         final String resultTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.RESULTTYPE).orElse(ResultType.RESULTS.toString());
         final ResultType resultType = ResultType.valueOfIgnoreCase(resultTypeString);
+
+        List<String> typenames = getTypenames(request);
+        if(typenames.isEmpty()) {
+            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.INVALID_PARAMETER_VALUE.toString(), WfsRequestParameter.TYPENAMES.toString(), "No value supplied"));
+        }
+
+
         if(ResultType.HITS == resultType) {
             doGetHits(request, response);
         } else if (ResultType.RESULTS == resultType) {

@@ -2,6 +2,7 @@ package de.turnertech.thw.cop;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Optional;
 
 import de.turnertech.thw.cop.wfs.ExceptionCode;
 import jakarta.servlet.ServletException;
@@ -21,8 +22,23 @@ public class ErrorServlet extends HttpServlet {
         // Throwable throwable = (Throwable) request.getAttribute("jakarta.servlet.error.exception");
         // Integer statusCode = (Integer) request.getAttribute("jakarta.servlet.error.status_code");
         // String requestUri = (String) request.getAttribute("jakarta.servlet.error.request_uri");
-        String message = (String) request.getAttribute("jakarta.servlet.error.message");
-        ExceptionCode owsExceptionCode = ExceptionCode.valueOfIgnoreCase(message);
+        final String message = (String) request.getAttribute("jakarta.servlet.error.message");
+        ExceptionCode owsExceptionCode = ExceptionCode.NO_APPLICABLE_CODE;
+        Optional<String> locator = Optional.empty();
+        Optional<String> exceptionText = Optional.empty();
+
+        if(message != null) {
+            String[] exceptionCodeStrings = message.split(":", 3);
+            owsExceptionCode = ExceptionCode.valueOfIgnoreCase(exceptionCodeStrings[0]);
+            
+            if(exceptionCodeStrings.length > 1) {
+                locator = Optional.ofNullable(exceptionCodeStrings[1]);
+            }
+
+            if(exceptionCodeStrings.length > 2) {
+                exceptionText = Optional.ofNullable(exceptionCodeStrings[2]);
+            }
+        }
 
         // Set response content type
         response.setContentType(Constants.ContentTypes.XML);
@@ -33,10 +49,20 @@ public class ErrorServlet extends HttpServlet {
         out.print("<ows:Exception exceptionCode=\"");
         out.print(owsExceptionCode.toString());
         out.print("\"");
-        if(!(owsExceptionCode == ExceptionCode.NO_APPLICABLE_CODE || owsExceptionCode == ExceptionCode.NONE)) {
-            out.print(" locator=\"Not Yet Implemented\"");
+        if(locator.isPresent()) {
+            out.print(" locator=\"" + locator.get() + "\"");
         }
-        out.print("/></ows:ExceptionReport>");
+        
+        if(exceptionText.isPresent()) {
+            out.print(">");
+            out.print("<ows:ExceptionText>");
+            out.print(exceptionText.get());
+            out.print("</ows:ExceptionText>");
+            out.print("</ows:Exception>");
+        } else {
+            out.print("/>");
+        }
+        out.print("</ows:ExceptionReport>");
     }
     
     // Method to handle POST method request.
@@ -44,5 +70,13 @@ public class ErrorServlet extends HttpServlet {
         throws ServletException, IOException {
        
         doGet(request, response);
+    }
+
+    public static String encodeMessage(String exceptionCode, String locator) {
+        return String.join(":", exceptionCode, locator);
+    }
+
+    public static String encodeMessage(String exceptionCode, String locator, String message) {
+        return String.join(":", exceptionCode, locator, message);
     }
 }
