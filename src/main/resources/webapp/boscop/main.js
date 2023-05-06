@@ -1,4 +1,4 @@
-import { basemap } from "./basemap.js";
+import { onlineBasemap } from "./basemap.js";
 import { AreaStyle, HazardStyle, OptaStyle } from "./style.js";
 
 const copWfsSource = new ol.source.Vector({
@@ -64,7 +64,7 @@ const hazardLayer = new ol.layer.Vector({
 const map = new ol.Map({
   target: 'map',
   layers: [
-    basemap,
+    onlineBasemap,
     copLayer,
     unitLayer,
     hazardLayer
