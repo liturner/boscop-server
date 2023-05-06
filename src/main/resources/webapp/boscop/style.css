@@ -17,7 +17,9 @@ html, body {
   top: 0;
   height: 50px;
   width: 100%;
-  background-color: blue;
+  background-color: rgb(41, 41, 41);
+  vertical-align: middle;
+  padding: 5px;
 }
 
 #typeSelect {
