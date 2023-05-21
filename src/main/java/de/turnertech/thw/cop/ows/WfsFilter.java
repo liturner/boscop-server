@@ -30,6 +30,8 @@ public class WfsFilter implements Filter {
             httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, ExceptionCode.OPERATION_NOT_SUPPORTED.toString());
         } else if(wfsRequestValue == WfsRequestValue.GET_FEATURE) {
             doGetFeatureFilter(httpRequest, httpResponse, chain);
+        } else if(wfsRequestValue == WfsRequestValue.TRANSACTION) {
+            doTransactionFilter(httpRequest, httpResponse, chain);
         } else {
             chain.doFilter(request, response);
         }
@@ -71,6 +73,12 @@ public class WfsFilter implements Filter {
         Logging.LOG.info("request=GetFeature&typeNames="+typenamesValue);
 
         chain.doFilter(request, response);
+    }
 
+    private void doTransactionFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        
+        Logging.LOG.info("request=Transaction");
+
+        chain.doFilter(request, response);
     }
 }

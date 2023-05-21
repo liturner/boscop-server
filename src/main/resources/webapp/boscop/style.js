@@ -57,12 +57,17 @@ export class OptaStyle {
 export class HazardStyle {
   static imageSrc(hazardType) {
     const imageSrcMap = {
-      "hazard-acute": 'tz/gefahr-acute.png'
+      "thw-ztrfu": './tz/thw-ztrfu.png',
+      "thw-helfer": './tz/thw-helfer.png',
+      "fw-abc-erkundung": './tz/fw-abc-erkundung.png',
+      "hazard-acute": './tz/gefahr-acute.png',
+      "gefahr-gs": './tz/gefahr-gs.png',
+      "gefahr-vermutet-strom": './tz/gefahr-vermutet-strom.png'
     };
 
     let imageSrc = imageSrcMap[hazardType];
     if (!imageSrc) {
-      imageSrc = 'tz/gefahr-acute.png'
+      imageSrc = 'map/tz/gefahr-acute.png'
     }
     return imageSrc;
   }

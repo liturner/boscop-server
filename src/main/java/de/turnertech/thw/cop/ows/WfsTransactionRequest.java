@@ -7,6 +7,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.ows.model.area.AreaDecoder;
@@ -43,6 +44,11 @@ public class WfsTransactionRequest {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(request.getInputStream());
             Element root = document.getDocumentElement();
+
+            NodeList deleteEntries = root.getElementsByTagName("Delete");
+            NodeList insertEntries = root.getElementsByTagName("Insert");
+
+            
 
             AreaModel.INSTANCE.addAll(AreaDecoder.getAreas(root));
             HazardModel.INSTANCE.addAll(HazardDecoder.getHazards(root));
