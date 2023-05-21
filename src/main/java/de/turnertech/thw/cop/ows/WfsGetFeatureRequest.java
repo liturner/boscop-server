@@ -10,13 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 import de.turnertech.thw.cop.Constants;
-import de.turnertech.thw.cop.ows.model.area.Area;
 import de.turnertech.thw.cop.ows.model.area.AreaModel;
-import de.turnertech.thw.cop.ows.model.hazard.Hazard;
 import de.turnertech.thw.cop.ows.model.hazard.HazardModel;
-import de.turnertech.thw.cop.ows.model.unit.Unit;
 import de.turnertech.thw.cop.ows.model.unit.UnitModel;
 import de.turnertech.thw.cop.util.BoundingBox;
+import de.turnertech.thw.cop.util.DataObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -72,7 +70,7 @@ public class WfsGetFeatureRequest {
     private static void doGetHits(HttpServletRequest request, HttpServletResponse response, List<String> typenames, Optional<BoundingBox> boundingBoxLimit) throws ServletException, IOException {
         int count = 0;
 
-        List<Area> areas = null;
+        List<DataObject> areas = null;
         if(typenames.contains(AreaModel.TYPENAME)) {
             if(boundingBoxLimit.isPresent()) {
                 areas = Collections.unmodifiableList(AreaModel.INSTANCE.filter(boundingBoxLimit.get()));
@@ -82,7 +80,7 @@ public class WfsGetFeatureRequest {
         } else {
             areas = Collections.emptyList();
         }
-        List<Unit> units = null;
+        List<DataObject> units = null;
         if(typenames.contains(UnitModel.TYPENAME)) {
             if(boundingBoxLimit.isPresent()) {
                 units = Collections.unmodifiableList(UnitModel.INSTANCE.filter(boundingBoxLimit.get()));
@@ -92,7 +90,7 @@ public class WfsGetFeatureRequest {
         } else {
             units = Collections.emptyList();
         }
-        List<Hazard> hazards = null;
+        List<DataObject> hazards = null;
         if(typenames.contains(HazardModel.TYPENAME)) {
             if(boundingBoxLimit.isPresent()) {
                 hazards = Collections.unmodifiableList(HazardModel.INSTANCE.filter(boundingBoxLimit.get()));
@@ -120,7 +118,7 @@ public class WfsGetFeatureRequest {
         
         int count = 0;
 
-        List<Area> areas = null;
+        List<DataObject> areas = null;
         if(typenames.contains(AreaModel.TYPENAME)) {
             if(boundingBox.isPresent()) {
                 areas = Collections.unmodifiableList(AreaModel.INSTANCE.filter(boundingBox.get()));
@@ -130,7 +128,7 @@ public class WfsGetFeatureRequest {
         } else {
             areas = Collections.emptyList();
         }
-        List<Unit> units = null;
+        List<DataObject> units = null;
         if(typenames.contains(UnitModel.TYPENAME)) {
             if(boundingBox.isPresent()) {
                 units = Collections.unmodifiableList(UnitModel.INSTANCE.filter(boundingBox.get()));
@@ -140,7 +138,7 @@ public class WfsGetFeatureRequest {
         } else {
             units = Collections.emptyList();
         }
-        List<Hazard> hazards = null;
+        List<DataObject> hazards = null;
         if(typenames.contains(HazardModel.TYPENAME)) {
             if(boundingBox.isPresent()) {
                 hazards = Collections.unmodifiableList(HazardModel.INSTANCE.filter(boundingBox.get()));
@@ -167,17 +165,17 @@ public class WfsGetFeatureRequest {
         if(count > 0 && boundingBox.isPresent()) {
             writer.write(boundingBox.get().toGmlString());
         }
-        for(Unit tracker : units) {
+        for(DataObject tracker : units) {
             writer.write("<gml:featureMember>");
             writer.write(tracker.toGmlString());
             writer.write("</gml:featureMember>");
         }
-        for(Area area : areas) {
+        for(DataObject area : areas) {
             writer.write("<gml:featureMember>");
             writer.write(area.toGmlString());
             writer.write("</gml:featureMember>");
         }
-        for(Hazard hazard : hazards) {
+        for(DataObject hazard : hazards) {
             writer.write("<gml:featureMember>");
             writer.write(hazard.toGmlString());
             writer.write("</gml:featureMember>");

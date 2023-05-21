@@ -5,7 +5,8 @@ public enum ExceptionCode {
     OPERATION_NOT_SUPPORTED("OperationNotSupported"),
     NO_APPLICABLE_CODE("NoApplicableCode"),
     MISSING_PARAMETER_VALUE("MissingParameterValue"),
-    INVALID_PARAMETER_VALUE("InvalidParameterValue");
+    INVALID_PARAMETER_VALUE("InvalidParameterValue"),
+    OPERATION_PARSING_FAILED("OperationParsingFailed");
 
     private final String exceptionCode;
 

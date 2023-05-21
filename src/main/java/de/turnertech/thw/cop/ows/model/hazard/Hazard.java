@@ -2,10 +2,10 @@ package de.turnertech.thw.cop.ows.model.hazard;
 
 import java.util.UUID;
 
+import de.turnertech.thw.cop.util.BoundingBox;
 import de.turnertech.thw.cop.util.DataObject;
-import de.turnertech.thw.cop.util.PositionProvider;
 
-public class Hazard implements PositionProvider, DataObject {
+public class Hazard implements DataObject {
     
     private String id;
 
@@ -22,6 +22,11 @@ public class Hazard implements PositionProvider, DataObject {
         longitude = 0.0;
     }
 
+    @Override
+    public String getId() {
+        return id;
+    }
+
     public void setHazardType(String hazardType) {
         this.hazardType = hazardType;
     }
@@ -34,6 +39,7 @@ public class Hazard implements PositionProvider, DataObject {
         this.latitude = latitude;
     }
 
+    @Override
     public double getLatitude() {
         return this.latitude;
     }
@@ -42,10 +48,17 @@ public class Hazard implements PositionProvider, DataObject {
         this.longitude = longitude;
     }
 
+    @Override
     public double getLongitude() {
         return this.longitude;
     }
 
+    @Override
+    public BoundingBox getBoundingBox() {
+        return BoundingBox.from(this);
+    }
+
+    @Override
     public String toGmlString() {
         String gmlId = id;
         StringBuilder stringBuilder = new StringBuilder();

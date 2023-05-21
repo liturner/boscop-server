@@ -5,26 +5,28 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.turnertech.thw.cop.ows.filter.OgcFilter;
 import de.turnertech.thw.cop.util.BoundingBox;
 import de.turnertech.thw.cop.util.BoundingBoxFilter;
+import de.turnertech.thw.cop.util.DataObject;
 import de.turnertech.thw.cop.util.Model;
 
-public class UnitModel implements Model<Unit>, BoundingBoxFilter {
+public class UnitModel implements Model, BoundingBoxFilter {
     
     public static final UnitModel INSTANCE = new UnitModel();
 
     public static final String TYPENAME = "boscop:Unit";
 
-    private static final List<Unit> units = new LinkedList<>();
+    private static final List<DataObject> units = new LinkedList<>();
 
     private UnitModel() {
 
     }
 
     @Override
-    public List<Unit> filter(BoundingBox boundingBox) {
-        List<Unit> returnItems = new LinkedList<>();
-        for(Unit unit : units) {
+    public List<DataObject> filter(BoundingBox boundingBox) {
+        List<DataObject> returnItems = new LinkedList<>();
+        for(DataObject unit : units) {
             if(boundingBox.contains(unit)) {
                 returnItems.add(unit);
             }
@@ -33,17 +35,34 @@ public class UnitModel implements Model<Unit>, BoundingBoxFilter {
     }
 
     @Override
-    public List<Unit> getAll() {
+    public Collection<DataObject> filter(OgcFilter ogcFilter) {
+        List<DataObject> returnCollection = new LinkedList<>();
+        for(String featureId : ogcFilter.getFeatureIdFilters()) {
+            for(DataObject unit : units) {
+                if(unit.getId().equals(featureId)) {
+                    returnCollection.add(unit);
+                }
+            }
+        }
+        return returnCollection;
+    }
+
+    @Override
+    public List<DataObject> getAll() {
         return Collections.unmodifiableList(units);
     }
 
     @Override
-    public boolean addAll(Collection<Unit> newUnits) {
+    public boolean addAll(Collection<DataObject> newUnits) {
         return units.addAll(newUnits);
     }
 
+    public boolean removeAll(Collection<DataObject> units) {
+        return UnitModel.units.removeAll(units);
+    }
+
     @Override
-    public boolean add(Unit newUnit) {
+    public boolean add(DataObject newUnit) {
         return units.add(newUnit);
     }
 }

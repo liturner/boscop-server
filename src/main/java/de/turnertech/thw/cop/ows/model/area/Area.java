@@ -3,6 +3,7 @@ package de.turnertech.thw.cop.ows.model.area;
 import java.util.List;
 import java.util.UUID;
 
+import de.turnertech.thw.cop.util.BoundingBox;
 import de.turnertech.thw.cop.util.Coordinate;
 import de.turnertech.thw.cop.util.DataObject;
 
@@ -18,12 +19,31 @@ public class Area implements DataObject {
         id = UUID.randomUUID().toString();
     }
 
+    public String getId() {
+        return id;
+    }
+
     public List<Coordinate> getGeometry() {
         return geometry;
     }
 
     public void setGeometry(List<Coordinate> polygon) {
         this.geometry = polygon;
+    }
+
+    @Override
+    public double getLatitude() {
+        return getBoundingBox().centerPoint().getLatitude();
+    }
+
+    @Override
+    public double getLongitude() {
+        return getBoundingBox().centerPoint().getLongitude();
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return BoundingBox.from(getGeometry());
     }
 
     public String getAreaType() {
@@ -34,6 +54,7 @@ public class Area implements DataObject {
         this.areaType = areaType;
     }
 
+    @Override
     public String toGmlString() {
         String gmlId = id;
         StringBuilder stringBuilder = new StringBuilder();

@@ -2,12 +2,18 @@ package de.turnertech.thw.cop.util;
 
 import java.util.Collection;
 
-public interface Model<T extends DataObject> {
+import de.turnertech.thw.cop.ows.filter.OgcFilter;
 
-    public Collection<T> getAll();
+public interface Model {
 
-    public boolean add(T dataObject);
+    public Collection<DataObject> getAll();
 
-    public boolean addAll(Collection<T> dataObjects);
+    public Collection<DataObject> filter(OgcFilter ogcFilter);
+
+    public boolean add(DataObject dataObject);
+
+    public boolean addAll(Collection<DataObject> dataObjects);
+
+    public boolean removeAll(Collection<DataObject> dataObjects);
     
 }

@@ -6,15 +6,17 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import de.turnertech.thw.cop.util.DataObject;
+
 public class HazardDecoder {
     
     private HazardDecoder() {
 
     }
 
-    public static List<Hazard> getHazards(Element root) {
+    public static List<DataObject> getHazards(Element root) {
         NodeList hazardElements = root.getElementsByTagName(HazardModel.NAME);
-        List<Hazard> returnList = new ArrayList<>(hazardElements.getLength());
+        List<DataObject> returnList = new ArrayList<>(hazardElements.getLength());
 
         for(int i = 0; i < hazardElements.getLength(); ++i) {
             Element hazardElement = (Element)hazardElements.item(i);

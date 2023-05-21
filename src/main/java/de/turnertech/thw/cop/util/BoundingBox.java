@@ -1,8 +1,8 @@
 package de.turnertech.thw.cop.util;
 
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class BoundingBox {
 
@@ -50,11 +50,11 @@ public class BoundingBox {
         return stringWriter.toString();
     }
 
-    public static Optional<BoundingBox> from(List<? extends PositionProvider> positions) {
-        if(positions.isEmpty()) {
-            return Optional.empty();
-        }
+    public static BoundingBox from(PositionProvider... positions) {
+        return from(Arrays.asList(positions));
+    }
 
+    public static BoundingBox from(List<? extends PositionProvider> positions) {
         double maxSouth = Double.MAX_VALUE;
         double maxWest = Double.MAX_VALUE;
         double maxNorth = Double.MIN_VALUE;
@@ -77,7 +77,7 @@ public class BoundingBox {
             maxWest -= 0.0001;
         }
 
-        return Optional.of(new BoundingBox(maxSouth, maxWest, maxNorth, maxEast));
+        return new BoundingBox(maxSouth, maxWest, maxNorth, maxEast);
     }
 
     public void expandToFit(List<? extends PositionProvider> positions) {
@@ -87,6 +87,10 @@ public class BoundingBox {
             if(position.getLongitude() > east) east = position.getLongitude();
             if(position.getLongitude() < west) west = position.getLongitude();
         }
+    }
+
+    public Coordinate centerPoint() {
+        return new Coordinate(south + (north - south), west + (east - west));
     }
 
 }

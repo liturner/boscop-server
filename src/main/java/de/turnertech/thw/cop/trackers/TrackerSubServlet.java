@@ -6,6 +6,7 @@ import java.util.Optional;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.ows.model.unit.Unit;
 import de.turnertech.thw.cop.ows.model.unit.UnitModel;
+import de.turnertech.thw.cop.util.DataObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,9 +27,9 @@ public class TrackerSubServlet extends HttpServlet {
         }
 
         Unit existingTracker = null;
-        for(Unit tracker : UnitModel.INSTANCE.getAll()) {
-            if(tracker.getOpta().equals(opta)) {
-                existingTracker = tracker;
+        for(DataObject tracker : UnitModel.INSTANCE.getAll()) {
+            if(((Unit)tracker).getOpta().equals(opta)) {
+                existingTracker = (Unit)tracker;
                 break;
             }
         }

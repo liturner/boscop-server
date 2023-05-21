@@ -2,6 +2,7 @@ package de.turnertech.thw.cop.ows.model.unit;
 
 import java.util.Optional;
 
+import de.turnertech.thw.cop.util.BoundingBox;
 import de.turnertech.thw.cop.util.DataObject;
 import de.turnertech.thw.cop.util.OPTA;
 import de.turnertech.thw.cop.util.PositionProvider;
@@ -25,6 +26,11 @@ public class Unit implements PositionProvider, DataObject {
         longitude = 0.0;
     }
 
+    @Override
+    public String getId() {
+        return opta;
+    }
+
     public void setOpta(String opta) {
         this.opta = opta;
     }
@@ -37,6 +43,7 @@ public class Unit implements PositionProvider, DataObject {
         this.latitude = latitude;
     }
 
+    @Override
     public double getLatitude() {
         return this.latitude;
     }
@@ -45,8 +52,14 @@ public class Unit implements PositionProvider, DataObject {
         this.longitude = longitude;
     }
 
+    @Override
     public double getLongitude() {
         return this.longitude;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return BoundingBox.from(this);
     }
 
     public static Optional<String> validate(Unit tracker) {
@@ -58,6 +71,7 @@ public class Unit implements PositionProvider, DataObject {
         return Optional.empty();
     }
 
+    @Override
     public String toGmlString() {
         final String gmlId = getOpta().replace(' ', '_');
 
