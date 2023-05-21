@@ -1,5 +1,9 @@
 import { basemap } from "./basemap.js";
-import { AreaStyle, HazardStyle, OptaStyle } from "./style.js";
+import { AreaStyle, HazardStyle, OptaStyle, setSelectedSource } from "./style.js";
+
+let selected;
+
+let draw;
 
 const formatWFS = new ol.format.WFS({
   version: '2.0.0',
@@ -110,7 +114,9 @@ const map = new ol.Map({
 });
 
 const selectSingleClick = new ol.interaction.Select({
-  condition: ol.events.condition.click
+  condition: ol.events.condition.click,
+  hitTolerance: 10,
+  style: null
 });
 map.addInteraction(selectSingleClick);
 
@@ -120,8 +126,27 @@ function refreshCopLayer() {
   hazardLayer.getSource().refresh();
 }
 
-let draw;
-document.getElementById('insert').addEventListener('click', function () {
+function deleteSelected() {
+  selected.forEach((selectedElement) => {
+    console.log("Removing: " + selectedElement.id_);
+    hazardSource.removeFeature(hazardSource.getFeatureById(selectedElement.id_));
+  });
+  selected = [];
+}
+
+/**
+ * Resets the state to no input, no drawing etc.
+ */
+function clearInsertSelection() {
+  if(draw) {
+    map.removeInteraction(draw);
+  }
+  document.getElementById('unitSelect').value = ""
+  document.getElementById('hazardSelect').value = ""
+  document.getElementById('typeSelect').value = ""
+}
+
+document.getElementById('typeSelect').addEventListener('change', function () {
   if(draw) {
     map.removeInteraction(draw);
   }
@@ -153,13 +178,14 @@ document.getElementById('insert').addEventListener('click', function () {
     fetch('/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=Transaction', {
       method: "POST",
       body: payload
-    }).then(text => map.removeInteraction(draw));
+    }).then(() => map.removeInteraction(draw))
+    .then(() => clearInsertSelection())
+    .then(() => refreshCopLayer());
   });
   map.addInteraction(draw);
 });
 
-
-document.getElementById('insertHazard').addEventListener('click', function () {
+document.getElementById('hazardSelect').addEventListener('change', function () {
   if(draw) {
     map.removeInteraction(draw);
   }
@@ -191,12 +217,15 @@ document.getElementById('insertHazard').addEventListener('click', function () {
     fetch('/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=Transaction', {
       method: "POST",
       body: payload
-    }).then(text => map.removeInteraction(draw));
+    }).then(() => map.removeInteraction(draw))
+    .then(() => clearInsertSelection())
+    .then(() => refreshCopLayer());
   });
   map.addInteraction(draw);
 });
 
-document.getElementById('insertUnit').addEventListener('click', function () {
+document.getElementById('unitSelect').addEventListener('change', function () {
+  console.log("Selected Unit")
   if(draw) {
     map.removeInteraction(draw);
   }
@@ -228,9 +257,18 @@ document.getElementById('insertUnit').addEventListener('click', function () {
     fetch('/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=Transaction', {
       method: "POST",
       body: payload
-    }).then(text => map.removeInteraction(draw));
+    }).then(() => map.removeInteraction(draw))
+    .then(() => clearInsertSelection())
+    .then(() => refreshCopLayer());
   });
   map.addInteraction(draw);
+});
+
+document.getElementById('delete').addEventListener('click', function () {
+  if(draw) {
+    map.removeInteraction(draw);
+  }
+  deleteSelected();
 });
 
 /**
@@ -239,9 +277,8 @@ document.getElementById('insertUnit').addEventListener('click', function () {
  */
 document.addEventListener("keyup", (event) => {
   if (event.isComposing || event.keyCode === 229) {
-    return;
+    clearInsertSelection();
   }
-  map.removeInteraction(draw);
 });
 
 /**
@@ -250,22 +287,17 @@ document.addEventListener("keyup", (event) => {
  */
 document.addEventListener("keyup", (event) => {
   if (event.isComposing || event.key == "Delete") {
-    console.log("Delete Pressed");
-    selected.forEach((selectedElement) => {
-      //sourve.remove -> will then trigger 
-      console.log("Removing: " + selectedElement.id_);
-      hazardSource.removeFeature(selectedElement);
-    });
-    
-    return;
+    deleteSelected();
   }
   map.removeInteraction(draw);
 });
 
-let selected;
-
 selectSingleClick.on('select', function (e) {
   selected = e.selected;
+  setSelectedSource(e.selected);
+  refreshCopLayer();
 });
 
-//setInterval(refreshCopLayer, 10000);
+setInterval(refreshCopLayer, 10000);
+
+clearInsertSelection();

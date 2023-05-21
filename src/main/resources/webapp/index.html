@@ -20,7 +20,6 @@
             <option value="Star">ABC</option>
             <option value="None">None</option>
           </select>
-          <input class="form-control" type="button" value="Insert" id="insert">
         </div>
       </div>
       <div class="btn-group me-2" role="group" aria-label="Button group with nested dropdown">        
@@ -30,8 +29,15 @@
             <option value="hazard-acute">Gefahr Akute</option>
             <option value="gefahr-gs">Gefahr Stoff</option>
             <option value="gefahr-vermutet-strom">Gefahr Vermutet Strom</option>
+            <option value="schadenstelle-1">Schadenstelle 1</option>
+            <option value="schadenstelle-2">Schadenstelle 2</option>
+            <option value="schadenstelle-3">Schadenstelle 3</option>
+            <option value="schadenstelle-4">Schadenstelle 4</option>
+            <option value="schadenstelle-5">Schadenstelle 5</option>
+            <option value="schadenstelle-6">Schadenstelle 6</option>
+            <option value="schadenstelle-7">Schadenstelle 7</option>
+            <option value="schadenstelle-8">Schadenstelle 8</option>
           </select>
-          <input class="form-control" type="button" value="Insert" id="insertHazard">
         </div>
       </div>
       <div class="btn-group me-2" role="group" aria-label="Button group with nested dropdown">        
@@ -40,11 +46,13 @@
           <select class="form-select" id="unitSelect">
             <option value="thw-ztrfu">THW ZTrFü</option>
             <option value="thw-helfer">THW Helfer</option>
+            <option value="thw-b">THW Bergungsgruppe</option>
+            <option value="thw-fgr-n">THW FGr N</option>
             <option value="fw-abc-erkundung">Fw ABC Erkundung</option>
           </select>
-          <input class="form-control" type="button" value="Insert" id="insertUnit">
         </div>
       </div>
+      <button id="delete" type="button" class="btn btn-danger">Delete</button>
     </div>
     <div id="map"></div>
     <script src="ol/ol.js"></script>

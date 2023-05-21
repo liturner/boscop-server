@@ -1,5 +1,15 @@
 let styleCache = {};
 
+let selectedThings = []
+
+export function setSelectedSource(source) {
+  console.log("set selected source")
+  selectedThings = source;
+}
+
+/**
+ * @deprecated
+ */
 export class OptaStyle {
   static ortsverband(opta) {
     return opta.substring(8, 12);
@@ -55,25 +65,75 @@ export class OptaStyle {
 }
 
 export class HazardStyle {
-  static imageSrc(hazardType) {
-    const imageSrcMap = {
-      "thw-ztrfu": './tz/thw-ztrfu.png',
-      "thw-helfer": './tz/thw-helfer.png',
-      "fw-abc-erkundung": './tz/fw-abc-erkundung.png',
-      "hazard-acute": './tz/gefahr-acute.png',
-      "gefahr-gs": './tz/gefahr-gs.png',
-      "gefahr-vermutet-strom": './tz/gefahr-vermutet-strom.png'
-    };
 
-    let imageSrc = imageSrcMap[hazardType];
+  static selectedStyleCache = {};
+
+  static selectedImageSrcMap = {
+    "thw-b": './tz/thw-b-selected.png',
+    "thw-ztrfu": './tz/thw-ztrfu-selected.png',
+  }
+
+  static imageSrcMap = {
+    "thw-b": './tz/thw-b.png',
+    "thw-ztrfu": './tz/thw-ztrfu.png',
+    "thw-helfer": './tz/thw-helfer.png',
+    "fw-abc-erkundung": './tz/fw-abc-erkundung.png',
+    "hazard-acute": './tz/gefahr-acute.png',
+    "gefahr-gs": './tz/gefahr-gs.png',
+    "gefahr-vermutet-strom": './tz/gefahr-vermutet-strom.png'
+  };
+
+  static optaImageMap = {
+    2110: 'thw-ztrfu',
+    2200: 'thw-b'
+  }
+
+  static selectedImageSrc(hazardType) {
+    let imageSrc = HazardStyle.selectedImageSrcMap[hazardType];
     if (!imageSrc) {
-      imageSrc = 'map/tz/gefahr-acute.png'
+      imageSrc = HazardStyle.imageSrc(hazardType);
     }
     return imageSrc;
   }
 
-  static styleFunction(feature) {
-    console.log('Styling Hazard');
+  static imageSrc(hazardType) {
+    let imageSrc = HazardStyle.imageSrcMap[hazardType];
+    if (!imageSrc) {
+      imageSrc = './tz/' + hazardType + '.png'
+    }
+    return imageSrc;
+  }
+
+  static styleSelectedFunction(feature) {
+    console.log('Styling Selected Hazard');
+
+    const hazardType = feature.get('hazardType');
+    let style = HazardStyle.selectedStyleCache[hazardType];
+    if (!style) {
+      style = new ol.style.Style({
+        image: new ol.style.Icon({
+          src: HazardStyle.selectedImageSrc(hazardType),
+          width: 128,
+          height: 128
+        })
+      });
+      HazardStyle.selectedStyleCache[hazardType] = style;
+    }
+    return style;
+
+  }
+
+  static styleFunction(feature) {    
+    for(let selectedFeature of selectedThings) {
+      console.log(selectedFeature.getId())
+      console.log(feature.getId())
+      if(selectedFeature.getId() === feature.getId()) {
+        return HazardStyle.styleSelectedFunction(feature);
+      }
+    }
+
+    console.log('Styling Regular Hazard');
+
     const hazardType = feature.get('hazardType');
     let style = styleCache[hazardType];
     if (!style) {
@@ -81,7 +141,7 @@ export class HazardStyle {
         image: new ol.style.Icon({
           src: HazardStyle.imageSrc(hazardType),
           width: 64,
-          height: 64,
+          height: 64
         })
       });
       styleCache[hazardType] = style;
