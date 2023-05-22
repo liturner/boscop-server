@@ -1,13 +1,17 @@
 package de.turnertech.thw.cop.gml;
 
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.stream.XMLStreamWriter;
+
+import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.util.Coordinate;
 import de.turnertech.thw.cop.util.PositionProvider;
 
-public class BoundingBox {
+public class BoundingBox implements GmlElement {
+
+    public static final String GML_NAME = "boundedBy";
 
     protected double south;
     
@@ -15,7 +19,7 @@ public class BoundingBox {
     
     protected double north;
     
-    protected double east; 
+    protected double east;
 
     public BoundingBox(double south, double west, double north, double east) {
         this.south = south;
@@ -39,18 +43,8 @@ public class BoundingBox {
         return !(latitude > north || latitude < south || longitute > east || longitute < west);
     }
 
-    public String toGmlString() {
-        StringWriter stringWriter = new StringWriter();
-        stringWriter.write("<gml:boundedBy><gml:Envelope srsName=\"urn:ogc:def:crs:EPSG::4326\"><gml:lowerCorner>");
-        stringWriter.write(String.valueOf(south));
-        stringWriter.write(" ");
-        stringWriter.write(String.valueOf(west));
-        stringWriter.write("</gml:lowerCorner><gml:upperCorner>");
-        stringWriter.write(String.valueOf(north));
-        stringWriter.write(" ");
-        stringWriter.write(String.valueOf(east));
-        stringWriter.write("</gml:upperCorner></gml:Envelope></gml:boundedBy>");
-        return stringWriter.toString();
+    public static BoundingBox from(BoundingBox other) {
+        return new BoundingBox(other.south, other.west, other.north, other.east);
     }
 
     public static BoundingBox from(PositionProvider... positions) {
@@ -92,8 +86,67 @@ public class BoundingBox {
         }
     }
 
+    public void expandToFit(BoundingBox other) {
+        if(other.north > north) north = other.north;
+        if(other.south < south) south = other.south;
+        if(other.east > east) east = other.east;
+        if(other.west < west) west = other.west;
+    }
+
     public Coordinate centerPoint() {
         return new Coordinate(south + (north - south), west + (east - west));
+    }
+
+    /**
+     * @return the south
+     */
+    public double getSouth() {
+        return south;
+    }
+
+    /**
+     * @return the west
+     */
+    public double getWest() {
+        return west;
+    }
+
+    /**
+     * @return the north
+     */
+    public double getNorth() {
+        return north;
+    }
+
+    /**
+     * @return the east
+     */
+    public double getEast() {
+        return east;
+    }
+
+    @Override
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
+        try {
+            writeGmlStartElement(out, localName, namespaceURI);
+                out.writeStartElement(GmlElement.NAMESPACE, "Envelope");
+                out.writeAttribute(GmlElement.NAMESPACE, "srsName", SpatialReferenceSystem.EPSG4327.getUri());
+                    out.writeStartElement(GmlElement.NAMESPACE, "lowerCorner");
+                        out.writeCharacters(Double.toString(south) + " " + Double.toString(west));
+                    out.writeEndElement();
+                    out.writeStartElement(GmlElement.NAMESPACE, "upperCorner");
+                        out.writeCharacters(Double.toString(north) + " " + Double.toString(east));
+                    out.writeEndElement();
+                out.writeEndElement();
+            out.writeEndElement();
+        } catch (Exception e) {
+            Logging.LOG.severe("Could not get GML for BoundingBox");
+        }
+    }
+
+    @Override
+    public String getGmlName() {
+        return GML_NAME;
     }
 
 }

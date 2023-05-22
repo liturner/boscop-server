@@ -9,6 +9,7 @@ public class Constants {
     public class Model {
         private Model() {}
         public static final String NAMESPACE = "urn:ns:de:turnertech:boscop";
+        public static final String PREFIX = "boscop";
     }
 
     public class Roles {

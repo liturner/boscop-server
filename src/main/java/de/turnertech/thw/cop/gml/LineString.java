@@ -30,9 +30,9 @@ public class LineString implements GmlElement {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String prefix, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
         try {
-            writeGmlStartElement(out, prefix, localName, namespaceURI);
+            writeGmlStartElement(out, localName, namespaceURI);
             
             posList.writeGml(out);
 

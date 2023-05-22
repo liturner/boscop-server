@@ -17,12 +17,8 @@ public class ErrorServlet extends HttpServlet {
  
     // Method to handle GET method request.
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-   
-        // Analyze the servlet exception
-        // Throwable throwable = (Throwable) request.getAttribute("jakarta.servlet.error.exception");
-        // Integer statusCode = (Integer) request.getAttribute("jakarta.servlet.error.status_code");
-        // String requestUri = (String) request.getAttribute("jakarta.servlet.error.request_uri");
         final String message = (String) request.getAttribute("jakarta.servlet.error.message");
+        final Integer statusCode = (Integer) request.getAttribute("jakarta.servlet.error.status_code");
         ExceptionCode owsExceptionCode = ExceptionCode.NO_APPLICABLE_CODE;
         Optional<String> locator = Optional.empty();
         Optional<String> exceptionText = Optional.empty();
@@ -38,10 +34,18 @@ public class ErrorServlet extends HttpServlet {
             if(exceptionCodeStrings.length > 2) {
                 exceptionText = Optional.ofNullable(exceptionCodeStrings[2]);
             }
+        } else {
+            // Analyze the servlet exception
+            // Throwable throwable = (Throwable) request.getAttribute("jakarta.servlet.error.exception");
+            // Integer statusCode = (Integer) request.getAttribute("jakarta.servlet.error.status_code");
+            // String requestUri = (String) request.getAttribute("jakarta.servlet.error.request_uri");
         }
 
         // Set response content type
         response.setContentType(Constants.ContentTypes.XML);
+        if(statusCode != null) {
+            response.setStatus(statusCode);
+        }
  
         PrintWriter out = response.getWriter();
         out.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");

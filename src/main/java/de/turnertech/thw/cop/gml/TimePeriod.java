@@ -37,13 +37,13 @@ public class TimePeriod implements GmlElement {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String prefix, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
         try {
-            writeGmlStartElement(out, prefix, localName, namespaceURI);
-            out.writeStartElement(GmlElement.PREFIX, "beginPosition", GmlElement.NAMESPACE);
+            writeGmlStartElement(out, localName, namespaceURI);
+            out.writeStartElement(GmlElement.NAMESPACE, "beginPosition");
             out.writeCharacters(begin.toString());
             out.writeEndElement();
-            out.writeStartElement(GmlElement.PREFIX, "endPosition", GmlElement.NAMESPACE);
+            out.writeStartElement(GmlElement.NAMESPACE, "endPosition");
             out.writeCharacters(end.toString());
             out.writeEndElement();
             out.writeEndElement();

@@ -30,10 +30,10 @@ public class Polygon implements GmlElement {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String prefix, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
         try {
-            writeGmlStartElement(out, prefix, localName, namespaceURI);
-            out.writeStartElement(GmlElement.PREFIX, "exterior", GmlElement.NAMESPACE);
+            writeGmlStartElement(out, localName, namespaceURI);
+            out.writeStartElement(GmlElement.NAMESPACE, "exterior");
             exterior.writeGml(out);
             out.writeEndElement();
             out.writeEndElement();

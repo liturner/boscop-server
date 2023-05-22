@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.gml.Feature;
@@ -36,6 +37,9 @@ public class WfsTransactionRequest {
         final String resultTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.RESULTTYPE).orElse(ResultType.RESULTS.toString());
         final ResultType resultType = ResultType.valueOfIgnoreCase(resultTypeString);
         
+        response.setStatus(200);
+        response.setContentType(Constants.ContentTypes.XML);
+
         /**
         SAXParserFactory factory = SAXParserFactory.newInstance();
         GmlDecoder decoder = new GmlDecoder();

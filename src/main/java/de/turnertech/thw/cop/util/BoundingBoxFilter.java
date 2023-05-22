@@ -7,6 +7,6 @@ import de.turnertech.thw.cop.gml.Feature;
 
 public interface BoundingBoxFilter {
     
-    public List<? extends Feature> filter(BoundingBox boundingBox);
+    public List<Feature> filter(BoundingBox boundingBox);
 
 }

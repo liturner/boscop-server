@@ -4,8 +4,7 @@ import java.io.IOException;
 
 import de.turnertech.thw.cop.ows.api.OwsContext;
 import de.turnertech.thw.cop.ows.api.OwsContextFactory;
-import de.turnertech.thw.cop.ows.parameter.WfsRequestParameter;
-import de.turnertech.thw.cop.ows.parameter.WfsRequestValue;
+import de.turnertech.thw.cop.ows.api.OwsRequestContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,18 +40,11 @@ public class WfsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        owsServiceDispatcher.handleRequest(request, response, owsContext);
+        owsServiceDispatcher.handleRequest(request, response, owsContext, new OwsRequestContext());
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        owsServiceDispatcher.handleRequest(request, response, owsContext);
-
-        final String wfsRequest = WfsRequestParameter.findValue(request, WfsRequestParameter.REQUEST).get();
-        final WfsRequestValue wfsRequestType = WfsRequestValue.valueOfIgnoreCase(wfsRequest);
-
-        if(WfsRequestValue.TRANSACTION.equals(wfsRequestType)) {
-            WfsTransactionRequest.doPost(request, response);
-        }
+        owsServiceDispatcher.handleRequest(request, response, owsContext, new OwsRequestContext());
     }
 }

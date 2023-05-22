@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.ows.api.OwsContext;
+import de.turnertech.thw.cop.ows.api.OwsRequestContext;
 import de.turnertech.thw.cop.ows.parameter.OwsServiceValue;
 import de.turnertech.thw.cop.ows.parameter.WfsRequestParameter;
 import jakarta.servlet.ServletException;
@@ -19,21 +20,21 @@ class OwsServiceDispatcher implements RequestHandler {
     private RequestHandler wfRequestHandler = new WfsRequestDispatcher();
 
     @Override
-    public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext) throws ServletException, IOException {
+    public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {
         final Optional<String> wfsService = WfsRequestParameter.findValue(request, WfsRequestParameter.SERVICE);
         if(wfsService.isEmpty()) {
             response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), "SERVICE", "No SERVICE parameter supplied"));
             return;
         }
         
-        final OwsServiceValue wfsRequestType = OwsServiceValue.valueOfIgnoreCase(wfsService.get());
-        if(wfsRequestType == null) {
+        requestContext.setOwsService(OwsServiceValue.valueOfIgnoreCase(wfsService.get()));
+        if(requestContext.getOwsService() == null) {
             response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), "SERVICE", "Invalid SERVICE parameter supplied: " + wfsService.get()));
             return;
         }
 
-        if(wfsRequestType == OwsServiceValue.WFS) {
-            wfRequestHandler.handleRequest(request, response, owsContext);
+        if(requestContext.getOwsService() == OwsServiceValue.WFS) {
+            wfRequestHandler.handleRequest(request, response, owsContext, requestContext);
         }
 
     }

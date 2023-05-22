@@ -1,40 +1,34 @@
 package de.turnertech.thw.cop.ows;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+
 import de.turnertech.thw.cop.Constants;
+import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.gml.BoundingBox;
 import de.turnertech.thw.cop.gml.Feature;
-import de.turnertech.thw.cop.model.area.AreaModel;
-import de.turnertech.thw.cop.model.hazard.HazardModel;
-import de.turnertech.thw.cop.model.unit.UnitModel;
+import de.turnertech.thw.cop.gml.FeatureType;
+import de.turnertech.thw.cop.ows.api.Model;
+import de.turnertech.thw.cop.ows.api.OwsContext;
+import de.turnertech.thw.cop.ows.api.OwsRequestContext;
 import de.turnertech.thw.cop.ows.parameter.ResultType;
 import de.turnertech.thw.cop.ows.parameter.WfsRequestParameter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class WfsGetFeatureRequest {
+public class WfsGetFeatureRequest implements RequestHandler {
     
-    private WfsGetFeatureRequest() {
-        
-    }
-
-    private static List<String> getTypenames(HttpServletRequest request) {
-        String resultTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.TYPENAMES).orElse(null);
-        if(resultTypeString == null || resultTypeString.trim().equals("")) {
-            return Collections.emptyList();
-        }
-        return Arrays.asList(resultTypeString.split(","));
-    }
-
     private static Optional<BoundingBox> getBoundingBox(HttpServletRequest request) {
         String bboxTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.BBOX).orElse(null);
         if(bboxTypeString == null || bboxTypeString.trim().equals("")) {
@@ -44,116 +38,11 @@ public class WfsGetFeatureRequest {
         return Optional.of(new BoundingBox(Double.valueOf(parts[1]), Double.valueOf(parts[0]), Double.valueOf(parts[3]), Double.valueOf(parts[2])));
     }
 
-    public static void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        final String resultTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.RESULTTYPE).orElse(ResultType.RESULTS.toString());
-        final ResultType resultType = ResultType.valueOfIgnoreCase(resultTypeString);
-
-        // No safety check, as we check in the WfsFilter class
-        List<String> typenames = getTypenames(request);
-
-        Optional<BoundingBox> boundingBox = getBoundingBox(request);
-
-        response.setContentType(Constants.ContentTypes.XML);
-        if(ResultType.HITS == resultType) {
-            doGetHits(request, response, typenames, boundingBox);
-        } else if (ResultType.RESULTS == resultType) {
-            doGetResults(request, response, typenames, boundingBox);
-        }
-    }
-
-    /**
-     * @see OGC 09-025r2 B3.18
-     * 
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
-     */
-    private static void doGetHits(HttpServletRequest request, HttpServletResponse response, List<String> typenames, Optional<BoundingBox> boundingBoxLimit) throws ServletException, IOException {
-        int count = 0;
-
-        List<Feature> areas = null;
-        if(typenames.contains(AreaModel.TYPENAME)) {
-            if(boundingBoxLimit.isPresent()) {
-                areas = Collections.unmodifiableList(AreaModel.INSTANCE.filter(boundingBoxLimit.get()));
-            } else {
-                areas = Collections.unmodifiableList(AreaModel.INSTANCE.getAll());
-            }
-        } else {
-            areas = Collections.emptyList();
-        }
-        List<Feature> units = null;
-        if(typenames.contains(UnitModel.TYPENAME)) {
-            if(boundingBoxLimit.isPresent()) {
-                units = Collections.unmodifiableList(UnitModel.INSTANCE.filter(boundingBoxLimit.get()));
-            } else {
-                units = Collections.unmodifiableList(UnitModel.INSTANCE.getAll());
-            }
-        } else {
-            units = Collections.emptyList();
-        }
-        List<Feature> hazards = null;
-        if(typenames.contains(HazardModel.TYPENAME)) {
-            if(boundingBoxLimit.isPresent()) {
-                hazards = Collections.unmodifiableList(HazardModel.INSTANCE.filter(boundingBoxLimit.get()));
-            } else {
-                hazards = Collections.unmodifiableList(HazardModel.INSTANCE.getAll());
-            }
-        } else {
-            hazards = Collections.emptyList();
-        }
-
-        count += areas.size();
-        count += units.size();
-        count += hazards.size();
+    private static void doGetResults(HttpServletRequest request, HttpServletResponse response, List<FeatureType> typenames, Optional<BoundingBox> boundingBox, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {
         
-        PrintWriter writer = response.getWriter();
-        writer.write("<?xml version=\"1.0\"?>\n");
-        writer.write("<wfs:FeatureCollection timeStamp=\"");
-        writer.write(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString());
-        writer.write("\" numberMatched=\"");
-        writer.write(count);
-        writer.write("\" numberReturned=\"0\" xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd\"/>");        
-    }
-
-    private static void doGetResults(HttpServletRequest request, HttpServletResponse response, List<String> typenames, Optional<BoundingBox> boundingBox) throws ServletException, IOException {
         
-        int count = 0;
 
-        List<Feature> areas = null;
-        if(typenames.contains(AreaModel.TYPENAME)) {
-            if(boundingBox.isPresent()) {
-                areas = Collections.unmodifiableList(AreaModel.INSTANCE.filter(boundingBox.get()));
-            } else {
-                areas = Collections.unmodifiableList(AreaModel.INSTANCE.getAll());
-            }
-        } else {
-            areas = Collections.emptyList();
-        }
-        List<Feature> units = null;
-        if(typenames.contains(UnitModel.TYPENAME)) {
-            if(boundingBox.isPresent()) {
-                units = Collections.unmodifiableList(UnitModel.INSTANCE.filter(boundingBox.get()));
-            } else {
-                units = Collections.unmodifiableList(UnitModel.INSTANCE.getAll());
-            }
-        } else {
-            units = Collections.emptyList();
-        }
-        List<Feature> hazards = null;
-        if(typenames.contains(HazardModel.TYPENAME)) {
-            if(boundingBox.isPresent()) {
-                hazards = Collections.unmodifiableList(HazardModel.INSTANCE.filter(boundingBox.get()));
-            } else {
-                hazards = Collections.unmodifiableList(HazardModel.INSTANCE.getAll());
-            }
-        } else {
-            hazards = Collections.emptyList();
-        }
-
-        count += areas.size();
-        count += units.size();
-        count += hazards.size();
+        /* 
 
         PrintWriter writer = response.getWriter();
         writer.write("<?xml version=\"1.0\"?>\n");
@@ -183,5 +72,90 @@ public class WfsGetFeatureRequest {
             writer.write("</gml:featureMember>");
         }
         writer.write("</gml:FeatureCollection>");
+        */
+    }
+
+    @Override
+    public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {
+        final String resultTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.RESULTTYPE).orElse(ResultType.RESULTS.toString());
+        final ResultType resultType = ResultType.valueOfIgnoreCase(resultTypeString);
+
+        List<FeatureType> typenames = requestContext.getFeatureTypes();
+
+        Optional<BoundingBox> requestedBoundingBox = getBoundingBox(request);
+
+        BoundingBox actualBoundingBox = null;
+    
+        response.setContentType(Constants.ContentTypes.XML);
+
+        Collection<Feature> features = new LinkedList<>();
+        for (FeatureType featureType : typenames) {
+            Model model = owsContext.getModelProvider().getModel(featureType);
+            if(requestedBoundingBox.isPresent()) {
+                features.addAll(model.filter(requestedBoundingBox.get()));
+            } else {
+                features.addAll(model.getAll());
+                if(actualBoundingBox == null) {
+                    actualBoundingBox = model.getBoundingBox();
+                }
+                if(actualBoundingBox != null) {
+                    actualBoundingBox.expandToFit(model.getBoundingBox());
+                }
+            }
+        }
+
+        response.setContentType(Constants.ContentTypes.XML);
+        XMLStreamWriter out = null;
+        try {
+            out = XMLOutputFactory.newInstance().createXMLStreamWriter(response.getOutputStream(), "UTF-8");
+            out.writeStartDocument("UTF-8", "1.0");
+            if(ResultType.HITS == resultType) {
+                out.writeEmptyElement("FeatureCollection");
+            } else {
+                out.writeStartElement("FeatureCollection");
+                out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.GML_URI), OwsContext.GML_URI);
+                List<String> writtenNamespaces = new ArrayList<>(features.size());
+                for(FeatureType typename : typenames) {
+                    if(!writtenNamespaces.contains(typename.getNamespace())) {
+                        out.writeNamespace(owsContext.getXmlNamespacePrefix(typename.getNamespace()), typename.getNamespace());
+                        writtenNamespaces.add(typename.getNamespace());
+                    }
+                }
+            }
+            out.writeDefaultNamespace(OwsContext.WFS_URI);
+
+            final String wfsSchema = owsContext.getXmlNamespaceSchema(OwsContext.WFS_URI);
+            if(wfsSchema != null) {
+                out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.XSI_URI), OwsContext.XSI_URI);
+                out.writeAttribute("xsi:schemaLocation", OwsContext.WFS_URI + " " + wfsSchema);
+            }
+
+            out.writeAttribute(OwsContext.WFS_URI, "timeStamp", OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).atZoneSameInstant(ZoneOffset.UTC).toString());
+            out.writeAttribute(OwsContext.WFS_URI, "numberMatched", Integer.toString(features.size()));
+            out.writeAttribute(OwsContext.WFS_URI, "numberReturned", ResultType.HITS == resultType ? "0" : Integer.toString(features.size()));
+
+            if(ResultType.RESULTS == resultType) {
+
+                if(features.size() > 0 && requestedBoundingBox.isPresent()) {
+                    requestedBoundingBox.get().writeGml(out);
+                } else if(features.size() > 0 && actualBoundingBox != null) {
+                    actualBoundingBox.writeGml(out);
+                }
+
+                for (Feature feature : features) {
+                    out.writeStartElement(OwsContext.GML_URI, "featureMember");
+                    feature.writeGml(out, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace());
+                    out.writeEndElement();
+                }
+            }
+
+            if(ResultType.HITS != resultType) {
+                out.writeEndElement();
+            }
+
+            out.writeEndDocument();
+        } catch (Exception e) {
+            response.sendError(500, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PROCESSING_FAILED.toString(), "GetFeatures", "XML Construction of the response failed."));
+        }
     }
 }

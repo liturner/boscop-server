@@ -2,13 +2,23 @@ package de.turnertech.thw.cop.model.unit;
 
 import java.util.Optional;
 
+import javax.xml.stream.XMLStreamWriter;
+
+import de.turnertech.thw.cop.Constants;
+import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.gml.BoundingBox;
 import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.gml.FeatureType;
+import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.util.OPTA;
 import de.turnertech.thw.cop.util.PositionProvider;
 
 public class Unit implements PositionProvider, Feature {
     
+    public final String GML_NAME = "Unit";
+
+    public static final FeatureType FEATURE_TYPE;
+
     /**
      * See OPTA in THW-FuRnR.
      * 
@@ -19,6 +29,11 @@ public class Unit implements PositionProvider, Feature {
     private Double latitude;
 
     private Double longitude;
+
+    static {
+        FEATURE_TYPE = new FeatureType(Constants.Model.NAMESPACE, "Unit");
+        FEATURE_TYPE.setSrs(SpatialReferenceSystem.EPSG4327);
+    }
 
     public Unit() {
         opta = "";
@@ -71,7 +86,7 @@ public class Unit implements PositionProvider, Feature {
         return Optional.empty();
     }
 
-    @Override
+    
     public String toGmlString() {
         final String gmlId = getOpta().replace(' ', '_');
 
@@ -88,6 +103,29 @@ public class Unit implements PositionProvider, Feature {
         stringBuilder.append(getOpta());
         stringBuilder.append("</boscop:opta></boscop:Unit>");
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
+        try {
+            writeGmlStartElement(out, localName, namespaceURI);
+            
+
+
+            out.writeEndElement();
+        } catch (Exception e) {
+            Logging.LOG.severe("Could not get GML for DirectPosition");
+        }   
+    }
+
+    @Override
+    public String getGmlName() {
+        return GML_NAME;
+    }
+
+    @Override
+    public FeatureType getFeatureType() {
+        return FEATURE_TYPE;
     }
 
 }

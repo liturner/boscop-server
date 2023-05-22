@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.ows.api.OwsContext;
+import de.turnertech.thw.cop.ows.api.OwsRequestContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class WfsDescribeFeatureTypeRequest implements RequestHandler {
     
     @Override
-    public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext) throws ServletException, IOException {
+    public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {
         response.setContentType(Constants.ContentTypes.XML);
         PrintWriter writer = response.getWriter();
         writer.write(

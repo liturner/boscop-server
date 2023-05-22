@@ -3,17 +3,32 @@ package de.turnertech.thw.cop.model.area;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.stream.XMLStreamWriter;
+
+import de.turnertech.thw.cop.Constants;
+import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.gml.BoundingBox;
 import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.gml.FeatureType;
+import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.util.Coordinate;
 
 public class Area implements Feature {
     
+    public final String GML_NAME = "Feature";
+
+    public static final FeatureType FEATURE_TYPE;
+
     private String id;
 
     private List<Coordinate> geometry;
 
     private String areaType;
+
+    static {
+        FEATURE_TYPE = new FeatureType(Constants.Model.NAMESPACE, "Area");
+        FEATURE_TYPE.setSrs(SpatialReferenceSystem.EPSG4327);
+    }
 
     public Area() {
         id = UUID.randomUUID().toString();
@@ -54,7 +69,6 @@ public class Area implements Feature {
         this.areaType = areaType;
     }
 
-    @Override
     public String toGmlString() {
         String gmlId = id;
         StringBuilder stringBuilder = new StringBuilder();
@@ -75,6 +89,29 @@ public class Area implements Feature {
         stringBuilder.append("</boscop:areaType>");
         stringBuilder.append("</boscop:Area>");
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
+        try {
+            writeGmlStartElement(out, localName, namespaceURI);
+            
+
+
+            out.writeEndElement();
+        } catch (Exception e) {
+            Logging.LOG.severe("Could not get GML for DirectPosition");
+        }   
+    }
+
+    @Override
+    public String getGmlName() {
+        return GML_NAME;
+    }
+
+    @Override
+    public FeatureType getFeatureType() {
+        return FEATURE_TYPE;
     }
 
 }

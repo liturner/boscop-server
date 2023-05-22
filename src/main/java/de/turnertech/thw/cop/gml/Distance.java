@@ -90,9 +90,9 @@ public class Distance implements GmlElement {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String prefix, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
         try {
-            writeGmlStartElement(out, prefix, localName, namespaceURI);
+            writeGmlStartElement(out, localName, namespaceURI);
             
             // OGC specifies that this is the symbol, not the URN, and to use symbols from UCUM
             out.writeAttribute("uom", unit.getSymbol());

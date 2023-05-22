@@ -7,26 +7,26 @@ import java.util.List;
 
 import de.turnertech.thw.cop.gml.BoundingBox;
 import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.ows.api.Model;
 import de.turnertech.thw.cop.ows.filter.OgcFilter;
-import de.turnertech.thw.cop.util.BoundingBoxFilter;
 
-public class UnitModel implements Model, BoundingBoxFilter {
+public class UnitModel implements Model {
     
     public static final UnitModel INSTANCE = new UnitModel();
 
-    public static final String TYPENAME = "boscop:Unit";
+    public static final String TYPENAME = "Unit";
 
-    private static final List<Feature> units = new LinkedList<>();
+    private static final List<Feature> features = new LinkedList<>();
 
     private UnitModel() {
-
+        
     }
 
     @Override
     public List<Feature> filter(BoundingBox boundingBox) {
         List<Feature> returnItems = new LinkedList<>();
-        for(Feature unit : units) {
+        for(Feature unit : features) {
             if(boundingBox.contains(unit)) {
                 returnItems.add(unit);
             }
@@ -38,7 +38,7 @@ public class UnitModel implements Model, BoundingBoxFilter {
     public Collection<Feature> filter(OgcFilter ogcFilter) {
         List<Feature> returnCollection = new LinkedList<>();
         for(String featureId : ogcFilter.getFeatureIdFilters()) {
-            for(Feature unit : units) {
+            for(Feature unit : features) {
                 if(unit.getId().equals(featureId)) {
                     returnCollection.add(unit);
                 }
@@ -49,20 +49,37 @@ public class UnitModel implements Model, BoundingBoxFilter {
 
     @Override
     public List<Feature> getAll() {
-        return Collections.unmodifiableList(units);
+        return Collections.unmodifiableList(features);
     }
 
     @Override
     public boolean addAll(Collection<Feature> newUnits) {
-        return units.addAll(newUnits);
+        return features.addAll(newUnits);
     }
 
     public boolean removeAll(Collection<Feature> units) {
-        return UnitModel.units.removeAll(units);
+        return UnitModel.features.removeAll(units);
     }
 
     @Override
     public boolean add(Feature newUnit) {
-        return units.add(newUnit);
+        return features.add(newUnit);
+    }
+
+    @Override
+    public FeatureType getFeatureType() {
+        return Unit.FEATURE_TYPE;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        BoundingBox boundingBox = null;
+        if(features.size() > 0) {
+            boundingBox = BoundingBox.from(features.get(0));
+        } 
+        for (Feature feature : features) {
+            boundingBox.expandToFit(feature.getBoundingBox());
+        }
+        return boundingBox;
     }
 }

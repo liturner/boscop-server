@@ -6,7 +6,8 @@ public enum ExceptionCode {
     NO_APPLICABLE_CODE("NoApplicableCode"),
     MISSING_PARAMETER_VALUE("MissingParameterValue"),
     INVALID_PARAMETER_VALUE("InvalidParameterValue"),
-    OPERATION_PARSING_FAILED("OperationParsingFailed");
+    OPERATION_PARSING_FAILED("OperationParsingFailed"),
+    OPERATION_PROCESSING_FAILED("OperationProcessingFailed");
 
     private final String exceptionCode;
 

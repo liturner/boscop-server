@@ -36,9 +36,9 @@ public class DirectPositionList extends ArrayList<DirectPosition> implements Gml
      * {@inheritDoc}
      */
     @Override
-    public void writeGml(XMLStreamWriter out, String prefix, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
         try {
-            writeGmlStartElement(out, prefix, localName, namespaceURI);
+            writeGmlStartElement(out, localName, namespaceURI);
             out.writeAttribute("srsDimension", "2");
             for(int i = 0; i < this.size(); ++i) {
                 out.writeCharacters(Double.toString(this.get(i).getX()) + " " + Double.toString(this.get(i).getY()));

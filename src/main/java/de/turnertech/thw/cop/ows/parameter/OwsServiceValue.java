@@ -1,6 +1,7 @@
 package de.turnertech.thw.cop.ows.parameter;
 
 public enum OwsServiceValue {
+
     WFS("WFS");
 
     private final String parameter;
@@ -16,5 +17,10 @@ public enum OwsServiceValue {
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return parameter;
     }
 }

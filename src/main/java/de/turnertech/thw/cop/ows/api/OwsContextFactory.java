@@ -1,23 +1,32 @@
 package de.turnertech.thw.cop.ows.api;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import de.turnertech.thw.cop.ows.parameter.WfsVersionValue;
 import jakarta.servlet.ServletException;
 
 public abstract class OwsContextFactory {
     
-    public OwsContext createOwsContext() throws ServletException {
+    public final OwsContext createOwsContext() throws ServletException {
         DefaultOwsContext owsContext = new DefaultOwsContext();
         owsContext.setModelProvider(createModelProvider());
         if(owsContext.getModelProvider() == null) {
             throw new ServletException(OwsContextFactory.class.getSimpleName() + " returned null " + ModelProvider.class.getSimpleName());
         }
 
-        owsContext.setSupportedWfsVersions(getSupportedWfsVersions());
-        if(owsContext.getSupportedWfsVersions() == null) {
-            throw new ServletException(OwsContextFactory.class.getSimpleName() + " returned null supported Wfs versions (use an empty list instead)");
+        owsContext.setWfsCapabilities(getWfsCapabilities());
+        if(owsContext.getWfsCapabilities() == null) {
+            throw new ServletException(OwsContextFactory.class.getSimpleName() + " returned null WfsCapabilities");
+        }
+
+        owsContext.setXmlNamespacePrefixMap(getNamespacePrefixMap());
+        if(owsContext.getXmlNamespacePrefixMap() == null) {
+            throw new ServletException(OwsContextFactory.class.getSimpleName() + " returned null Namespace Prefix Map");
+        }
+
+        owsContext.setXmlNamespaceSchemaMap(getNamespaceSchemaMap());
+        if(owsContext.getXmlNamespaceSchemaMap() == null) {
+            throw new ServletException(OwsContextFactory.class.getSimpleName() + " returned null Namespace Schema Map");
         }
 
         return owsContext;
@@ -25,8 +34,25 @@ public abstract class OwsContextFactory {
 
     public abstract ModelProvider createModelProvider();
 
-    public Collection<WfsVersionValue> getSupportedWfsVersions() {
-        return Arrays.asList(WfsVersionValue.V2_0_2);
+    public abstract WfsCapabilities getWfsCapabilities();
+
+    public Map<String, String> getNamespacePrefixMap() {
+        Map<String, String> returnMap = new HashMap<>();
+        returnMap.put("http://www.opengis.net/ows/1.1", "ows");
+        returnMap.put("http://www.opengis.net/wfs/2.0", "wfs");
+        returnMap.put("http://www.opengis.net/fes/2.0", "fes");
+        returnMap.put("http://www.opengis.net/gml/3.2", "gml");
+        returnMap.put("http://www.w3.org/2001/XMLSchema-instance", "xsi");
+        return returnMap;
+    }
+
+    public Map<String, String> getNamespaceSchemaMap() {
+        Map<String, String> returnMap = new HashMap<>();
+        returnMap.put("http://www.opengis.net/ows/1.1", "http://schemas.opengis.net/ows/1.1.0/owsAll.xsd");
+        returnMap.put("http://www.opengis.net/wfs/2.0", "http://schemas.opengis.net/wfs/2.0/wfs.xsd");
+        returnMap.put("http://www.opengis.net/fes/2.0", "http://schemas.opengis.net/filter/2.0/filterAll.xsd");
+        returnMap.put("http://www.opengis.net/gml/3.2", "http://schemas.opengis.net/gml/3.2.1/gml.xsd");
+        return returnMap;
     }
 
 }

@@ -1,6 +1,7 @@
 package de.turnertech.thw.cop.ows.api;
 
 import java.util.Collection;
+import java.util.Map;
 
 import de.turnertech.thw.cop.ows.parameter.WfsVersionValue;
 
@@ -9,6 +10,12 @@ public class DefaultOwsContext implements OwsContext {
     ModelProvider modelProvider;
 
     Collection<WfsVersionValue> supportedWfsVersions;
+
+    WfsCapabilities wfsCapabilities;
+
+    Map<String, String> xmlNamespacePrefixMap;
+
+    Map<String, String> xmlNamespaceSchemaMap;
 
     @Override
     public ModelProvider getModelProvider() {
@@ -20,12 +27,51 @@ public class DefaultOwsContext implements OwsContext {
     }
 
     @Override
-    public Collection<WfsVersionValue> getSupportedWfsVersions() {
-        return supportedWfsVersions;
+    public WfsCapabilities getWfsCapabilities() {
+        return wfsCapabilities;
     }
 
-    void setSupportedWfsVersions(Collection<WfsVersionValue> supportedWfsVersions) {
-        this.supportedWfsVersions = supportedWfsVersions;
+    void setWfsCapabilities(WfsCapabilities wfsCapabilities) {
+        this.wfsCapabilities = wfsCapabilities;
+    }
+
+    /**
+     * Will generate one if not explicitely present
+     */
+    @Override
+    public String getXmlNamespacePrefix(String namespace) {
+        String prefix = xmlNamespacePrefixMap.getOrDefault(namespace, null);
+
+        if(prefix == null) {
+            int i = -1;
+            do {
+                prefix = "ns" + Integer.toString(++i);
+            } while(xmlNamespacePrefixMap.containsValue(prefix));
+            xmlNamespacePrefixMap.put(namespace, prefix);
+        }
+
+        return prefix;
+    }
+
+    Map<String, String> getXmlNamespacePrefixMap() {
+        return xmlNamespacePrefixMap;
+    }
+
+    void setXmlNamespacePrefixMap(Map<String, String> xmlNamespacePrefixMap) {
+        this.xmlNamespacePrefixMap = xmlNamespacePrefixMap;
+    }
+
+    @Override
+    public String getXmlNamespaceSchema(String namespace) {
+        return xmlNamespaceSchemaMap.getOrDefault(namespace, null);
+    }
+
+    Map<String, String> getXmlNamespaceSchemaMap() {
+        return xmlNamespaceSchemaMap;
+    }
+
+    void setXmlNamespaceSchemaMap(Map<String, String> xmlNamespaceSchemaMap) {
+        this.xmlNamespaceSchemaMap = xmlNamespaceSchemaMap;
     }
 
 }

@@ -41,10 +41,10 @@ public class TimeInstant implements GmlElement {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String prefix, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
         try {
-            writeGmlStartElement(out, prefix, localName, namespaceURI);
-            out.writeStartElement(GmlElement.PREFIX, "timePosition", GmlElement.NAMESPACE);
+            writeGmlStartElement(out, localName, namespaceURI);
+            out.writeStartElement(GmlElement.NAMESPACE, "timePosition");
             out.writeCharacters(DATE_TIME_FORMATTER.format(timePosition));
             out.writeEndElement();
             out.writeEndElement();
