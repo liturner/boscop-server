@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop.ows;
+package de.turnertech.thw.cop.ows.parameter;
 
 public enum ResultType {
     

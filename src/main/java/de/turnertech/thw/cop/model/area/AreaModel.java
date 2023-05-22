@@ -1,15 +1,15 @@
-package de.turnertech.thw.cop.ows.model.area;
+package de.turnertech.thw.cop.model.area;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.turnertech.thw.cop.gml.BoundingBox;
+import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.ows.api.Model;
 import de.turnertech.thw.cop.ows.filter.OgcFilter;
-import de.turnertech.thw.cop.util.BoundingBox;
 import de.turnertech.thw.cop.util.BoundingBoxFilter;
-import de.turnertech.thw.cop.util.DataObject;
-import de.turnertech.thw.cop.util.Model;
 
 public class AreaModel implements Model, BoundingBoxFilter {
     
@@ -19,16 +19,16 @@ public class AreaModel implements Model, BoundingBoxFilter {
 
     public static final String TYPENAME = "boscop:" + NAME;
 
-    private static final List<DataObject> areas = new LinkedList<>();
+    private static final List<Feature> areas = new LinkedList<>();
 
     private AreaModel() {
 
     }
 
     @Override
-    public List<DataObject> filter(BoundingBox boundingBox) {
-        List<DataObject> returnItems = new LinkedList<>();
-        for(DataObject area : areas) {
+    public List<Feature> filter(BoundingBox boundingBox) {
+        List<Feature> returnItems = new LinkedList<>();
+        for(Feature area : areas) {
             if(boundingBox.contains(area)) {
                 returnItems.add(area);
             }
@@ -37,10 +37,10 @@ public class AreaModel implements Model, BoundingBoxFilter {
     }
 
     @Override
-    public Collection<DataObject> filter(OgcFilter ogcFilter) {
-        List<DataObject> returnCollection = new LinkedList<>();
+    public Collection<Feature> filter(OgcFilter ogcFilter) {
+        List<Feature> returnCollection = new LinkedList<>();
         for(String featureId : ogcFilter.getFeatureIdFilters()) {
-            for(DataObject area : areas) {
+            for(Feature area : areas) {
                 if(area.getId().equals(featureId)) {
                     returnCollection.add(area);
                 }
@@ -50,21 +50,21 @@ public class AreaModel implements Model, BoundingBoxFilter {
     }
 
     @Override
-    public List<DataObject> getAll() {
+    public List<Feature> getAll() {
         return Collections.unmodifiableList(areas);
     }
 
-    public boolean removeAll(Collection<DataObject> areas) {
+    public boolean removeAll(Collection<Feature> areas) {
         return AreaModel.areas.removeAll(areas);
     }
 
     @Override
-    public boolean addAll(Collection<DataObject> dataObjects) {
+    public boolean addAll(Collection<Feature> dataObjects) {
         return areas.addAll(dataObjects);
     }
 
     @Override
-    public boolean add(DataObject newArea) {
+    public boolean add(Feature newArea) {
         return areas.add(newArea);
     }
 

@@ -1,13 +1,13 @@
-package de.turnertech.thw.cop.ows.model.unit;
+package de.turnertech.thw.cop.model.unit;
 
 import java.util.Optional;
 
-import de.turnertech.thw.cop.util.BoundingBox;
-import de.turnertech.thw.cop.util.DataObject;
+import de.turnertech.thw.cop.gml.BoundingBox;
+import de.turnertech.thw.cop.gml.Feature;
 import de.turnertech.thw.cop.util.OPTA;
 import de.turnertech.thw.cop.util.PositionProvider;
 
-public class Unit implements PositionProvider, DataObject {
+public class Unit implements PositionProvider, Feature {
     
     /**
      * See OPTA in THW-FuRnR.

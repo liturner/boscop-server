@@ -1,15 +1,15 @@
-package de.turnertech.thw.cop.ows.model.unit;
+package de.turnertech.thw.cop.model.unit;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.turnertech.thw.cop.gml.BoundingBox;
+import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.ows.api.Model;
 import de.turnertech.thw.cop.ows.filter.OgcFilter;
-import de.turnertech.thw.cop.util.BoundingBox;
 import de.turnertech.thw.cop.util.BoundingBoxFilter;
-import de.turnertech.thw.cop.util.DataObject;
-import de.turnertech.thw.cop.util.Model;
 
 public class UnitModel implements Model, BoundingBoxFilter {
     
@@ -17,16 +17,16 @@ public class UnitModel implements Model, BoundingBoxFilter {
 
     public static final String TYPENAME = "boscop:Unit";
 
-    private static final List<DataObject> units = new LinkedList<>();
+    private static final List<Feature> units = new LinkedList<>();
 
     private UnitModel() {
 
     }
 
     @Override
-    public List<DataObject> filter(BoundingBox boundingBox) {
-        List<DataObject> returnItems = new LinkedList<>();
-        for(DataObject unit : units) {
+    public List<Feature> filter(BoundingBox boundingBox) {
+        List<Feature> returnItems = new LinkedList<>();
+        for(Feature unit : units) {
             if(boundingBox.contains(unit)) {
                 returnItems.add(unit);
             }
@@ -35,10 +35,10 @@ public class UnitModel implements Model, BoundingBoxFilter {
     }
 
     @Override
-    public Collection<DataObject> filter(OgcFilter ogcFilter) {
-        List<DataObject> returnCollection = new LinkedList<>();
+    public Collection<Feature> filter(OgcFilter ogcFilter) {
+        List<Feature> returnCollection = new LinkedList<>();
         for(String featureId : ogcFilter.getFeatureIdFilters()) {
-            for(DataObject unit : units) {
+            for(Feature unit : units) {
                 if(unit.getId().equals(featureId)) {
                     returnCollection.add(unit);
                 }
@@ -48,21 +48,21 @@ public class UnitModel implements Model, BoundingBoxFilter {
     }
 
     @Override
-    public List<DataObject> getAll() {
+    public List<Feature> getAll() {
         return Collections.unmodifiableList(units);
     }
 
     @Override
-    public boolean addAll(Collection<DataObject> newUnits) {
+    public boolean addAll(Collection<Feature> newUnits) {
         return units.addAll(newUnits);
     }
 
-    public boolean removeAll(Collection<DataObject> units) {
+    public boolean removeAll(Collection<Feature> units) {
         return UnitModel.units.removeAll(units);
     }
 
     @Override
-    public boolean add(DataObject newUnit) {
+    public boolean add(Feature newUnit) {
         return units.add(newUnit);
     }
 }

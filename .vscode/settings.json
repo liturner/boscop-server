@@ -6,5 +6,23 @@
         "**/target": true
     },
     "java.configuration.updateBuildConfiguration": "automatic",
-    "maven.view": "hierarchical"
+    "maven.terminal.favorites": [
+        {
+            "command": "release:prepare",
+            "debug": false
+        },
+        {
+            "command": "release:perform",
+            "debug": false
+        },
+        {
+            "command": "dependency:resolve  -Dclassifier=javadoc",
+            "debug": false
+        },
+        {
+            "command": "dependency:resolve  -Dclassifier=sources",
+            "debug": false
+        }
+    ],
+    "maven.view": "hierarchical",
 }

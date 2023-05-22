@@ -4,9 +4,11 @@ import java.io.IOException;
 
 import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.Logging;
-import de.turnertech.thw.cop.ows.model.area.AreaModel;
-import de.turnertech.thw.cop.ows.model.hazard.HazardModel;
-import de.turnertech.thw.cop.ows.model.unit.UnitModel;
+import de.turnertech.thw.cop.model.area.AreaModel;
+import de.turnertech.thw.cop.model.hazard.HazardModel;
+import de.turnertech.thw.cop.model.unit.UnitModel;
+import de.turnertech.thw.cop.ows.parameter.WfsRequestParameter;
+import de.turnertech.thw.cop.ows.parameter.WfsRequestValue;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,15 +28,16 @@ public class WfsFilter implements Filter {
         final String wfsRequestString = WfsRequestParameter.findValue(httpRequest, WfsRequestParameter.REQUEST).orElse(WfsRequestParameter.NONE.toString());
         WfsRequestValue wfsRequestValue = WfsRequestValue.valueOfIgnoreCase(wfsRequestString);
 
-        if(wfsRequestValue == WfsRequestValue.NONE) {
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, ExceptionCode.OPERATION_NOT_SUPPORTED.toString());
-        } else if(wfsRequestValue == WfsRequestValue.GET_FEATURE) {
+        /*if(wfsRequestValue == WfsRequestValue.NONE) {
+            //httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, ExceptionCode.OPERATION_NOT_SUPPORTED.toString());
+        } else */if(wfsRequestValue == WfsRequestValue.GET_FEATURE) {
             doGetFeatureFilter(httpRequest, httpResponse, chain);
+            return;
         } else if(wfsRequestValue == WfsRequestValue.TRANSACTION) {
             doTransactionFilter(httpRequest, httpResponse, chain);
-        } else {
-            chain.doFilter(request, response);
+            return;
         }
+        chain.doFilter(request, response);
     }
 
     /**

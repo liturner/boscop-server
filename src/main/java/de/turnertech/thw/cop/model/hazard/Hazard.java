@@ -1,11 +1,11 @@
-package de.turnertech.thw.cop.ows.model.hazard;
+package de.turnertech.thw.cop.model.hazard;
 
 import java.util.UUID;
 
-import de.turnertech.thw.cop.util.BoundingBox;
-import de.turnertech.thw.cop.util.DataObject;
+import de.turnertech.thw.cop.gml.BoundingBox;
+import de.turnertech.thw.cop.gml.Feature;
 
-public class Hazard implements DataObject {
+public class Hazard implements Feature {
     
     private String id;
 

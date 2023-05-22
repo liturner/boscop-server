@@ -1,8 +1,11 @@
-package de.turnertech.thw.cop.util;
+package de.turnertech.thw.cop.gml;
 
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
+
+import de.turnertech.thw.cop.util.Coordinate;
+import de.turnertech.thw.cop.util.PositionProvider;
 
 public class BoundingBox {
 

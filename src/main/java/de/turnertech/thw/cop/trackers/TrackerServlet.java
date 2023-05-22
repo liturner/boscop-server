@@ -5,10 +5,10 @@ import java.io.PrintWriter;
 import java.util.Optional;
 
 import de.turnertech.thw.cop.Logging;
-import de.turnertech.thw.cop.ows.model.unit.Unit;
-import de.turnertech.thw.cop.ows.model.unit.UnitModel;
+import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.model.unit.Unit;
+import de.turnertech.thw.cop.model.unit.UnitModel;
 import de.turnertech.thw.cop.persistance.TrackerToken;
-import de.turnertech.thw.cop.util.DataObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public class TrackerServlet extends HttpServlet {
 
         PrintWriter writer = response.getWriter();
         writer.println("{\"trackers\":[");
-        for (DataObject tracker : UnitModel.INSTANCE.getAll()) {
+        for (Feature tracker : UnitModel.INSTANCE.getAll()) {
             Optional<String> trackerKey = TrackerToken.getKey(((Unit)tracker).getOpta());
             if(trackerKey.isEmpty()) {
                 Logging.LOG.severe("Tracker found with no key!");
@@ -67,7 +67,7 @@ public class TrackerServlet extends HttpServlet {
 
         Unit newTracker = null;
         boolean isNewTracker = true;
-        for(DataObject tracker : UnitModel.INSTANCE.getAll()) {
+        for(Feature tracker : UnitModel.INSTANCE.getAll()) {
             if(((Unit)tracker).getOpta().equals(opta)) {
                 newTracker = (Unit)tracker;
                 isNewTracker = false;

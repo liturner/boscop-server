@@ -1,0 +1,50 @@
+package de.turnertech.thw.cop.gml;
+
+import javax.xml.stream.XMLStreamWriter;
+
+import de.turnertech.thw.cop.Logging;
+
+/**
+ * gml:Polygon
+ */
+public class Polygon implements GmlElement {
+    
+    public static final String GML_NAME = "Polygon";
+
+    private LinearRing exterior;
+
+    public Polygon() {
+        this(new LinearRing());
+    }
+
+    public Polygon(LinearRing exterior) {
+        this.exterior = exterior;
+    }
+
+    public LinearRing getExterior() {
+        return exterior;
+    }
+
+    public void setExterior(LinearRing exterior) {
+        this.exterior = exterior;
+    }
+
+    @Override
+    public void writeGml(XMLStreamWriter out, String prefix, String localName, String namespaceURI) {
+        try {
+            writeGmlStartElement(out, prefix, localName, namespaceURI);
+            out.writeStartElement(GmlElement.PREFIX, "exterior", GmlElement.NAMESPACE);
+            exterior.writeGml(out);
+            out.writeEndElement();
+            out.writeEndElement();
+        } catch (Exception e) {
+            Logging.LOG.severe("Could not get GML for LinearRing");
+        }        
+    }
+
+    @Override
+    public String getGmlName() {
+        return GML_NAME;
+    }
+
+}

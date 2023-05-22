@@ -74,7 +74,9 @@ public class Main {
         ServletHolder tokenServletHolder = new ServletHolder(new TokenServlet());
         ServletHolder trackerServletHolder = new ServletHolder(new TrackerServlet());
         ServletHolder trackerSubServletHolder = new ServletHolder(new TrackerSubServlet());
+
         ServletHolder wfsServletHolder = new ServletHolder("WFS-Servlet", new WfsServlet());
+        wfsServletHolder.setInitParameter(WfsServlet.OWS_CONTEXT_FACTORY_KEY, "de.turnertech.thw.cop.BoscopOwsContextFactory");
 
         ServletHolder defaultServletHolder = new ServletHolder("default", DefaultServlet.class);
         defaultServletHolder.setInitParameter("dirAllowed","true");

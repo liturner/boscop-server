@@ -1,13 +1,13 @@
-package de.turnertech.thw.cop.ows.model.area;
+package de.turnertech.thw.cop.model.area;
 
 import java.util.List;
 import java.util.UUID;
 
-import de.turnertech.thw.cop.util.BoundingBox;
+import de.turnertech.thw.cop.gml.BoundingBox;
+import de.turnertech.thw.cop.gml.Feature;
 import de.turnertech.thw.cop.util.Coordinate;
-import de.turnertech.thw.cop.util.DataObject;
 
-public class Area implements DataObject {
+public class Area implements Feature {
     
     private String id;
 

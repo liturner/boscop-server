@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop.ows.model.area;
+package de.turnertech.thw.cop.model.area;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import de.turnertech.thw.cop.gml.Feature;
 import de.turnertech.thw.cop.util.Coordinate;
-import de.turnertech.thw.cop.util.DataObject;
 
 public class AreaDecoder {
     
@@ -15,9 +15,9 @@ public class AreaDecoder {
 
     }
 
-    public static List<DataObject> getAreas(Element root) {
+    public static List<Feature> getAreas(Element root) {
         NodeList areaElements = root.getElementsByTagName(AreaModel.NAME);
-        List<DataObject> returnList = new ArrayList<>(areaElements.getLength());
+        List<Feature> returnList = new ArrayList<>(areaElements.getLength());
 
         for(int i = 0; i < areaElements.getLength(); ++i) {
             Element areaElement = (Element)areaElements.item(i);

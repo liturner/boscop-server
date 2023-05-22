@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 import de.turnertech.thw.cop.Logging;
-import de.turnertech.thw.cop.ows.model.unit.Unit;
-import de.turnertech.thw.cop.ows.model.unit.UnitModel;
-import de.turnertech.thw.cop.util.DataObject;
+import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.model.unit.Unit;
+import de.turnertech.thw.cop.model.unit.UnitModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ public class TrackerSubServlet extends HttpServlet {
         }
 
         Unit existingTracker = null;
-        for(DataObject tracker : UnitModel.INSTANCE.getAll()) {
+        for(Feature tracker : UnitModel.INSTANCE.getAll()) {
             if(((Unit)tracker).getOpta().equals(opta)) {
                 existingTracker = (Unit)tracker;
                 break;

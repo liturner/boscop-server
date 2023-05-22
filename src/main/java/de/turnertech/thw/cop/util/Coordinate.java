@@ -1,5 +1,9 @@
 package de.turnertech.thw.cop.util;
 
+/**
+ * @deprecated Use gml Classes
+ */
+@Deprecated
 public class Coordinate implements PositionProvider {
 
     private double latitude;

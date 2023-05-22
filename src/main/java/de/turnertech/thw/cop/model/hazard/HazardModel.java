@@ -1,15 +1,15 @@
-package de.turnertech.thw.cop.ows.model.hazard;
+package de.turnertech.thw.cop.model.hazard;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.turnertech.thw.cop.gml.BoundingBox;
+import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.ows.api.Model;
 import de.turnertech.thw.cop.ows.filter.OgcFilter;
-import de.turnertech.thw.cop.util.BoundingBox;
 import de.turnertech.thw.cop.util.BoundingBoxFilter;
-import de.turnertech.thw.cop.util.DataObject;
-import de.turnertech.thw.cop.util.Model;
 
 public class HazardModel implements Model, BoundingBoxFilter {
     
@@ -19,16 +19,16 @@ public class HazardModel implements Model, BoundingBoxFilter {
 
     public static final String TYPENAME = "boscop:" + NAME;
 
-    private static final List<DataObject> hazards = new LinkedList<>();
+    private static final List<Feature> hazards = new LinkedList<>();
 
     private HazardModel() {
 
     }
 
     @Override
-    public List<DataObject> filter(BoundingBox boundingBox) {
-        List<DataObject> returnItems = new LinkedList<>();
-        for(DataObject hazard : hazards) {
+    public List<Feature> filter(BoundingBox boundingBox) {
+        List<Feature> returnItems = new LinkedList<>();
+        for(Feature hazard : hazards) {
             if(boundingBox.contains(hazard)) {
                 returnItems.add(hazard);
             }
@@ -37,10 +37,10 @@ public class HazardModel implements Model, BoundingBoxFilter {
     }
 
     @Override
-    public Collection<DataObject> filter(OgcFilter ogcFilter) {
-        List<DataObject> returnCollection = new LinkedList<>();
+    public Collection<Feature> filter(OgcFilter ogcFilter) {
+        List<Feature> returnCollection = new LinkedList<>();
         for(String featureId : ogcFilter.getFeatureIdFilters()) {
-            for(DataObject hazard : hazards) {
+            for(Feature hazard : hazards) {
                 if(hazard.getId().equals(featureId)) {
                     returnCollection.add(hazard);
                 }
@@ -50,22 +50,22 @@ public class HazardModel implements Model, BoundingBoxFilter {
     }
 
     @Override
-    public List<DataObject> getAll() {
+    public List<Feature> getAll() {
         return Collections.unmodifiableList(hazards);
     }
 
     @Override
-    public boolean removeAll(Collection<DataObject> hazards) {
+    public boolean removeAll(Collection<Feature> hazards) {
         return HazardModel.hazards.removeAll(hazards);
     }
 
     @Override
-    public boolean addAll(Collection<DataObject> newHazards) {
+    public boolean addAll(Collection<Feature> newHazards) {
         return hazards.addAll(newHazards);
     }
 
     @Override
-    public boolean add(DataObject newHazard) {
+    public boolean add(Feature newHazard) {
         return hazards.add(newHazard);
     }
 }

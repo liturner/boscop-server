@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop.ows.model.hazard;
+package de.turnertech.thw.cop.model.hazard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import de.turnertech.thw.cop.util.DataObject;
+import de.turnertech.thw.cop.gml.Feature;
 
 public class HazardDecoder {
     
@@ -14,9 +14,9 @@ public class HazardDecoder {
 
     }
 
-    public static List<DataObject> getHazards(Element root) {
+    public static List<Feature> getHazards(Element root) {
         NodeList hazardElements = root.getElementsByTagName(HazardModel.NAME);
-        List<DataObject> returnList = new ArrayList<>(hazardElements.getLength());
+        List<Feature> returnList = new ArrayList<>(hazardElements.getLength());
 
         for(int i = 0; i < hazardElements.getLength(); ++i) {
             Element hazardElement = (Element)hazardElements.item(i);

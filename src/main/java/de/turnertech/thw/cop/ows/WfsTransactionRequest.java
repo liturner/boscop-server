@@ -13,13 +13,15 @@ import org.w3c.dom.NodeList;
 
 import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.Logging;
+import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.model.area.AreaDecoder;
+import de.turnertech.thw.cop.model.area.AreaModel;
+import de.turnertech.thw.cop.model.hazard.HazardDecoder;
+import de.turnertech.thw.cop.model.hazard.HazardModel;
 import de.turnertech.thw.cop.ows.filter.OgcFilter;
 import de.turnertech.thw.cop.ows.filter.OgcFilterDecoder;
-import de.turnertech.thw.cop.ows.model.area.AreaDecoder;
-import de.turnertech.thw.cop.ows.model.area.AreaModel;
-import de.turnertech.thw.cop.ows.model.hazard.HazardDecoder;
-import de.turnertech.thw.cop.ows.model.hazard.HazardModel;
-import de.turnertech.thw.cop.util.DataObject;
+import de.turnertech.thw.cop.ows.parameter.ResultType;
+import de.turnertech.thw.cop.ows.parameter.WfsRequestParameter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -84,10 +86,10 @@ public class WfsTransactionRequest {
 
                 OgcFilter ogcFilter = OgcFilterDecoder.getFilter(filter);
                 if(HazardModel.TYPENAME.equals(typeName)) {
-                    Collection<DataObject> hazards = HazardModel.INSTANCE.filter(ogcFilter);
+                    Collection<Feature> hazards = HazardModel.INSTANCE.filter(ogcFilter);
                     HazardModel.INSTANCE.removeAll(hazards);
                 } else if (AreaModel.TYPENAME.equals(typeName)) {
-                    Collection<DataObject> areas = AreaModel.INSTANCE.filter(ogcFilter);
+                    Collection<Feature> areas = AreaModel.INSTANCE.filter(ogcFilter);
                     AreaModel.INSTANCE.removeAll(areas);
                 }
 

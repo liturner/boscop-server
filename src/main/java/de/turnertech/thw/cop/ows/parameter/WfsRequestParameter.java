@@ -1,4 +1,4 @@
-package de.turnertech.thw.cop.ows;
+package de.turnertech.thw.cop.ows.parameter;
 
 import java.util.Enumeration;
 import java.util.Optional;

@@ -5,6 +5,7 @@
  */
 module de.turnertech.thw.cop {
     exports de.turnertech.thw.cop;
+    exports de.turnertech.thw.cop.ows.api;
 
     requires java.xml;
     requires transitive java.logging;
