@@ -18,7 +18,9 @@ export class OptaStyle {
   static imageSrc(opta) {
     const imageSrcMap = {
       2110: 'tz/thw-ztrfu.png',
-      2200: 'tz/thw-b.png'
+      2200: 'tz/thw-b.png',
+      2151: 'tz/thw-gkw-1.png',
+      2434: 'tz/thw-mlw-4.png'
     };
 
     const id = opta.substring(13, 17);

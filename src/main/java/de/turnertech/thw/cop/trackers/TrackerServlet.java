@@ -59,7 +59,7 @@ public class TrackerServlet extends HttpServlet {
             out.writeAttribute("method", "post");
                 out.writeStartElement("label");
                     out.writeAttribute("for", "fopta");
-                    out.writeCharacters("OPTA: (e.g. BUTHWL  ONEB 2110)");
+                    out.writeCharacters("OPTA: (e.g. BUTHWND ONEB 2110)");
                 out.writeEndElement();
                 out.writeEmptyElement("br");
 
