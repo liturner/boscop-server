@@ -146,6 +146,15 @@ public class WfsCapabilities {
         this.keywords = keywords;
     }
 
+    public FeatureType getFeatureType(String namespace, String name) {
+        for(FeatureType featureType : featureTypes) {
+            if(featureType.getName().equals(name) && featureType.getNamespace().equals(namespace)) {
+                return featureType;
+            }
+        }
+        return null;
+    }
+
     /**
      * @return the featureTypes
      */

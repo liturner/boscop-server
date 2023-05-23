@@ -15,41 +15,25 @@ import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.model.area.AreaDecoder;
 import de.turnertech.thw.cop.model.area.AreaModel;
 import de.turnertech.thw.cop.model.hazard.HazardDecoder;
 import de.turnertech.thw.cop.model.hazard.HazardModel;
+import de.turnertech.thw.cop.ows.api.Model;
+import de.turnertech.thw.cop.ows.api.OwsContext;
+import de.turnertech.thw.cop.ows.api.OwsRequestContext;
 import de.turnertech.thw.cop.ows.filter.OgcFilter;
 import de.turnertech.thw.cop.ows.filter.OgcFilterDecoder;
-import de.turnertech.thw.cop.ows.parameter.ResultType;
-import de.turnertech.thw.cop.ows.parameter.WfsRequestParameter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class WfsTransactionRequest {
+public class WfsTransactionRequest implements RequestHandler  {
     
-    private WfsTransactionRequest() {
-        
-    }
-
-    public static void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        final String resultTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.RESULTTYPE).orElse(ResultType.RESULTS.toString());
-        final ResultType resultType = ResultType.valueOfIgnoreCase(resultTypeString);
-        
-        response.setStatus(200);
+    @Override
+    public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {       
         response.setContentType(Constants.ContentTypes.XML);
-
-        /**
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        GmlDecoder decoder = new GmlDecoder();
-        try {
-            SAXParser saxParser = factory.newSAXParser();
-            saxParser.parse(request.getInputStream(), decoder);
-        } catch (Exception e) {
-            Logging.LOG.severe("Could not decode GML from Transaction");
-        }
-         */
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
@@ -89,6 +73,9 @@ public class WfsTransactionRequest {
                 String typeName = typeNameNode.getNodeValue();
 
                 OgcFilter ogcFilter = OgcFilterDecoder.getFilter(filter);
+
+
+    
                 if(HazardModel.TYPENAME.equals(typeName)) {
                     Collection<Feature> hazards = HazardModel.INSTANCE.filter(ogcFilter);
                     HazardModel.INSTANCE.removeAll(hazards);
@@ -106,6 +93,48 @@ public class WfsTransactionRequest {
                 if(insertEntry == null) {
                     Logging.LOG.severe("Something went wrong getting the Insert elements from a transaction");
                     continue;
+                }
+
+                NodeList individualFeatureEntries = insertEntry.getChildNodes();
+                for(int j = 0; j < individualFeatureEntries.getLength(); ++j) {
+                    Node featureEntry = individualFeatureEntries.item(j);
+                    if(featureEntry.getNodeType() == Node.ELEMENT_NODE) {
+                        String prefix = featureEntry.getPrefix();
+                        String namespaceUri = featureEntry.getNamespaceURI();
+                        String name = featureEntry.getNodeName();
+                        if(namespaceUri == null && prefix == null && name.contains(":")) {
+                            String[] parts = name.split(":", 2);
+                            prefix = parts[0];
+                            name = parts[1];
+                        }
+                        if(namespaceUri == null && prefix != null) {
+                            namespaceUri = document.lookupNamespaceURI(prefix);
+                        }
+                        if(namespaceUri == null && prefix != null) {
+                            namespaceUri = root.getAttribute("xmlns:" + prefix);
+                            namespaceUri = "".equals(namespaceUri) ? null : namespaceUri;
+                        }
+                        if(namespaceUri == null) {
+                            Node localXmlnsNode = featureEntry.getAttributes().getNamedItem("xmlns");
+                            namespaceUri = localXmlnsNode == null ? null : localXmlnsNode.getTextContent();
+                        }                        
+                        if(namespaceUri == null) {
+                            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), "xmlns", "No xmlns supplied for: " + featureEntry.getNodeName()));
+                            return;
+                        }
+
+                        Logging.LOG.severe(namespaceUri);
+                        Logging.LOG.severe(name);
+                        FeatureType featureType = owsContext.getWfsCapabilities().getFeatureType(namespaceUri, name);
+
+                        if(featureType == null) {
+                            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), "Insert", "Feature Type not supported: " + name));
+                            return;
+                        }
+
+                        Model model = owsContext.getModelProvider().getModel(featureType);
+                        
+                    }
                 }
 
                 AreaModel.INSTANCE.addAll(AreaDecoder.getAreas(root));

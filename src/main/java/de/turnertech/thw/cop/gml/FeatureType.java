@@ -13,6 +13,8 @@ public class FeatureType {
 
     private String title;
 
+    
+
     public FeatureType(String namespace, String name) {
         this.namespace = namespace;
         this.name = name;

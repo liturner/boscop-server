@@ -2,6 +2,7 @@ package de.turnertech.thw.cop.ows.parameter;
 
 public enum WfsVersionValue {
 
+    V2_0_0("2.0.0"),
     V2_0_2("2.0.2");
 
     private final String parameter;

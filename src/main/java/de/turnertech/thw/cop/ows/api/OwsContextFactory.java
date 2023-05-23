@@ -34,6 +34,8 @@ public abstract class OwsContextFactory {
 
     public abstract ModelProvider createModelProvider();
 
+    //public abstract ModelProvider createDecoderProvider();
+
     public abstract WfsCapabilities getWfsCapabilities();
 
     public Map<String, String> getNamespacePrefixMap() {

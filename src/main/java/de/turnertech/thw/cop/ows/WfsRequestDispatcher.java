@@ -19,11 +19,13 @@ class WfsRequestDispatcher implements RequestHandler {
     private final WfsDescribeFeatureTypeRequest describeFeatureTypeRequestHandler;
     private final WfsGetCapabilitiesRequest getCapabilitiesRequestHandler;
     private final WfsGetFeatureRequest getFeatureRequestHandler;
+    private final WfsTransactionRequest transactionRequestHandler;
 
     public WfsRequestDispatcher() {
         describeFeatureTypeRequestHandler = new WfsDescribeFeatureTypeRequest();
         getCapabilitiesRequestHandler = new WfsGetCapabilitiesRequest();
         getFeatureRequestHandler = new WfsGetFeatureRequest();
+        transactionRequestHandler = new WfsTransactionRequest();
     }
 
     @Override
@@ -63,7 +65,7 @@ class WfsRequestDispatcher implements RequestHandler {
         }
 
         if(WfsRequestValue.TRANSACTION.equals(wfsRequestType)) {
-            WfsTransactionRequest.doPost(request, response);
+            transactionRequestHandler.handleRequest(request, response, owsContext, requestContext);
             return;
         }
 
