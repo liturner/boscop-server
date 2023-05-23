@@ -25,6 +25,29 @@ const copWfsSource = new ol.source.Vector({
   strategy: ol.loadingstrategy.bbox
 });
 
+copWfsSource.on("removefeature", function (e) {
+  console.log("areaSource - removing feature");
+  const node = formatWFS.writeTransaction(null, null, [e.feature], {
+    featureNS: 'urn:ns:de:turnertech:boscop',
+    featurePrefix: 'boscop',
+    featureType: 'Area',
+    srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326',
+    version: '2.0.0',
+    gmlOptions: {
+      featureNS: 'urn:ns:de:turnertech:boscop',
+      featureType: 'Area',
+      srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
+    }
+  });
+  const xs = new XMLSerializer();
+  const payload = xs.serializeToString(node);
+  console.log(payload);
+  fetch('/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=Transaction', {
+    method: "POST",
+    body: payload
+  });
+});
+
 const unitSource = new ol.source.Vector({
   format: new ol.format.GML32({
     srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
@@ -59,7 +82,6 @@ const hazardSource = new ol.source.Vector({
   strategy: ol.loadingstrategy.bbox
 });
 
-// TODO: Remove from WFS
 hazardSource.on("removefeature", function (e) {
   console.log("hazardSource - removing feature");
   const node = formatWFS.writeTransaction(null, null, [e.feature], {
@@ -130,6 +152,7 @@ function deleteSelected() {
   selected.forEach((selectedElement) => {
     console.log("Removing: " + selectedElement.id_);
     hazardSource.removeFeature(hazardSource.getFeatureById(selectedElement.id_));
+    copWfsSource.removeFeature(copWfsSource.getFeatureById(selectedElement.id_));
   });
   selected = [];
 }

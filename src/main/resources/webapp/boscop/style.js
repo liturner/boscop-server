@@ -178,8 +178,33 @@ export class AreaStyle {
     return 'todo';
   }
 
+  static styleSelectedFunction(feature) {
+    console.log('Styling Selected Area');
+    return new ol.style.Style({
+      //Width of the stroke
+      stroke: new ol.style.Stroke({
+        color: [255, 0, 255, 1],
+        width: 3
+      }),
+      //Fill polygon with canvas pattern
+      fill: new ol.style.Fill({
+        // color: [255, 0, 51, 0.1]
+        color: pattern
+      })
+    })
+  }
+
   static styleFunction(feature) {
-    console.log('Styling Area');
+
+    for(let selectedFeature of selectedThings) {
+      console.log(selectedFeature.getId())
+      console.log(feature.getId())
+      if(selectedFeature.getId() === feature.getId()) {
+        return AreaStyle.styleSelectedFunction(feature);
+      }
+    }
+
+    console.log('Styling Regular Area');
     return new ol.style.Style({
       //Width of the stroke
       stroke: new ol.style.Stroke({
