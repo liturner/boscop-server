@@ -37,7 +37,7 @@ public class TimePeriod implements GmlElement {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
             out.writeStartElement(GmlElement.NAMESPACE, "beginPosition");

@@ -12,15 +12,15 @@ public interface GmlElement {
     public static final String NAMESPACE = "http://www.opengis.net/gml/3.2";
 
     public default String toGml() {
-        return toGml(getGmlName(), NAMESPACE);
+        return toGml(getGmlName(), NAMESPACE, SpatialReferenceSystemRepresentation.EPSG4327_URI);
     }
 
-    public default String toGml(String localName, String namespaceURI) {
+    public default String toGml(String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         StringWriter outStream = new StringWriter();
 
         try {
             XMLStreamWriter out = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream);
-            writeGml(out, localName, namespaceURI);
+            writeGml(out, localName, namespaceURI, srs);
             out.close();
         } catch (Exception e) {
             return null;
@@ -30,10 +30,10 @@ public interface GmlElement {
     }
 
     public default void writeGml(XMLStreamWriter out) {
-        writeGml(out, getGmlName(), NAMESPACE);
+        writeGml(out, getGmlName(), NAMESPACE, SpatialReferenceSystemRepresentation.EPSG4327_URI);
     }
 
-    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI);
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs);
 
     public String getGmlName();
 

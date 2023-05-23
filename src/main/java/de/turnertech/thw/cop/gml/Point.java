@@ -38,7 +38,7 @@ public class Point implements GmlElement {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
             out.writeAttribute(GmlElement.NAMESPACE, "srsName", SpatialReferenceSystem.EPSG4327.getUri());

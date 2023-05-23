@@ -11,6 +11,7 @@ import de.turnertech.thw.cop.gml.Feature;
 import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.gml.Point;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
+import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.ows.api.OwsContext;
 
 public class Hazard implements Feature {
@@ -90,7 +91,7 @@ public class Hazard implements Feature {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
             out.writeAttribute(OwsContext.GML_URI, "id", getId());

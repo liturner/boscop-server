@@ -70,12 +70,20 @@ public class WfsTransactionRequest implements RequestHandler  {
                     response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), "typeName", "Could not locate the typeName element for a Filter operation"));
                     return;
                 }
+                String prefix = null;
+                String namespaceUri = null;
                 String typeName = typeNameNode.getNodeValue();
+
+                // TODO: Add a helper to be certain about the NS
+                if(typeName.contains(":")) {
+                    String[] parts = typeName.split(":", 2);
+                    prefix = parts[0];
+                    typeName = parts[1];
+                }
+                namespaceUri = root.lookupNamespaceURI(prefix);
 
                 OgcFilter ogcFilter = OgcFilterDecoder.getFilter(filter);
 
-
-    
                 if(HazardModel.TYPENAME.equals(typeName)) {
                     Collection<Feature> hazards = HazardModel.INSTANCE.filter(ogcFilter);
                     HazardModel.INSTANCE.removeAll(hazards);

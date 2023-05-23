@@ -47,6 +47,32 @@ public class BoundingBox implements GmlElement {
         return new BoundingBox(other.south, other.west, other.north, other.east);
     }
 
+    public static BoundingBox from(DirectPositionList posList) {
+        double maxSouth = Double.MAX_VALUE;
+        double maxWest = Double.MAX_VALUE;
+        double maxNorth = Double.MIN_VALUE;
+        double maxEast = Double.MIN_VALUE;
+
+        for(DirectPosition position : posList) {
+            if(position.getY() > maxNorth) maxNorth = position.getY();
+            if(position.getY() < maxSouth) maxSouth = position.getY();
+            if(position.getX() > maxEast) maxEast = position.getX();
+            if(position.getX() < maxWest) maxWest = position.getX();
+        }
+
+        // Catch BBOX with a size of 0 (causes errors in many clients, happens with only 1 point)
+        if(maxSouth == maxNorth) {
+            maxNorth += 0.00001;
+            maxSouth -= 0.00001;
+        }
+        if(maxEast == maxWest) {
+            maxEast += 0.00001;
+            maxWest -= 0.00001;
+        }
+
+        return new BoundingBox(maxSouth, maxWest, maxNorth, maxEast);
+    }
+
     public static BoundingBox from(PositionProvider... positions) {
         return from(Arrays.asList(positions));
     }
@@ -126,7 +152,7 @@ public class BoundingBox implements GmlElement {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
                 out.writeStartElement(GmlElement.NAMESPACE, "Envelope");

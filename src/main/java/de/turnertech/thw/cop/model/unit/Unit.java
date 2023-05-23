@@ -10,6 +10,7 @@ import de.turnertech.thw.cop.gml.BoundingBox;
 import de.turnertech.thw.cop.gml.Feature;
 import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
+import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.util.OPTA;
 import de.turnertech.thw.cop.util.PositionProvider;
 
@@ -106,7 +107,7 @@ public class Unit implements PositionProvider, Feature {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
             

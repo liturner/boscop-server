@@ -6,8 +6,11 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import de.turnertech.thw.cop.gml.DirectPosition;
+import de.turnertech.thw.cop.gml.DirectPositionList;
 import de.turnertech.thw.cop.gml.Feature;
-import de.turnertech.thw.cop.util.Coordinate;
+import de.turnertech.thw.cop.gml.LinearRing;
+import de.turnertech.thw.cop.gml.Polygon;
 
 public class AreaDecoder {
     
@@ -29,12 +32,13 @@ public class AreaDecoder {
             String posListString = posListElements.item(0).getTextContent();
 
             String[] coordValues = posListString.split(" ");
-            List<Coordinate> coordsOut = new ArrayList<>(coordValues.length / 2);
+            
+            DirectPositionList coordsOut = new DirectPositionList(coordValues.length / 2);
             for(int j = 0; j < coordValues.length; j += 2) {
-                Coordinate coord = new Coordinate(Double.parseDouble(coordValues[j]), Double.parseDouble(coordValues[j+1]));
+                DirectPosition coord = new DirectPosition(Double.parseDouble(coordValues[j+1]), Double.parseDouble(coordValues[j]));
                 coordsOut.add(coord);
             }
-            areaOut.setGeometry(coordsOut);
+            areaOut.setGeometry(new Polygon(new LinearRing(coordsOut)));
 
             // Get areaType
             NodeList areaTypeElements = areaElement.getElementsByTagName("areaType");

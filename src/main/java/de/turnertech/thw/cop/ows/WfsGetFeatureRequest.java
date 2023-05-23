@@ -18,6 +18,7 @@ import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.gml.BoundingBox;
 import de.turnertech.thw.cop.gml.Feature;
 import de.turnertech.thw.cop.gml.FeatureType;
+import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.ows.api.Model;
 import de.turnertech.thw.cop.ows.api.OwsContext;
 import de.turnertech.thw.cop.ows.api.OwsRequestContext;
@@ -144,7 +145,7 @@ public class WfsGetFeatureRequest implements RequestHandler {
 
                 for (Feature feature : features) {
                     out.writeStartElement(OwsContext.GML_URI, "featureMember");
-                    feature.writeGml(out, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace());
+                    feature.writeGml(out, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace(), SpatialReferenceSystemRepresentation.EPSG4327_URI);
                     out.writeEndElement();
                 }
             }
