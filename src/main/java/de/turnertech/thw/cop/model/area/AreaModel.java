@@ -35,7 +35,7 @@ public class AreaModel implements Model {
     public List<Feature> filter(BoundingBox boundingBox) {
         List<Feature> returnItems = new LinkedList<>();
         for(Feature area : features) {
-            if(boundingBox.contains(area)) {
+            if(boundingBox.intersects(area.getBoundingBox())) {
                 returnItems.add(area);
             }
         }
@@ -83,7 +83,7 @@ public class AreaModel implements Model {
     public BoundingBox getBoundingBox() {
         BoundingBox boundingBox = null;
         if(features.size() > 0) {
-            boundingBox = BoundingBox.from(features.get(0));
+            boundingBox = BoundingBox.from(features.get(0).getBoundingBox());
         } 
         for (Feature feature : features) {
             boundingBox.expandToFit(feature.getBoundingBox());

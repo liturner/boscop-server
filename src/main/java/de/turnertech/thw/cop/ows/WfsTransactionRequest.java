@@ -141,7 +141,6 @@ public class WfsTransactionRequest implements RequestHandler  {
                         }
 
                         Model model = owsContext.getModelProvider().getModel(featureType);
-                        
                     }
                 }
 

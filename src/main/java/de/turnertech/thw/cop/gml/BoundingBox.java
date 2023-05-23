@@ -46,6 +46,14 @@ public class BoundingBox implements GmlElement {
         return !(latitude > north || latitude < south || longitute > east || longitute < west);
     }
 
+    public boolean intersects(BoundingBox other) {
+        if(this.north < other.south) return false;
+        if(this.south > other.north) return false;
+        if(this.east < other.west) return false;
+        if(this.west > other.east) return false;
+        return true;
+    }
+
     public static BoundingBox from(BoundingBox other) {
         return new BoundingBox(other.south, other.west, other.north, other.east);
     }

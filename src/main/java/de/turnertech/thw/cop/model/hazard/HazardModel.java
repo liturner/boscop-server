@@ -34,7 +34,7 @@ public class HazardModel implements Model {
     public List<Feature> filter(BoundingBox boundingBox) {
         List<Feature> returnItems = new LinkedList<>();
         for(Feature hazard : features) {
-            if(boundingBox.contains(hazard)) {
+            if(boundingBox.intersects(hazard.getBoundingBox())) {
                 returnItems.add(hazard);
             }
         }
@@ -83,7 +83,7 @@ public class HazardModel implements Model {
     public BoundingBox getBoundingBox() {
         BoundingBox boundingBox = null;
         if(features.size() > 0) {
-            boundingBox = BoundingBox.from(features.get(0));
+            boundingBox = BoundingBox.from(features.get(0).getBoundingBox());
         } 
         for (Feature feature : features) {
             boundingBox.expandToFit(feature.getBoundingBox());

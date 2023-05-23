@@ -13,8 +13,9 @@ import de.turnertech.thw.cop.gml.Polygon;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.ows.api.OwsContext;
+import de.turnertech.thw.cop.util.PositionProvider;
 
-public class Area implements Feature {
+public class Area implements Feature, PositionProvider {
     
     public final String GML_NAME = "Feature";
 

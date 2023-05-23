@@ -13,8 +13,9 @@ import de.turnertech.thw.cop.gml.Point;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.ows.api.OwsContext;
+import de.turnertech.thw.cop.util.PositionProvider;
 
-public class Hazard implements Feature {
+public class Hazard implements Feature, PositionProvider {
     
     public final String GML_NAME = "Feature";
 
