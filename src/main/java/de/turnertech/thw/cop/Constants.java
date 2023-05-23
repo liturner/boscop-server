@@ -35,6 +35,7 @@ public class Constants {
 
     public class ContentTypes {
         public static final String XML = "application/xml; charset=utf-8";
+        public static final String HTML = "text/html; charset=utf-8";
     }
 
 }

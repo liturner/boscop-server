@@ -9,8 +9,10 @@ import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.gml.BoundingBox;
 import de.turnertech.thw.cop.gml.Feature;
 import de.turnertech.thw.cop.gml.FeatureType;
+import de.turnertech.thw.cop.gml.Point;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
+import de.turnertech.thw.cop.ows.api.OwsContext;
 import de.turnertech.thw.cop.util.OPTA;
 import de.turnertech.thw.cop.util.PositionProvider;
 
@@ -27,9 +29,7 @@ public class Unit implements PositionProvider, Feature {
      */
     private String opta;
 
-    private Double latitude;
-
-    private Double longitude;
+    private Point geometry;
 
     static {
         FEATURE_TYPE = new FeatureType(Constants.Model.NAMESPACE, "Unit");
@@ -38,8 +38,7 @@ public class Unit implements PositionProvider, Feature {
 
     public Unit() {
         opta = "";
-        latitude = 0.0;
-        longitude = 0.0;
+        geometry = new Point();
     }
 
     @Override
@@ -56,21 +55,21 @@ public class Unit implements PositionProvider, Feature {
     }
 
     public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+        this.geometry.setY(latitude);
     }
 
     @Override
     public double getLatitude() {
-        return this.latitude;
+        return this.geometry.getY();
     }
 
     public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+        this.geometry.setX(longitude);
     }
 
     @Override
     public double getLongitude() {
-        return this.longitude;
+        return this.geometry.getX();
     }
 
     @Override
@@ -110,8 +109,15 @@ public class Unit implements PositionProvider, Feature {
     public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
+            out.writeAttribute(OwsContext.GML_URI, "id", getId());
             
+            out.writeStartElement(FEATURE_TYPE.getNamespace(), "opta");
+            out.writeCharacters(getOpta());
+            out.writeEndElement();
 
+            out.writeStartElement(FEATURE_TYPE.getNamespace(), "geometry");
+            geometry.writeGml(out);
+            out.writeEndElement();
 
             out.writeEndElement();
         } catch (Exception e) {

@@ -1,7 +1,6 @@
 package de.turnertech.thw.cop.persistance;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -45,7 +44,8 @@ public class TrackerToken {
     public static Optional<String> generateKey(final String opta) {
         try {
             final SecretKey secretKey = KeyGenerator.getInstance("AES").generateKey();
-            final String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+            //final String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+            final String encodedKey = "qwe";
             trackerTokenPairs.put(opta, encodedKey);
             return Optional.of(encodedKey);
         } catch (NoSuchAlgorithmException e) {

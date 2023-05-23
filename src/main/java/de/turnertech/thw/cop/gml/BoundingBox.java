@@ -1,7 +1,10 @@
 package de.turnertech.thw.cop.gml;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.stream.XMLStreamWriter;
 
@@ -48,10 +51,10 @@ public class BoundingBox implements GmlElement {
     }
 
     public static BoundingBox from(DirectPositionList posList) {
-        double maxSouth = Double.MAX_VALUE;
-        double maxWest = Double.MAX_VALUE;
-        double maxNorth = Double.MIN_VALUE;
-        double maxEast = Double.MIN_VALUE;
+        double maxSouth = Double.POSITIVE_INFINITY;
+        double maxWest = Double.POSITIVE_INFINITY;
+        double maxNorth = Double.NEGATIVE_INFINITY;
+        double maxEast = Double.NEGATIVE_INFINITY;
 
         for(DirectPosition position : posList) {
             if(position.getY() > maxNorth) maxNorth = position.getY();
@@ -78,10 +81,10 @@ public class BoundingBox implements GmlElement {
     }
 
     public static BoundingBox from(List<? extends PositionProvider> positions) {
-        double maxSouth = Double.MAX_VALUE;
-        double maxWest = Double.MAX_VALUE;
-        double maxNorth = Double.MIN_VALUE;
-        double maxEast = Double.MIN_VALUE;
+        double maxSouth = Double.POSITIVE_INFINITY;
+        double maxWest = Double.POSITIVE_INFINITY;
+        double maxNorth = Double.NEGATIVE_INFINITY;
+        double maxEast = Double.NEGATIVE_INFINITY;
 
         for(PositionProvider position : positions) {
             if(position.getLatitude() > maxNorth) maxNorth = position.getLatitude();
@@ -92,12 +95,12 @@ public class BoundingBox implements GmlElement {
 
         // Catch BBOX with a size of 0 (causes errors in many clients, happens with only 1 point)
         if(maxSouth == maxNorth) {
-            maxNorth += 0.0001;
-            maxSouth -= 0.0001;
+            maxNorth += 0.00001;
+            maxSouth -= 0.00001;
         }
         if(maxEast == maxWest) {
-            maxEast += 0.0001;
-            maxWest -= 0.0001;
+            maxEast += 0.00001;
+            maxWest -= 0.00001;
         }
 
         return new BoundingBox(maxSouth, maxWest, maxNorth, maxEast);
@@ -153,15 +156,18 @@ public class BoundingBox implements GmlElement {
 
     @Override
     public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
+        DecimalFormat decimalFormat = new DecimalFormat("0.", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        decimalFormat.setMaximumFractionDigits(8);
+
         try {
             writeGmlStartElement(out, localName, namespaceURI);
                 out.writeStartElement(GmlElement.NAMESPACE, "Envelope");
                 out.writeAttribute(GmlElement.NAMESPACE, "srsName", SpatialReferenceSystem.EPSG4327.getUri());
                     out.writeStartElement(GmlElement.NAMESPACE, "lowerCorner");
-                        out.writeCharacters(Double.toString(south) + " " + Double.toString(west));
+                        out.writeCharacters(decimalFormat.format(south) + " " + decimalFormat.format(west));
                     out.writeEndElement();
                     out.writeStartElement(GmlElement.NAMESPACE, "upperCorner");
-                        out.writeCharacters(Double.toString(north) + " " + Double.toString(east));
+                        out.writeCharacters(decimalFormat.format(north) + " " + decimalFormat.format(east));
                     out.writeEndElement();
                 out.writeEndElement();
             out.writeEndElement();
