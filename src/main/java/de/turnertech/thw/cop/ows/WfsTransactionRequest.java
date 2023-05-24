@@ -16,10 +16,9 @@ import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.gml.FeatureDecoder;
 import de.turnertech.thw.cop.gml.FeatureType;
+import de.turnertech.thw.cop.gml.GmlDecoderContext;
 import de.turnertech.thw.cop.gml.IFeature;
-import de.turnertech.thw.cop.model.area.AreaDecoder;
 import de.turnertech.thw.cop.model.area.AreaModel;
-import de.turnertech.thw.cop.model.hazard.HazardDecoder;
 import de.turnertech.thw.cop.model.hazard.HazardModel;
 import de.turnertech.thw.cop.ows.api.Model;
 import de.turnertech.thw.cop.ows.api.OwsContext;
@@ -142,13 +141,13 @@ public class WfsTransactionRequest implements RequestHandler  {
                         }
 
                         Model model = owsContext.getModelProvider().getModel(featureType);
-
-                        FeatureDecoder.decode(featureEntry, owsContext, featureType);
+                        IFeature feature = FeatureDecoder.decode(featureEntry, new GmlDecoderContext(), featureType);
+                        model.add(feature);
                     }
                 }
 
-                AreaModel.INSTANCE.addAll(AreaDecoder.getAreas(root));
-                HazardModel.INSTANCE.addAll(HazardDecoder.getHazards(root));
+                //AreaModel.INSTANCE.addAll(AreaDecoder.getAreas(root));
+                //HazardModel.INSTANCE.addAll(HazardDecoder.getHazards(root));
             }
 
             

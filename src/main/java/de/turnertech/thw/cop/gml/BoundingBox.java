@@ -24,6 +24,14 @@ public class BoundingBox implements GmlElement {
     
     protected double east;
 
+    // Use with care! This is an inverted and unusable box!
+    public BoundingBox() {
+        this.south = Double.POSITIVE_INFINITY;
+        this.west = Double.POSITIVE_INFINITY;
+        this.north = Double.NEGATIVE_INFINITY;
+        this.east = Double.NEGATIVE_INFINITY;
+    }
+
     public BoundingBox(double south, double west, double north, double east) {
         this.south = south;
         this.west = west;
@@ -124,6 +132,7 @@ public class BoundingBox implements GmlElement {
     }
 
     public void expandToFit(BoundingBox other) {
+        if(other == null) return;
         if(other.north > north) north = other.north;
         if(other.south < south) south = other.south;
         if(other.east > east) east = other.east;

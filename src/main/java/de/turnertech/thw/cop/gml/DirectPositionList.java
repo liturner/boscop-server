@@ -10,7 +10,7 @@ import de.turnertech.thw.cop.Logging;
 /**
  * gml:posList
  */
-public class DirectPositionList extends ArrayList<DirectPosition> implements GmlElement {
+public class DirectPositionList extends ArrayList<DirectPosition> implements GmlElement, BoundingBoxProvider {
     
     private SpatialReferenceSystem srs;
 
@@ -84,6 +84,11 @@ public class DirectPositionList extends ArrayList<DirectPosition> implements Gml
             return false;
         DirectPositionList other = (DirectPositionList) obj;
         return srs == other.srs;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return BoundingBox.from(this);
     }
 
 }

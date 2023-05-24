@@ -1,6 +1,8 @@
 package de.turnertech.thw.cop.gml;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FeatureType {
@@ -68,6 +70,23 @@ public class FeatureType {
 
     public Feature createInstance() {
         return new Feature(this);
+    }
+
+    public FeatureProperty getIdProperty() {
+        for(FeatureProperty property : featureTypeProperties.values()) {
+            if(property.getPropertyType() == FeaturePropertyType.ID) return property;
+        }
+        return null;
+    }
+
+    public List<FeatureProperty> getBoundingBoxProperties() {
+        List<FeatureProperty> returnList = new ArrayList<>(1);
+        for(FeatureProperty property : featureTypeProperties.values()) {
+            if(property.getPropertyType().isBoundingBoxProvider()) {
+                returnList.add(property);
+            }
+        }
+        return returnList;
     }
 
     public FeatureProperty getProperty(String propertyName) {

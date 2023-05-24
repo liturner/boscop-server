@@ -1,6 +1,4 @@
-package de.turnertech.thw.cop.ows.api;
-
-import de.turnertech.thw.cop.gml.BoundingBox;
+package de.turnertech.thw.cop.gml;
 
 public interface BoundingBoxProvider {
     

@@ -11,7 +11,7 @@ import de.turnertech.thw.cop.Logging;
 /**
  * <p>gml:LinearRing</p>
  */
-public class LinearRing implements GmlElement, Iterable<DirectPosition> {
+public class LinearRing implements GmlElement, Iterable<DirectPosition>, BoundingBoxProvider {
     
     public static final String GML_NAME = "LinearRing";
 
@@ -76,6 +76,11 @@ public class LinearRing implements GmlElement, Iterable<DirectPosition> {
     @Override
     public Spliterator<DirectPosition> spliterator() {
         return posList.spliterator();
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return posList.getBoundingBox();
     }
 
 }

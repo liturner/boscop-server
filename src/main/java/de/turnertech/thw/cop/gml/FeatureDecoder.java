@@ -3,11 +3,9 @@ package de.turnertech.thw.cop.gml;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import de.turnertech.thw.cop.ows.api.OwsContext;
-
 public class FeatureDecoder {
 
-    public static IFeature decode(Node xmlRootNode, OwsContext owsContext, FeatureType featureType) {
+    public static IFeature decode(Node xmlRootNode, GmlDecoderContext gmlContext, FeatureType featureType) {
         Feature returnFeature = featureType.createInstance();
 
         NodeList propertyNodes = xmlRootNode.getChildNodes();
@@ -29,7 +27,9 @@ public class FeatureDecoder {
             
             FeatureProperty featureProperty = featureType.getProperty(propertyName);
             if(featureProperty.getPropertyType() == FeaturePropertyType.TEXT) {
-                returnFeature.setPropertyValue(propertyName, propertyNode.getNodeValue());
+                returnFeature.setPropertyValue(propertyName, propertyNode.getTextContent());
+            } else if(featureProperty.getPropertyType() == FeaturePropertyType.POLYGON) {
+                returnFeature.setPropertyValue(propertyName, new PolygonDecoder().decode(propertyNode.getFirstChild(), gmlContext));
             }
 
         }

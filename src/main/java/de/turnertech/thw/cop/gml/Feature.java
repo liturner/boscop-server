@@ -1,9 +1,15 @@
 package de.turnertech.thw.cop.gml;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 import javax.xml.stream.XMLStreamWriter;
+
+import de.turnertech.thw.cop.Logging;
+import de.turnertech.thw.cop.ows.api.OwsContext;
 
 public class Feature implements IFeature {
 
@@ -30,33 +36,66 @@ public class Feature implements IFeature {
 
     @Override
     public BoundingBox getBoundingBox() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBoundingBox'");
+        List<FeatureProperty> bboxProperties = featureType.getBoundingBoxProperties();
+        if(bboxProperties.size() == 0) {
+            return null;
+        }
+        BoundingBox returnBox = new BoundingBox();
+        for (FeatureProperty property : bboxProperties) {
+            BoundingBoxProvider bboxProvider =  (BoundingBoxProvider)fields.get(property.getName());
+            returnBox.expandToFit(bboxProvider.getBoundingBox());
+        }
+        return returnBox;
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI,
-            SpatialReferenceSystemRepresentation srs) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'writeGml'");
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
+        try {
+            writeGmlStartElement(out, localName, namespaceURI);
+
+            String id = getId();
+            if(id != null && !"".equals(id)) {
+                out.writeAttribute(OwsContext.GML_URI, "id", id);
+            }
+
+            for (Entry<String, Object> field : fields.entrySet()) {
+                FeatureProperty property = featureType.getProperty(field.getKey());
+                FeaturePropertyType propertyType = property.getPropertyType();
+
+                if(propertyType == FeaturePropertyType.TEXT) {
+                    out.writeStartElement(namespaceURI, field.getKey());
+                    out.writeCharacters(field.getValue().toString());
+                    out.writeEndElement();
+                } else if(propertyType == FeaturePropertyType.POLYGON) {
+                    out.writeStartElement(namespaceURI, field.getKey());
+                    ((Polygon)field.getValue()).writeGml(out);
+                    out.writeEndElement();
+                } else {
+                    out.writeEmptyElement(namespaceURI, field.getKey());
+                }
+            }
+
+            out.writeEndElement();
+        } catch (Exception e) {
+            Logging.LOG.severe("Could not get GML for Feature");
+        }
     }
 
     @Override
     public String getGmlName() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getGmlName'");
+        return featureType.getName();
     }
 
     @Override
     public String getId() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getId'");
+        FeatureProperty idProperty = featureType.getIdProperty();
+        if(idProperty == null) return null;
+        return Objects.toString(getPropertyValue(idProperty.getName()), null);
     }
 
     @Override
     public FeatureType getFeatureType() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFeatureType'");
+        return featureType;
     }
     
 }

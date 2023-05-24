@@ -7,7 +7,7 @@ import de.turnertech.thw.cop.Logging;
 /**
  * gml:Polygon
  */
-public class Polygon implements GmlElement {
+public class Polygon implements GmlElement, BoundingBoxProvider {
     
     public static final String GML_NAME = "Polygon";
 
@@ -46,6 +46,11 @@ public class Polygon implements GmlElement {
     @Override
     public String getGmlName() {
         return GML_NAME;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return exterior.getBoundingBox();
     }
 
 }

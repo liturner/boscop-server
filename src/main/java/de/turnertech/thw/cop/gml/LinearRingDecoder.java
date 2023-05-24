@@ -3,11 +3,11 @@ package de.turnertech.thw.cop.gml;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class PolygonDecoder implements GmlDecoder<Polygon> {
+public class LinearRingDecoder implements GmlDecoder<LinearRing> {
 
     @Override
-    public Polygon decode(Node root, GmlDecoderContext context) {
-        Polygon returnPolygon = new Polygon();
+    public LinearRing decode(Node root, GmlDecoderContext context) {
+        LinearRing returnElement = new LinearRing();
         
         Node srsNode = root.getAttributes().getNamedItem("srsName");
         if(srsNode != null) {
@@ -20,15 +20,14 @@ public class PolygonDecoder implements GmlDecoder<Polygon> {
             if(child.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
-            if("exterior".equals(child.getNodeName())) {
-                // TODO: Defer to a "LinearRingDecoder"
-                LinearRing exterior = new LinearRingDecoder().decode(child.getFirstChild(), context);
-                returnPolygon.setExterior(exterior);
+            if("posList".equals(child.getNodeName())) {
+                // TODO: Defer to a "posListDecoder"
+                DirectPositionList posList = new DirectPositionListDecoder().decode(child, context);
+                returnElement.setPosList(posList);
             }
         }
 
 
-        return returnPolygon;
+        return returnElement;
     }
-    
 }

@@ -2,6 +2,7 @@ package de.turnertech.thw.cop.ows.api;
 
 import java.util.Collection;
 
+import de.turnertech.thw.cop.gml.BoundingBoxProvider;
 import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.ows.filter.OgcFilter;

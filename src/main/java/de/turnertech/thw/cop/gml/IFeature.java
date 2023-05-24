@@ -1,7 +1,5 @@
 package de.turnertech.thw.cop.gml;
 
-import de.turnertech.thw.cop.ows.api.BoundingBoxProvider;
-
 /**
  * gml:Feature
  * 
