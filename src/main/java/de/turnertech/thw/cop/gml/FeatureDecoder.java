@@ -27,7 +27,10 @@ public class FeatureDecoder {
                 return null;
             }
             
-            
+            FeatureProperty featureProperty = featureType.getProperty(propertyName);
+            if(featureProperty.getPropertyType() == FeaturePropertyType.TEXT) {
+                returnFeature.setPropertyValue(propertyName, propertyNode.getNodeValue());
+            }
 
         }
         return returnFeature;

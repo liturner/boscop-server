@@ -70,7 +70,7 @@ public class FeatureType {
         return new Feature(this);
     }
 
-    public Object getProperty(String propertyName) {
+    public FeatureProperty getProperty(String propertyName) {
         return featureTypeProperties.get(propertyName);
     }
 
@@ -78,8 +78,8 @@ public class FeatureType {
         return featureTypeProperties.containsKey(propertyName);
     }
 
-    public FeatureProperty setProperty(String propertyName, FeatureProperty value) {
-        return featureTypeProperties.put(propertyName, value);
+    public FeatureProperty putProperty(FeatureProperty value) {
+        return featureTypeProperties.put(value.getName(), value);
     }
 
 }

@@ -5,9 +5,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.gml.BoundingBox;
-import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.FeatureType;
+import de.turnertech.thw.cop.gml.IFeature;
+import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.ows.api.Model;
 import de.turnertech.thw.cop.ows.filter.OgcFilter;
 
@@ -19,8 +21,11 @@ public class UnitModel implements Model {
 
     private static final List<IFeature> features = new LinkedList<>();
 
+    private final FeatureType featureType;
+
     private UnitModel() {
-        
+        featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
+        featureType.setSrs(SpatialReferenceSystem.EPSG4327);
     }
 
     @Override
@@ -68,7 +73,7 @@ public class UnitModel implements Model {
 
     @Override
     public FeatureType getFeatureType() {
-        return Unit.FEATURE_TYPE;
+        return featureType;
     }
 
     @Override

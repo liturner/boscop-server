@@ -7,6 +7,8 @@ import java.util.List;
 
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.gml.BoundingBox;
+import de.turnertech.thw.cop.gml.FeatureProperty;
+import de.turnertech.thw.cop.gml.FeaturePropertyType;
 import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
@@ -29,6 +31,16 @@ public class AreaModel implements Model {
         featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
         featureType.setSrs(SpatialReferenceSystem.EPSG4327);
         featureType.setTitle(NAME);
+
+        FeatureProperty areaTypeProperty = new FeatureProperty();
+        areaTypeProperty.setName("areaType");
+        areaTypeProperty.setPropertyType(FeaturePropertyType.TEXT);
+        featureType.putProperty(areaTypeProperty);
+
+        FeatureProperty geometryTypeProperty = new FeatureProperty();
+        geometryTypeProperty.setName("geometry");
+        geometryTypeProperty.setPropertyType(FeaturePropertyType.POLYGON);
+        featureType.putProperty(geometryTypeProperty);
     }
 
     @Override

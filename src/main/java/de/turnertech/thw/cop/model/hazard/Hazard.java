@@ -4,13 +4,11 @@ import java.util.UUID;
 
 import javax.xml.stream.XMLStreamWriter;
 
-import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.gml.BoundingBox;
 import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.Point;
-import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.ows.api.OwsContext;
 import de.turnertech.thw.cop.util.PositionProvider;
@@ -19,18 +17,11 @@ public class Hazard implements IFeature, PositionProvider {
     
     public final String GML_NAME = "Feature";
 
-    public static final FeatureType FEATURE_TYPE;
-
     private String id;
 
     private String hazardType;
 
     private Point geometry;
-
-    static {
-        FEATURE_TYPE = new FeatureType(Constants.Model.NAMESPACE, "Hazard");
-        FEATURE_TYPE.setSrs(SpatialReferenceSystem.EPSG4327);
-    }
 
     public Hazard() {
         id = UUID.randomUUID().toString();
@@ -97,11 +88,11 @@ public class Hazard implements IFeature, PositionProvider {
             writeGmlStartElement(out, localName, namespaceURI);
             out.writeAttribute(OwsContext.GML_URI, "id", getId());
 
-            out.writeStartElement(FEATURE_TYPE.getNamespace(), "hazardType");
+            out.writeStartElement(getFeatureType().getNamespace(), "hazardType");
             out.writeCharacters(hazardType);
             out.writeEndElement();
 
-            out.writeStartElement(FEATURE_TYPE.getNamespace(), "geometry");
+            out.writeStartElement(getFeatureType().getNamespace(), "geometry");
             geometry.writeGml(out);
             out.writeEndElement();
 
@@ -118,6 +109,6 @@ public class Hazard implements IFeature, PositionProvider {
 
     @Override
     public FeatureType getFeatureType() {
-        return FEATURE_TYPE;
+        return HazardModel.INSTANCE.getFeatureType();
     }
 }

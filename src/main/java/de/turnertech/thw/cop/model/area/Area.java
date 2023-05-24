@@ -4,13 +4,11 @@ import java.util.UUID;
 
 import javax.xml.stream.XMLStreamWriter;
 
-import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.gml.BoundingBox;
 import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.Polygon;
-import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.ows.api.OwsContext;
 import de.turnertech.thw.cop.util.PositionProvider;
@@ -19,18 +17,11 @@ public class Area implements IFeature, PositionProvider {
     
     public final String GML_NAME = "Feature";
 
-    public static final FeatureType FEATURE_TYPE;
-
     private String id;
 
     private Polygon geometry;
 
     private String areaType;
-
-    static {
-        FEATURE_TYPE = new FeatureType(Constants.Model.NAMESPACE, "Area");
-        FEATURE_TYPE.setSrs(SpatialReferenceSystem.EPSG4327);
-    }
 
     public Area() {
         id = UUID.randomUUID().toString();
@@ -94,11 +85,11 @@ public class Area implements IFeature, PositionProvider {
             writeGmlStartElement(out, localName, namespaceURI);
             out.writeAttribute(OwsContext.GML_URI, "id", getId());
             
-            out.writeStartElement(FEATURE_TYPE.getNamespace(), "areaType");
+            out.writeStartElement(getFeatureType().getNamespace(), "areaType");
             out.writeCharacters(areaType);
             out.writeEndElement();
 
-            out.writeStartElement(FEATURE_TYPE.getNamespace(), "geometry");
+            out.writeStartElement(getFeatureType().getNamespace(), "geometry");
             geometry.writeGml(out);
             out.writeEndElement();
 
@@ -115,7 +106,7 @@ public class Area implements IFeature, PositionProvider {
 
     @Override
     public FeatureType getFeatureType() {
-        return FEATURE_TYPE;
+        return AreaModel.INSTANCE.getFeatureType();
     }
 
 }

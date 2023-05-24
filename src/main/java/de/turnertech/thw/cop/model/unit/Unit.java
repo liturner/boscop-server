@@ -4,13 +4,11 @@ import java.util.Optional;
 
 import javax.xml.stream.XMLStreamWriter;
 
-import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.gml.BoundingBox;
 import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.Point;
-import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.ows.api.OwsContext;
 import de.turnertech.thw.cop.util.OPTA;
@@ -20,8 +18,6 @@ public class Unit implements PositionProvider, IFeature {
     
     public final String GML_NAME = "Unit";
 
-    public static final FeatureType FEATURE_TYPE;
-
     /**
      * See OPTA in THW-FuRnR.
      * 
@@ -30,11 +26,6 @@ public class Unit implements PositionProvider, IFeature {
     private String opta;
 
     private Point geometry;
-
-    static {
-        FEATURE_TYPE = new FeatureType(Constants.Model.NAMESPACE, "Unit");
-        FEATURE_TYPE.setSrs(SpatialReferenceSystem.EPSG4327);
-    }
 
     public Unit() {
         opta = "";
@@ -111,11 +102,11 @@ public class Unit implements PositionProvider, IFeature {
             writeGmlStartElement(out, localName, namespaceURI);
             out.writeAttribute(OwsContext.GML_URI, "id", getId());
             
-            out.writeStartElement(FEATURE_TYPE.getNamespace(), "opta");
+            out.writeStartElement(getFeatureType().getNamespace(), "opta");
             out.writeCharacters(getOpta());
             out.writeEndElement();
 
-            out.writeStartElement(FEATURE_TYPE.getNamespace(), "geometry");
+            out.writeStartElement(getFeatureType().getNamespace(), "geometry");
             geometry.writeGml(out);
             out.writeEndElement();
 
@@ -132,7 +123,7 @@ public class Unit implements PositionProvider, IFeature {
 
     @Override
     public FeatureType getFeatureType() {
-        return FEATURE_TYPE;
+        return UnitModel.INSTANCE.getFeatureType();
     }
 
 }
