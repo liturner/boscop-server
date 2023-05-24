@@ -1,5 +1,8 @@
 package de.turnertech.thw.cop.gml;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FeatureType {
     
     /**
@@ -9,6 +12,8 @@ public class FeatureType {
 
     private final String namespace;
 
+    private final Map<String, FeatureProperty> featureTypeProperties;
+
     private SpatialReferenceSystem srs;
 
     private String title;
@@ -16,6 +21,7 @@ public class FeatureType {
     public FeatureType(String namespace, String name) {
         this.namespace = namespace;
         this.name = name;
+        this.featureTypeProperties = new HashMap<>();
     }
 
     /**
@@ -60,6 +66,20 @@ public class FeatureType {
         this.srs = srs;
     }
 
-    
+    public Feature createInstance() {
+        return new Feature(this);
+    }
+
+    public Object getProperty(String propertyName) {
+        return featureTypeProperties.get(propertyName);
+    }
+
+    public boolean hasProperty(String propertyName) {
+        return featureTypeProperties.containsKey(propertyName);
+    }
+
+    public FeatureProperty setProperty(String propertyName, FeatureProperty value) {
+        return featureTypeProperties.put(propertyName, value);
+    }
 
 }

@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.turnertech.thw.cop.gml.BoundingBox;
-import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.ows.api.Model;
 import de.turnertech.thw.cop.ows.filter.OgcFilter;
@@ -17,16 +17,16 @@ public class UnitModel implements Model {
 
     public static final String TYPENAME = "Unit";
 
-    private static final List<Feature> features = new LinkedList<>();
+    private static final List<IFeature> features = new LinkedList<>();
 
     private UnitModel() {
         
     }
 
     @Override
-    public List<Feature> filter(BoundingBox boundingBox) {
-        List<Feature> returnItems = new LinkedList<>();
-        for(Feature unit : features) {
+    public List<IFeature> filter(BoundingBox boundingBox) {
+        List<IFeature> returnItems = new LinkedList<>();
+        for(IFeature unit : features) {
             if(boundingBox.intersects(unit.getBoundingBox())) {
                 returnItems.add(unit);
             }
@@ -35,10 +35,10 @@ public class UnitModel implements Model {
     }
 
     @Override
-    public Collection<Feature> filter(OgcFilter ogcFilter) {
-        List<Feature> returnCollection = new LinkedList<>();
+    public Collection<IFeature> filter(OgcFilter ogcFilter) {
+        List<IFeature> returnCollection = new LinkedList<>();
         for(String featureId : ogcFilter.getFeatureIdFilters()) {
-            for(Feature unit : features) {
+            for(IFeature unit : features) {
                 if(unit.getId().equals(featureId)) {
                     returnCollection.add(unit);
                 }
@@ -48,21 +48,21 @@ public class UnitModel implements Model {
     }
 
     @Override
-    public List<Feature> getAll() {
+    public List<IFeature> getAll() {
         return Collections.unmodifiableList(features);
     }
 
     @Override
-    public boolean addAll(Collection<Feature> newUnits) {
+    public boolean addAll(Collection<IFeature> newUnits) {
         return features.addAll(newUnits);
     }
 
-    public boolean removeAll(Collection<Feature> units) {
+    public boolean removeAll(Collection<IFeature> units) {
         return UnitModel.features.removeAll(units);
     }
 
     @Override
-    public boolean add(Feature newUnit) {
+    public boolean add(IFeature newUnit) {
         return features.add(newUnit);
     }
 
@@ -77,7 +77,7 @@ public class UnitModel implements Model {
         if(features.size() > 0) {
             boundingBox = BoundingBox.from(features.get(0).getBoundingBox());
         } 
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             boundingBox.expandToFit(feature.getBoundingBox());
         }
         return boundingBox;

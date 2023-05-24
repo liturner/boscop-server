@@ -14,8 +14,9 @@ import org.w3c.dom.NodeList;
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.Logging;
-import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.gml.FeatureDecoder;
 import de.turnertech.thw.cop.gml.FeatureType;
+import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.model.area.AreaDecoder;
 import de.turnertech.thw.cop.model.area.AreaModel;
 import de.turnertech.thw.cop.model.hazard.HazardDecoder;
@@ -85,10 +86,10 @@ public class WfsTransactionRequest implements RequestHandler  {
                 OgcFilter ogcFilter = OgcFilterDecoder.getFilter(filter);
 
                 if(HazardModel.TYPENAME.equals(typeName)) {
-                    Collection<Feature> hazards = HazardModel.INSTANCE.filter(ogcFilter);
+                    Collection<IFeature> hazards = HazardModel.INSTANCE.filter(ogcFilter);
                     HazardModel.INSTANCE.removeAll(hazards);
                 } else if (AreaModel.TYPENAME.equals(typeName)) {
-                    Collection<Feature> areas = AreaModel.INSTANCE.filter(ogcFilter);
+                    Collection<IFeature> areas = AreaModel.INSTANCE.filter(ogcFilter);
                     AreaModel.INSTANCE.removeAll(areas);
                 }
 
@@ -141,6 +142,8 @@ public class WfsTransactionRequest implements RequestHandler  {
                         }
 
                         Model model = owsContext.getModelProvider().getModel(featureType);
+
+                        FeatureDecoder.decode(featureEntry, owsContext, featureType);
                     }
                 }
 

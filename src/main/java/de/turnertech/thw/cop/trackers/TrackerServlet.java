@@ -10,7 +10,7 @@ import javax.xml.stream.XMLStreamWriter;
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.ErrorServlet;
 import de.turnertech.thw.cop.Logging;
-import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.model.unit.Unit;
 import de.turnertech.thw.cop.model.unit.UnitModel;
 import de.turnertech.thw.cop.ows.ExceptionCode;
@@ -93,7 +93,7 @@ public class TrackerServlet extends HttpServlet {
                     out.writeCharacters("Key");
                     out.writeEndElement();
                 out.writeEndElement();
-            for (Feature tracker : UnitModel.INSTANCE.getAll()) {
+            for (IFeature tracker : UnitModel.INSTANCE.getAll()) {
                 Optional<String> trackerKey = TrackerToken.getKey(((Unit)tracker).getOpta());
                 if(trackerKey.isEmpty()) {
                     Logging.LOG.severe("Tracker found with no key!");
@@ -145,7 +145,7 @@ public class TrackerServlet extends HttpServlet {
 
         Unit newTracker = null;
         boolean isNewTracker = true;
-        for(Feature tracker : UnitModel.INSTANCE.getAll()) {
+        for(IFeature tracker : UnitModel.INSTANCE.getAll()) {
             if(((Unit)tracker).getOpta().equals(opta)) {
                 newTracker = (Unit)tracker;
                 isNewTracker = false;

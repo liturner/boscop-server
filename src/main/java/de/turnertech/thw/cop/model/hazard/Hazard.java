@@ -7,15 +7,15 @@ import javax.xml.stream.XMLStreamWriter;
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.gml.BoundingBox;
-import de.turnertech.thw.cop.gml.Feature;
 import de.turnertech.thw.cop.gml.FeatureType;
+import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.Point;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.ows.api.OwsContext;
 import de.turnertech.thw.cop.util.PositionProvider;
 
-public class Hazard implements Feature, PositionProvider {
+public class Hazard implements IFeature, PositionProvider {
     
     public final String GML_NAME = "Feature";
 

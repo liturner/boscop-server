@@ -8,7 +8,7 @@ import org.w3c.dom.NodeList;
 
 import de.turnertech.thw.cop.gml.DirectPosition;
 import de.turnertech.thw.cop.gml.DirectPositionList;
-import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.LinearRing;
 import de.turnertech.thw.cop.gml.Polygon;
 
@@ -18,9 +18,9 @@ public class AreaDecoder {
 
     }
 
-    public static List<Feature> getAreas(Element root) {
+    public static List<IFeature> getAreas(Element root) {
         NodeList areaElements = root.getElementsByTagName(AreaModel.NAME);
-        List<Feature> returnList = new ArrayList<>(areaElements.getLength());
+        List<IFeature> returnList = new ArrayList<>(areaElements.getLength());
 
         for(int i = 0; i < areaElements.getLength(); ++i) {
             Element areaElement = (Element)areaElements.item(i);

@@ -6,7 +6,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import de.turnertech.thw.cop.gml.Feature;
+import de.turnertech.thw.cop.gml.IFeature;
 
 public class HazardDecoder {
     
@@ -14,9 +14,9 @@ public class HazardDecoder {
 
     }
 
-    public static List<Feature> getHazards(Element root) {
+    public static List<IFeature> getHazards(Element root) {
         NodeList hazardElements = root.getElementsByTagName(HazardModel.NAME);
-        List<Feature> returnList = new ArrayList<>(hazardElements.getLength());
+        List<IFeature> returnList = new ArrayList<>(hazardElements.getLength());
 
         for(int i = 0; i < hazardElements.getLength(); ++i) {
             Element hazardElement = (Element)hazardElements.item(i);

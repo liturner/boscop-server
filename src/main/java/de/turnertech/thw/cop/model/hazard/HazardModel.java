@@ -7,8 +7,8 @@ import java.util.List;
 
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.gml.BoundingBox;
-import de.turnertech.thw.cop.gml.Feature;
 import de.turnertech.thw.cop.gml.FeatureType;
+import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.ows.api.Model;
 import de.turnertech.thw.cop.ows.filter.OgcFilter;
@@ -21,7 +21,7 @@ public class HazardModel implements Model {
 
     public static final String TYPENAME = NAME;
 
-    private static final List<Feature> features = new LinkedList<>();
+    private static final List<IFeature> features = new LinkedList<>();
 
     private final FeatureType featureType;
 
@@ -31,9 +31,9 @@ public class HazardModel implements Model {
     }
 
     @Override
-    public List<Feature> filter(BoundingBox boundingBox) {
-        List<Feature> returnItems = new LinkedList<>();
-        for(Feature hazard : features) {
+    public List<IFeature> filter(BoundingBox boundingBox) {
+        List<IFeature> returnItems = new LinkedList<>();
+        for(IFeature hazard : features) {
             if(boundingBox.intersects(hazard.getBoundingBox())) {
                 returnItems.add(hazard);
             }
@@ -42,10 +42,10 @@ public class HazardModel implements Model {
     }
 
     @Override
-    public Collection<Feature> filter(OgcFilter ogcFilter) {
-        List<Feature> returnCollection = new LinkedList<>();
+    public Collection<IFeature> filter(OgcFilter ogcFilter) {
+        List<IFeature> returnCollection = new LinkedList<>();
         for(String featureId : ogcFilter.getFeatureIdFilters()) {
-            for(Feature hazard : features) {
+            for(IFeature hazard : features) {
                 if(hazard.getId().equals(featureId)) {
                     returnCollection.add(hazard);
                 }
@@ -55,22 +55,22 @@ public class HazardModel implements Model {
     }
 
     @Override
-    public List<Feature> getAll() {
+    public List<IFeature> getAll() {
         return Collections.unmodifiableList(features);
     }
 
     @Override
-    public boolean removeAll(Collection<Feature> hazards) {
+    public boolean removeAll(Collection<IFeature> hazards) {
         return HazardModel.features.removeAll(hazards);
     }
 
     @Override
-    public boolean addAll(Collection<Feature> newHazards) {
+    public boolean addAll(Collection<IFeature> newHazards) {
         return features.addAll(newHazards);
     }
 
     @Override
-    public boolean add(Feature newHazard) {
+    public boolean add(IFeature newHazard) {
         return features.add(newHazard);
     }
 
@@ -85,7 +85,7 @@ public class HazardModel implements Model {
         if(features.size() > 0) {
             boundingBox = BoundingBox.from(features.get(0).getBoundingBox());
         } 
-        for (Feature feature : features) {
+        for (IFeature feature : features) {
             boundingBox.expandToFit(feature.getBoundingBox());
         }
         return boundingBox;
