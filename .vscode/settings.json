@@ -25,4 +25,5 @@
         }
     ],
     "maven.view": "hierarchical",
+    "java.dependency.packagePresentation": "hierarchical",
 }
