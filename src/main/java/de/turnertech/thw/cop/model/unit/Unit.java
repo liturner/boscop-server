@@ -66,7 +66,7 @@ public class Unit implements PositionProvider, IFeature {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return BoundingBox.from(this);
+        return null;
     }
 
     public static Optional<String> validate(Unit tracker) {

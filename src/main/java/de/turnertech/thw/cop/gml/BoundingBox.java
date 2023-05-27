@@ -2,15 +2,11 @@ package de.turnertech.thw.cop.gml;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.thw.cop.Logging;
-import de.turnertech.thw.cop.util.Coordinate;
-import de.turnertech.thw.cop.util.PositionProvider;
 
 public class BoundingBox implements GmlElement {
 
@@ -37,17 +33,6 @@ public class BoundingBox implements GmlElement {
         this.west = west;
         this.north = north;
         this.east = east;
-    }
-
-    public boolean contains(List<? extends PositionProvider> positions) {
-        for(PositionProvider position : positions) {
-            if(this.contains(position)) return true;
-        }
-        return false;
-    }
-
-    public boolean contains(PositionProvider position) {
-        return contains(position.getLatitude(), position.getLongitude());
     }
 
     public boolean contains(double latitude, double longitute) {
@@ -92,55 +77,12 @@ public class BoundingBox implements GmlElement {
         return new BoundingBox(maxSouth, maxWest, maxNorth, maxEast);
     }
 
-    public static BoundingBox from(PositionProvider... positions) {
-        return from(Arrays.asList(positions));
-    }
-
-    public static BoundingBox from(List<? extends PositionProvider> positions) {
-        double maxSouth = Double.POSITIVE_INFINITY;
-        double maxWest = Double.POSITIVE_INFINITY;
-        double maxNorth = Double.NEGATIVE_INFINITY;
-        double maxEast = Double.NEGATIVE_INFINITY;
-
-        for(PositionProvider position : positions) {
-            if(position.getLatitude() > maxNorth) maxNorth = position.getLatitude();
-            if(position.getLatitude() < maxSouth) maxSouth = position.getLatitude();
-            if(position.getLongitude() > maxEast) maxEast = position.getLongitude();
-            if(position.getLongitude() < maxWest) maxWest = position.getLongitude();
-        }
-
-        // Catch BBOX with a size of 0 (causes errors in many clients, happens with only 1 point)
-        if(maxSouth == maxNorth) {
-            maxNorth += 0.00001;
-            maxSouth -= 0.00001;
-        }
-        if(maxEast == maxWest) {
-            maxEast += 0.00001;
-            maxWest -= 0.00001;
-        }
-
-        return new BoundingBox(maxSouth, maxWest, maxNorth, maxEast);
-    }
-
-    public void expandToFit(List<? extends PositionProvider> positions) {
-        for(PositionProvider position : positions) {
-            if(position.getLatitude() > north) north = position.getLatitude();
-            if(position.getLatitude() < south) south = position.getLatitude();
-            if(position.getLongitude() > east) east = position.getLongitude();
-            if(position.getLongitude() < west) west = position.getLongitude();
-        }
-    }
-
     public void expandToFit(BoundingBox other) {
         if(other == null) return;
         if(other.north > north) north = other.north;
         if(other.south < south) south = other.south;
         if(other.east > east) east = other.east;
         if(other.west < west) west = other.west;
-    }
-
-    public Coordinate centerPoint() {
-        return new Coordinate(south + (north - south), west + (east - west));
     }
 
     /**

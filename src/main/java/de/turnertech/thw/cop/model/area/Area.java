@@ -11,10 +11,9 @@ import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.Polygon;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.ows.api.OwsContext;
-import de.turnertech.thw.cop.util.PositionProvider;
 
 @Deprecated
-public class Area implements IFeature, PositionProvider {
+public class Area implements IFeature {
     
     public final String GML_NAME = "Feature";
 
@@ -38,16 +37,6 @@ public class Area implements IFeature, PositionProvider {
 
     public void setGeometry(Polygon polygon) {
         this.geometry = polygon;
-    }
-
-    @Override
-    public double getLatitude() {
-        return getBoundingBox().centerPoint().getLatitude();
-    }
-
-    @Override
-    public double getLongitude() {
-        return getBoundingBox().centerPoint().getLongitude();
     }
 
     @Override

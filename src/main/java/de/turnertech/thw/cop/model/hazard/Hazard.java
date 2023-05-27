@@ -63,7 +63,7 @@ public class Hazard implements IFeature, PositionProvider {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return BoundingBox.from(this);
+        return null;
     }
 
     public String toGmlString() {
