@@ -8,14 +8,12 @@ public class OgcFilterDecoder {
         OgcFilter returnFilter = new OgcFilter();
 
         for(int i = 0; i < ogcFilter.getChildNodes().getLength(); ++i) {
-            Node filterPart = ogcFilter.getChildNodes().item(0);
+            Node filterPart = ogcFilter.getChildNodes().item(i);
             
             if("FeatureId".equals(filterPart.getNodeName())) {
                 returnFilter.getFeatureIdFilters().add(filterPart.getAttributes().getNamedItem("fid").getNodeValue());
             }
         }
-
-        
 
         return returnFilter;
     }

@@ -18,8 +18,6 @@ import de.turnertech.thw.cop.gml.FeatureDecoder;
 import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.gml.GmlDecoderContext;
 import de.turnertech.thw.cop.gml.IFeature;
-import de.turnertech.thw.cop.model.area.AreaModel;
-import de.turnertech.thw.cop.model.hazard.HazardModel;
 import de.turnertech.thw.cop.ows.api.Model;
 import de.turnertech.thw.cop.ows.api.OwsContext;
 import de.turnertech.thw.cop.ows.api.OwsRequestContext;
@@ -39,7 +37,9 @@ public class WfsTransactionRequest implements RequestHandler  {
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(request.getInputStream());
+
             Element root = document.getDocumentElement();
+            root.normalize();
 
             NodeList deleteEntries = root.getElementsByTagName("Delete");
             NodeList insertEntries = root.getElementsByTagName("Insert");
@@ -50,19 +50,19 @@ public class WfsTransactionRequest implements RequestHandler  {
                 // Delete entries have one child element, and one attribute. There is no need to cast to Element here
                 // 15.3.4
                 Node deleteEntry = deleteEntries.item(i);
-
                 if(deleteEntry == null) {
                     Logging.LOG.severe("Something went wrong getting the Delete elements from a transaction");
                     response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), "Delete", "Something went wrong decoding the Delete entry"));
                     return;
                 }
 
-                Node filter = deleteEntry.getFirstChild();
-                if(filter == null) {
+                NodeList filterNodeList = ((Element)deleteEntry).getElementsByTagName("Filter");
+                if(filterNodeList == null || filterNodeList.getLength() == 0) {
                     Logging.LOG.severe("Something went wrong getting the Filter element from a Delete Transaction");
                     response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), "Filter", "Could not locate the Filter element for a Delete operation"));
                     return;
                 }
+                Node filter = filterNodeList.item(0);
 
                 Node typeNameNode = deleteEntry.getAttributes().getNamedItem("typeName");
                 if(typeNameNode == null) {
@@ -70,28 +70,31 @@ public class WfsTransactionRequest implements RequestHandler  {
                     response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), "typeName", "Could not locate the typeName element for a Filter operation"));
                     return;
                 }
-                String prefix = null;
-                String namespaceUri = null;
-                String typeName = typeNameNode.getNodeValue();
 
-                // TODO: Add a helper to be certain about the NS
+                String prefix = null;
+                String typeName = typeNameNode.getNodeValue();
                 if(typeName.contains(":")) {
                     String[] parts = typeName.split(":", 2);
                     prefix = parts[0];
                     typeName = parts[1];
                 }
-                namespaceUri = root.lookupNamespaceURI(prefix);
 
-                OgcFilter ogcFilter = OgcFilterDecoder.getFilter(filter);
-
-                if(HazardModel.TYPENAME.equals(typeName)) {
-                    Collection<IFeature> hazards = HazardModel.INSTANCE.filter(ogcFilter);
-                    HazardModel.INSTANCE.removeAll(hazards);
-                } else if (AreaModel.TYPENAME.equals(typeName)) {
-                    Collection<IFeature> areas = AreaModel.INSTANCE.filter(ogcFilter);
-                    AreaModel.INSTANCE.removeAll(areas);
+                String namespaceUri = root.getAttribute("xmlns:" + prefix);
+                if(namespaceUri == null || "".equals(namespaceUri)) {
+                    Node nsElement = deleteEntry.getAttributes().getNamedItem("xmlns:" + prefix);
+                    namespaceUri = nsElement == null ? null : nsElement.getTextContent();
+                }
+                if(namespaceUri == null || "".equals(namespaceUri)) {
+                    Logging.LOG.severe("Something went wrong getting the typeName xmlns attribute from a Filter");
+                    response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), "typeName", "Could not locate the typeName xmlns element for a Filter operation"));
+                    return;
                 }
 
+                OgcFilter ogcFilter = OgcFilterDecoder.getFilter(filter);
+                FeatureType featureType = owsContext.getWfsCapabilities().getFeatureType(namespaceUri, typeName);
+                Model model = owsContext.getModelProvider().getModel(featureType);
+                Collection<IFeature> featuresToRemove = model.filter(ogcFilter);
+                model.removeAll(featuresToRemove);
             }
 
             for(int i = 0; i < insertEntries.getLength(); ++i) {
@@ -131,8 +134,6 @@ public class WfsTransactionRequest implements RequestHandler  {
                             return;
                         }
 
-                        Logging.LOG.severe(namespaceUri);
-                        Logging.LOG.severe(name);
                         FeatureType featureType = owsContext.getWfsCapabilities().getFeatureType(namespaceUri, name);
 
                         if(featureType == null) {
@@ -145,9 +146,6 @@ public class WfsTransactionRequest implements RequestHandler  {
                         model.add(feature);
                     }
                 }
-
-                //AreaModel.INSTANCE.addAll(AreaDecoder.getAreas(root));
-                //HazardModel.INSTANCE.addAll(HazardDecoder.getHazards(root));
             }
 
             
