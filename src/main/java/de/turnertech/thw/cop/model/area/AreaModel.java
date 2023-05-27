@@ -32,15 +32,9 @@ public class AreaModel implements Model {
         featureType.setSrs(SpatialReferenceSystem.EPSG4327);
         featureType.setTitle(NAME);
 
-        FeatureProperty areaTypeProperty = new FeatureProperty();
-        areaTypeProperty.setName("areaType");
-        areaTypeProperty.setPropertyType(FeaturePropertyType.TEXT);
-        featureType.putProperty(areaTypeProperty);
-
-        FeatureProperty geometryTypeProperty = new FeatureProperty();
-        geometryTypeProperty.setName("geometry");
-        geometryTypeProperty.setPropertyType(FeaturePropertyType.POLYGON);
-        featureType.putProperty(geometryTypeProperty);
+        featureType.putProperty(new FeatureProperty("id", FeaturePropertyType.ID));
+        featureType.putProperty(new FeatureProperty("areaType", FeaturePropertyType.TEXT));
+        featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.POLYGON));
     }
 
     @Override

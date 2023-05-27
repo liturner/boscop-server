@@ -14,6 +14,7 @@ import de.turnertech.thw.cop.ows.api.OwsContext;
 import de.turnertech.thw.cop.util.OPTA;
 import de.turnertech.thw.cop.util.PositionProvider;
 
+@Deprecated
 public class Unit implements PositionProvider, IFeature {
     
     public final String GML_NAME = "Unit";
@@ -124,6 +125,24 @@ public class Unit implements PositionProvider, IFeature {
     @Override
     public FeatureType getFeatureType() {
         return UnitModel.INSTANCE.getFeatureType();
+    }
+
+    @Override
+    public Object getPropertyValue(String propertyName) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPropertyValue'");
+    }
+
+    @Override
+    public boolean hasPropertyValue(String propertyName) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'hasPropertyValue'");
+    }
+
+    @Override
+    public Object setPropertyValue(String propertyName, Object value) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPropertyValue'");
     }
 
 }

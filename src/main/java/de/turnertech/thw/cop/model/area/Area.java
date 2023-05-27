@@ -13,6 +13,7 @@ import de.turnertech.thw.cop.gml.SpatialReferenceSystemRepresentation;
 import de.turnertech.thw.cop.ows.api.OwsContext;
 import de.turnertech.thw.cop.util.PositionProvider;
 
+@Deprecated
 public class Area implements IFeature, PositionProvider {
     
     public final String GML_NAME = "Feature";
@@ -107,6 +108,24 @@ public class Area implements IFeature, PositionProvider {
     @Override
     public FeatureType getFeatureType() {
         return AreaModel.INSTANCE.getFeatureType();
+    }
+
+    @Override
+    public Object getPropertyValue(String propertyName) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPropertyValue'");
+    }
+
+    @Override
+    public boolean hasPropertyValue(String propertyName) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'hasPropertyValue'");
+    }
+
+    @Override
+    public Object setPropertyValue(String propertyName, Object value) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPropertyValue'");
     }
 
 }

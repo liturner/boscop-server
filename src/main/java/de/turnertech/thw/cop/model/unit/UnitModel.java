@@ -7,6 +7,8 @@ import java.util.List;
 
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.gml.BoundingBox;
+import de.turnertech.thw.cop.gml.FeatureProperty;
+import de.turnertech.thw.cop.gml.FeaturePropertyType;
 import de.turnertech.thw.cop.gml.FeatureType;
 import de.turnertech.thw.cop.gml.IFeature;
 import de.turnertech.thw.cop.gml.SpatialReferenceSystem;
@@ -26,6 +28,9 @@ public class UnitModel implements Model {
     private UnitModel() {
         featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
         featureType.setSrs(SpatialReferenceSystem.EPSG4327);
+        featureType.putProperty(new FeatureProperty("id", FeaturePropertyType.ID));
+        featureType.putProperty(new FeatureProperty("opta", FeaturePropertyType.TEXT));
+        featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.POINT));
     }
 
     @Override

@@ -3,6 +3,8 @@ package de.turnertech.thw.cop.gml;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import de.turnertech.thw.cop.Logging;
+
 public class FeatureDecoder {
 
     public static IFeature decode(Node xmlRootNode, GmlDecoderContext gmlContext, FeatureType featureType) {
@@ -30,9 +32,15 @@ public class FeatureDecoder {
                 returnFeature.setPropertyValue(propertyName, propertyNode.getTextContent());
             } else if(featureProperty.getPropertyType() == FeaturePropertyType.POLYGON) {
                 returnFeature.setPropertyValue(propertyName, new PolygonDecoder().decode(propertyNode.getFirstChild(), gmlContext));
+            } else if(featureProperty.getPropertyType() == FeaturePropertyType.ID) {
+                returnFeature.setPropertyValue(propertyName, propertyNode.getTextContent());
+            } else {
+                Logging.LOG.severe("FeatureDecoder: Property was not decoded - " + propertyName);
             }
-
         }
+
+        gmlContext.getFeatureIdRetriever().retrieveFeatureId(returnFeature);
+
         return returnFeature;
     }
     

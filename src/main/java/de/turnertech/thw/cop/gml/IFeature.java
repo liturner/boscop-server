@@ -12,4 +12,10 @@ public interface IFeature extends BoundingBoxProvider, GmlElement {
 
     public FeatureType getFeatureType();
 
+    public Object getPropertyValue(String propertyName);
+
+    public boolean hasPropertyValue(String propertyName);
+
+    public Object setPropertyValue(String propertyName, Object value);
+
 }

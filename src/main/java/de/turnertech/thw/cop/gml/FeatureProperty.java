@@ -10,6 +10,15 @@ public class FeatureProperty {
 
     private FeaturePropertyType propertyType;
 
+    public FeatureProperty() {
+        this(null, null);
+    }
+
+    public FeatureProperty(String name, FeaturePropertyType propertyType) {
+        this.name = name;
+        this.propertyType = propertyType;
+    }
+
     /**
      * @return the name
      */
@@ -66,6 +75,4 @@ public class FeatureProperty {
         this.propertyType = propertyType;
     }
     
-    
-
 }
