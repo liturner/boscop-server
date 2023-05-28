@@ -1,6 +1,6 @@
 module de.turnertech.ows {
 
-    requires java.xml;
+    requires transitive java.xml;
     requires transitive java.logging;
     requires transitive org.eclipse.jetty.servlet;
 
@@ -9,5 +9,5 @@ module de.turnertech.ows {
     exports de.turnertech.ows.gml;
     exports de.turnertech.ows.parameter;
     exports de.turnertech.ows.servlet;
-    
+     
 }

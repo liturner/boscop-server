@@ -18,7 +18,7 @@ public class Settings {
         settingsStorage.setProperty(PORT, "8080");
         settingsStorage.setProperty(PATH, "/");
         settingsStorage.setProperty(DATA, "data");
-        settingsStorage.setProperty(CFG, "cfg");
+        settingsStorage.setProperty(CFG, "conf");
     }
 
     private Settings() {

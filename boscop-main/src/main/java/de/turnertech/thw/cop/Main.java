@@ -2,6 +2,7 @@ package de.turnertech.thw.cop;
 
 import java.io.File;
 import java.util.EnumSet;
+import java.util.logging.Level;
 
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
@@ -54,7 +55,7 @@ public class Main {
         // See: https://www.programcreek.com/java-api-examples/?api=org.eclipse.jetty.security.ConstraintSecurityHandler
         HashLoginService loginService = new HashLoginService();
         loginService.setName(Constants.REALM);
-        loginService.setConfig(Main.class.getResource("/users.txt").toString());
+        loginService.setConfig(Main.class.getResource("users.txt").toString());
 
         Constraint constraintDigest = new Constraint(Constraint.__DIGEST_AUTH, Constants.Roles.USER);
         constraintDigest.setAuthenticate(true);
@@ -128,7 +129,7 @@ public class Main {
             server.start();
             server.join();
         } catch (Exception e) {
-            Logging.LOG.severe("Could not start server.");
+            Logging.LOG.log(Level.SEVERE, "Could not start server.", e);
         }
     }
 

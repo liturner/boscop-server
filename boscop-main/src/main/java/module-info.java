@@ -3,10 +3,10 @@
  * a wide array of 256px PNG symbols, and a few classes to help access them in an efficient and programmer friendly
  * manner.
  */
-module de.turnertech.thw.cop {
+module de.turnertech.boscop {
     exports de.turnertech.thw.cop;
 
-    requires de.turnertech.ows;
+    requires transitive de.turnertech.ows;
 
     requires java.xml;
     requires transitive java.logging;

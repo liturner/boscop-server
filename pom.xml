@@ -10,8 +10,9 @@
 
   <description>Parent and Aggregator POM</description>
   <modules>
+    <module>boscop-jlink</module>
     <module>boscop-main</module>
-    <module>boscop-wfs</module>
+    <module>wfs-servlet</module>
   </modules>
 
   <organization>
@@ -75,6 +76,11 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
           <version>3.3.2</version>
         </plugin>
@@ -117,6 +123,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.4.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jlink-plugin</artifactId>
+          <version>3.1.0</version>
         </plugin>
       </plugins>
     </pluginManagement>

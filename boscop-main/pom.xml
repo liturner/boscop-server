@@ -7,8 +7,8 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>de.turnertech.thw</groupId>
-  <artifactId>cop-server</artifactId>
+  <groupId>de.turnertech.boscop</groupId>
+  <artifactId>boscop-main</artifactId>
   <name>THW COP Server</name>
   <inceptionYear>2023</inceptionYear>
   <version>1.0-SNAPSHOT</version>
