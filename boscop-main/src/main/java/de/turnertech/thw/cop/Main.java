@@ -1,5 +1,6 @@
 package de.turnertech.thw.cop;
 
+import java.io.File;
 import java.util.EnumSet;
 
 import org.eclipse.jetty.security.ConstraintMapping;
@@ -29,7 +30,26 @@ import jakarta.servlet.Filter;
 public class Main {
     
     public static void main(String[] args) {
-        Server server = new Server(8080);
+        Settings.parseArguments(args);
+
+        /**
+         * Folder initialisation and basic startup
+         */
+
+        File dataFolder = Settings.getDataDirectory();
+        dataFolder.mkdirs();
+
+        File configFolder = Settings.getDataDirectory();
+        configFolder.mkdirs();
+
+        File featureTypesFolder = Settings.getFeatureTypeDirectory();
+        featureTypesFolder.mkdirs();
+        
+        /**
+         * Server startup
+         */
+
+        Server server = new Server(Settings.getPort());
 
         // See: https://www.programcreek.com/java-api-examples/?api=org.eclipse.jetty.security.ConstraintSecurityHandler
         HashLoginService loginService = new HashLoginService();
