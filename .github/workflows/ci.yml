@@ -17,14 +17,13 @@ jobs:
         cache: maven
 
     - name: Maven package
-      run: mvn -B package --no-transfer-progress --file pom.xml
+      run: mvn -B clean package --no-transfer-progress --file pom.xml
 
     - name: Publish build
       uses: actions/upload-artifact@v3
       with:
         path: | 
-          target/cop-server.jar
-          target/lib
+          boscop-jlink/target/*.zip
 
     - name: Login to Docker Hub
       uses: docker/login-action@v2
