@@ -25,4 +25,6 @@
         }
     ],
     "maven.view": "hierarchical",
+    "java.dependency.packagePresentation": "hierarchical",
+    "java.dependency.syncWithFolderExplorer": true,
 }

@@ -2,8 +2,9 @@ FROM eclipse-temurin:17-jre
 
 EXPOSE 8080
 
-COPY target/cop-server.jar /opt/thw-cop/cop-server.jar
-COPY target/lib /opt/thw-cop/lib
+COPY boscop-jlink/target/maven-jlink/default /opt/boscop
+COPY conf /opt/boscop/conf
+COPY frontend /opt/boscop/frontend
 
-WORKDIR /opt/thw-cop
-ENTRYPOINT ["java", "-jar", "/opt/thw-cop/cop-server.jar"]
+WORKDIR /opt/boscop
+ENTRYPOINT ["sh", "/opt/boscop/bin/BOSCOP"]

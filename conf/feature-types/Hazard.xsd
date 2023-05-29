@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<xsd:schema targetNamespace="urn:ns:de:turnertech:boscop" xmlns:boscop="urn:ns:de:turnertech:boscop" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" elementFormDefault="qualified" version="2.0.2">
+    <xsd:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+    <xsd:element name="Hazard" type="boscop:HazardType" substitutionGroup="gml:AbstractFeature"/>
+    <xsd:complexType name="HazardType">
+        <xsd:complexContent>
+            <xsd:extension base="gml:AbstractFeatureType">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" nillable="false" name="geometry" type="gml:PointPropertyType"/>
+                    <xsd:element minOccurs="1" nillable="false" name="hazardType" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>
