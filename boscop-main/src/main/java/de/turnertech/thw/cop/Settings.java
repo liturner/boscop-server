@@ -41,6 +41,14 @@ public class Settings {
         return Path.of(settingsStorage.getProperty(CFG), "feature-types").toAbsolutePath().toFile();
     }
 
+    public static File getFrontendDirectory() {
+        return Path.of("frontend").toAbsolutePath().toFile();
+    }
+
+    public static File getUsersFile() {
+        return Path.of(settingsStorage.getProperty(CFG), "users.txt").toAbsolutePath().toFile();
+    }
+
     public static int getPort() {
         return Integer.valueOf(settingsStorage.getProperty(PORT));
     }

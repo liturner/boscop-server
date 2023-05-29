@@ -1,6 +1,7 @@
 package de.turnertech.thw.cop;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.logging.Level;
 
@@ -30,7 +31,7 @@ import jakarta.servlet.Filter;
 
 public class Main {
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Settings.parseArguments(args);
 
         /**
@@ -45,6 +46,10 @@ public class Main {
 
         File featureTypesFolder = Settings.getFeatureTypeDirectory();
         featureTypesFolder.mkdirs();
+
+        File usersFile = Settings.getUsersFile();
+
+        File frontendDirectory = Settings.getFrontendDirectory();
         
         /**
          * Server startup
@@ -55,7 +60,7 @@ public class Main {
         // See: https://www.programcreek.com/java-api-examples/?api=org.eclipse.jetty.security.ConstraintSecurityHandler
         HashLoginService loginService = new HashLoginService();
         loginService.setName(Constants.REALM);
-        loginService.setConfig(Main.class.getResource("users.txt").toString());
+        loginService.setConfig(usersFile.toString());
 
         Constraint constraintDigest = new Constraint(Constraint.__DIGEST_AUTH, Constants.Roles.USER);
         constraintDigest.setAuthenticate(true);
@@ -104,10 +109,10 @@ public class Main {
         defaultServletHolder.setInitParameter("dirAllowed","true");
 
         ServletContextHandler contextHandler = new ServletContextHandler();
-        contextHandler.setBaseResource(Resource.newClassPathResource("webapp"));
+        contextHandler.setBaseResource(Resource.newResource(frontendDirectory.toString()));
         contextHandler.addServlet(defaultServletHolder, "/");
         contextHandler.addServlet(tokenServletHolder, "/token");
-        contextHandler.addServlet(errorServletHolder, Constants.Paths.ERROR);        
+        contextHandler.addServlet(errorServletHolder, Constants.Paths.ERROR);
         contextHandler.addServlet(wfsServletHolder, Constants.Paths.WFS);
         contextHandler.addFilter(wfsFilterHolder, Constants.Paths.WFS, EnumSet.of(DispatcherType.REQUEST));
         contextHandler.addServlet(trackerServletHolder, Constants.Paths.TRACKER_USER);
