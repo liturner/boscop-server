@@ -5,7 +5,7 @@
             "type": "java",
             "name": "Launch Main",
             "request": "launch",
-            "mainClass": "de.turnertech.boscop/de.turnertech.thw.cop.Main",
+            "mainClass": "de.turnertech.thw.cop.Main",
             "projectName": "boscop-main"
         }
     ]
