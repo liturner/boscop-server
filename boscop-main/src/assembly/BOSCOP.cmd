@@ -1,1 +1,3 @@
-java -jar "%~dp0lib\boscop.jar"
+@echo off
+set VM_OPTIONS=
+java %VM_OPTIONS% -jar "%~dp0lib\boscop.jar" %*

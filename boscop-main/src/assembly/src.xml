@@ -23,6 +23,7 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>BOSCOP.cmd</include>
+        <include>BOSCOP.sh</include>
       </includes>
     </fileSet>
     <fileSet>
