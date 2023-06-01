@@ -22,7 +22,6 @@ import de.turnertech.ows.servlet.ErrorServlet;
 import de.turnertech.ows.servlet.WfsServlet;
 import de.turnertech.thw.cop.Constants.Roles;
 import de.turnertech.thw.cop.headers.HeadersHandler;
-import de.turnertech.thw.cop.ows.WfsFilter;
 import de.turnertech.thw.cop.trackers.TrackerAccessFilter;
 import de.turnertech.thw.cop.trackers.TrackerServlet;
 import de.turnertech.thw.cop.trackers.TrackerSubServlet;
@@ -94,9 +93,6 @@ public class Main {
         Filter trackerAccessFilter = new TrackerAccessFilter();
         FilterHolder trackerAccessFilterHolder = new FilterHolder(trackerAccessFilter);
 
-        Filter wfsFilter = new WfsFilter();
-        FilterHolder wfsFilterHolder = new FilterHolder(wfsFilter);
-
         ServletHolder errorServletHolder = new ServletHolder("Error-Servlet", new ErrorServlet());
         ServletHolder tokenServletHolder = new ServletHolder(new TokenServlet());
         ServletHolder trackerServletHolder = new ServletHolder(new TrackerServlet());
@@ -114,7 +110,6 @@ public class Main {
         contextHandler.addServlet(tokenServletHolder, "/token");
         contextHandler.addServlet(errorServletHolder, Constants.Paths.ERROR);
         contextHandler.addServlet(wfsServletHolder, Constants.Paths.WFS);
-        contextHandler.addFilter(wfsFilterHolder, Constants.Paths.WFS, EnumSet.of(DispatcherType.REQUEST));
         contextHandler.addServlet(trackerServletHolder, Constants.Paths.TRACKER_USER);
         contextHandler.addServlet(trackerSubServletHolder, Constants.Paths.TRACKER_API);
         contextHandler.addFilter(trackerAccessFilterHolder, Constants.Paths.TRACKER_API, EnumSet.of(DispatcherType.REQUEST));
