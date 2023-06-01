@@ -1,4 +1,14 @@
+# Introduction
 
+BOSCOP is a project producing a set of products aimed at supplying the organizational structure of emergency deployments with more up to date and use full information in a centralised presentation, from decentralised sources.
+
+The key features include:
+
+- Storage of asset and deployment relevant location information.
+- Availability of the System in an offline configuration, for use in vehicles.
+- Interoperability via common and NATO standard interfaces (WFS).
+- Interactive WebGIS.
+- Collaboration accross numerous devices on one map.
 
 # Relevant Standards
 
