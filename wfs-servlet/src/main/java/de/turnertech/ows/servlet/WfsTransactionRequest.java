@@ -45,7 +45,7 @@ public class WfsTransactionRequest implements RequestHandler  {
             NodeList insertEntries = root.getElementsByTagName("Insert");
 
             for(int i = 0; i < deleteEntries.getLength(); ++i) {
-                Logging.LOG.info("Transaction - Delete");
+                Logging.LOG.fine("Transaction - Delete");
 
                 // Delete entries have one child element, and one attribute. There is no need to cast to Element here
                 // 15.3.4
@@ -98,7 +98,7 @@ public class WfsTransactionRequest implements RequestHandler  {
             }
 
             for(int i = 0; i < insertEntries.getLength(); ++i) {
-                Logging.LOG.info("Transaction - Insert");
+                Logging.LOG.fine("Transaction - Insert");
                 Element insertEntry = insertEntries.item(i) instanceof Element ? (Element)insertEntries.item(i) : null;
 
                 if(insertEntry == null) {

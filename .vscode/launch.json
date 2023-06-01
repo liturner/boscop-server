@@ -6,7 +6,8 @@
             "name": "Launch Main",
             "request": "launch",
             "mainClass": "de.turnertech.thw.cop.Main",
-            "projectName": "boscop-main"
+            "projectName": "boscop-main",
+            "vmArgs": "-Djava.util.logging.config.file=conf/logging.dev.properties"
         }
     ]
 }
