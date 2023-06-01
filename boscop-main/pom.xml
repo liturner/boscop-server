@@ -47,7 +47,7 @@
   </licenses>
 
   <build>
-    <finalName>${project.artifactId}</finalName>
+    <finalName>boscop</finalName>
     <resources>
       <resource>
         <directory>src/main/webapp</directory>
@@ -81,8 +81,26 @@
     </pluginManagement>
 
     <plugins>
-
-      <!-- Ensure a detailed MANIFEST is generated
+      <!-- Generate an Assembly -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assembly/src.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Ensure a detailed MANIFEST is generated  -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -92,14 +110,13 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
               <addClasspath>true</addClasspath>
-              <classpathPrefix>lib/</classpathPrefix>
               <mainClass>de.turnertech.thw.cop.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
       </plugin>
 
-       Download dependencies
+      <!-- Download dependencies
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

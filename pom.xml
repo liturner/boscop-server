@@ -10,7 +10,6 @@
 
   <description>Parent and Aggregator POM</description>
   <modules>
-    <module>boscop-jlink</module>
     <module>boscop-main</module>
     <module>wfs-servlet</module>
   </modules>
@@ -128,6 +127,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jlink-plugin</artifactId>
           <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.6.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
