@@ -29,12 +29,19 @@ public abstract class OwsContextFactory {
             throw new ServletException(OwsContextFactory.class.getSimpleName() + " returned null Namespace Schema Map");
         }
 
+        owsContext.setModelEncoderProvider(getModelEncoderProvider());
+        if(owsContext.getXmlNamespaceSchemaMap() == null) {
+            throw new ServletException(OwsContextFactory.class.getSimpleName() + " returned null Model Encoder Provider");
+        }
+
         return owsContext;
     }
 
     public abstract ModelProvider createModelProvider();
 
-    //public abstract ModelProvider createDecoderProvider();
+    public ModelEncoderProvider getModelEncoderProvider() {
+        return new DefaultModelEncoderProvider();
+    }
 
     public abstract WfsCapabilities getWfsCapabilities();
 

@@ -14,6 +14,8 @@ import org.w3c.dom.NodeList;
 import de.turnertech.ows.Logging;
 import de.turnertech.ows.common.ExceptionCode;
 import de.turnertech.ows.common.Model;
+import de.turnertech.ows.common.ModelEncoder;
+import de.turnertech.ows.common.ModelEncoderProvider;
 import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.common.OwsRequestContext;
 import de.turnertech.ows.common.RequestHandler;
@@ -148,6 +150,10 @@ public class WfsTransactionRequest implements RequestHandler  {
                 }
             }
 
+            ModelEncoderProvider modelEncoderProvider = owsContext.getModelEncoderProvider();
+            ModelEncoder encoder = modelEncoderProvider.getModelEncoder(requestContext, ModelEncoderProvider.GML32);
+
+            
             
         } catch (Exception e) {
             Logging.LOG.severe("Could not decode GML from Transaction");

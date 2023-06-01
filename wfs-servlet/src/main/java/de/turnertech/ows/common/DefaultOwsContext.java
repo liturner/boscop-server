@@ -9,6 +9,8 @@ public class DefaultOwsContext implements OwsContext {
     
     ModelProvider modelProvider;
 
+    ModelEncoderProvider modelEncoderProvider;
+
     Collection<WfsVersionValue> supportedWfsVersions;
 
     WfsCapabilities wfsCapabilities;
@@ -72,6 +74,15 @@ public class DefaultOwsContext implements OwsContext {
 
     void setXmlNamespaceSchemaMap(Map<String, String> xmlNamespaceSchemaMap) {
         this.xmlNamespaceSchemaMap = xmlNamespaceSchemaMap;
+    }
+
+    @Override
+    public ModelEncoderProvider getModelEncoderProvider() {
+        return modelEncoderProvider;
+    }
+
+    void setModelEncoderProvider(ModelEncoderProvider modelEncoderProvider) {
+        this.modelEncoderProvider = modelEncoderProvider;
     }
 
 }
