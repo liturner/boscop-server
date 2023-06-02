@@ -1,5 +1,7 @@
 package de.turnertech.thw.cop.model;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -14,6 +16,7 @@ import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.gml.SpatialReferenceSystem;
 import de.turnertech.thw.cop.Constants;
+import de.turnertech.thw.cop.Settings;
 
 public class AreaModel implements Model {
     
@@ -97,4 +100,8 @@ public class AreaModel implements Model {
         return boundingBox;
     }
 
+    @Override
+    public File getStorageLocation() {
+        return Paths.get(Settings.getDataDirectory().toString(), NAME + ".gml").toFile();
+    }
 }

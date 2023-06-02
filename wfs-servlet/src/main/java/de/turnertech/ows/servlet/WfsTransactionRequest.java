@@ -1,7 +1,11 @@
 package de.turnertech.ows.servlet;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,6 +39,7 @@ public class WfsTransactionRequest implements RequestHandler  {
     public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {       
         response.setContentType(RequestHandler.CONTENT_XML);
 
+        Set<Model> modelsToSave = new HashSet<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -97,6 +102,7 @@ public class WfsTransactionRequest implements RequestHandler  {
                 Model model = owsContext.getModelProvider().getModel(featureType);
                 Collection<IFeature> featuresToRemove = model.filter(ogcFilter);
                 model.removeAll(featuresToRemove);
+                modelsToSave.add(model);
             }
 
             for(int i = 0; i < insertEntries.getLength(); ++i) {
@@ -146,14 +152,24 @@ public class WfsTransactionRequest implements RequestHandler  {
                         Model model = owsContext.getModelProvider().getModel(featureType);
                         IFeature feature = FeatureDecoder.decode(featureEntry, new GmlDecoderContext(), featureType);
                         model.add(feature);
+                        modelsToSave.add(model);
                     }
                 }
             }
 
             ModelEncoderProvider modelEncoderProvider = owsContext.getModelEncoderProvider();
             ModelEncoder encoder = modelEncoderProvider.getModelEncoder(requestContext, ModelEncoderProvider.GML32);
-
             
+            for(Model model : modelsToSave) {
+                File saveFile = model.getStorageLocation();
+                try(FileOutputStream fout = new FileOutputStream(saveFile, false)) {
+                    encoder.encode(model, fout, owsContext, requestContext);
+                } catch (Exception e) {
+                    Logging.LOG.severe("Could not save changes! Potential data loss!");
+                    response.sendError(500, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), "transaction", "Could not save changes! Potential data loss!"));
+                    return;
+                }
+            }
             
         } catch (Exception e) {
             Logging.LOG.severe("Could not decode GML from Transaction");
