@@ -5,15 +5,18 @@ let selected;
 
 let draw;
 
+let boscopProjection = ol.proj.get('http://www.opengis.net/def/crs/EPSG/0/4326')
+
 const formatWFS = new ol.format.WFS({
   version: '2.0.0',
-  featureNS: 'urn:ns:de:turnertech:boscop'
+  featureNS: 'urn:ns:de:turnertech:boscop',
+  gmlFormat: new ol.format.GML32({
+    srsName: boscopProjection.getCode()
+  })
 });
 
 const copWfsSource = new ol.source.Vector({
-  format: new ol.format.GML32({
-    srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
-  }),
+  format: formatWFS.gmlFormat_,
   url: function (extent) {
     return (
       '/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=GetFeature&TYPENAMES=boscop:Area&' +
@@ -31,12 +34,12 @@ copWfsSource.on("removefeature", function (e) {
     featureNS: 'urn:ns:de:turnertech:boscop',
     featurePrefix: 'boscop',
     featureType: 'Area',
-    srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326',
+    srsName: boscopProjection.getCode(),
     version: '2.0.0',
     gmlOptions: {
       featureNS: 'urn:ns:de:turnertech:boscop',
       featureType: 'Area',
-      srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
+      srsName: boscopProjection.getCode()
     }
   });
   const xs = new XMLSerializer();
@@ -49,16 +52,38 @@ copWfsSource.on("removefeature", function (e) {
 });
 
 const unitSource = new ol.source.Vector({
-  format: new ol.format.GML32({
-    srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
-  }),
-  url: function (extent) {
-    return (
-      '/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=GetFeature&TYPENAMES=boscop:Unit&' +
-      'SRSNAME=http://www.opengis.net/def/crs/EPSG/0/4326&BBOX=' +
-      ol.proj.transformExtent(extent, 'EPSG:3857','EPSG:4326').join(',') +
-      ',http://www.opengis.net/def/crs/EPSG/0/4326'
-    );
+  format: formatWFS.gmlFormat_,
+  loader: function(extent, resolution, projection, success, failure) {
+    const proj = projection.getCode();
+    const url = '/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=GetFeature&TYPENAMES=boscop:Unit&' +
+                'SRSNAME=' + boscopProjection.getCode() + 
+                '&BBOX=' + ol.proj.transformExtent(extent, projection, boscopProjection).join(',') + ',' + boscopProjection.getCode()
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    const onError = function() {
+      unitSource.removeLoadedExtent(extent);
+      failure();
+    }
+    xhr.onerror = onError;
+    xhr.onload = function() {
+      if (xhr.status == 200) {
+        const features = unitSource.getFormat().readFeatures(xhr.responseText);
+        
+        // OpenLayers handles the PointType SRS incorrectly? This is a manual fix
+        // to get the correct EPSG:4326 latlon ordering
+        features.forEach((feature) => {
+          let newCoord = [feature.getGeometry().getFirstCoordinate()[1], feature.getGeometry().getFirstCoordinate()[0]]
+          feature.getGeometry().setCoordinates(newCoord, "XY")
+          feature.getGeometry().transform(boscopProjection, projection);
+        });
+
+        unitSource.addFeatures(features);
+        success(features);
+      } else {
+        onError();
+      }
+    }
+    xhr.send();
   },
   strategy: ol.loadingstrategy.bbox
 });
@@ -68,16 +93,38 @@ unitSource.on("removefeature", function (e) {
 });
 
 const hazardSource = new ol.source.Vector({
-  format: new ol.format.GML32({
-    srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
-  }),
-  url: function (extent) {
-    return (
-      '/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=GetFeature&TYPENAMES=boscop:Hazard&' +
-      'SRSNAME=http://www.opengis.net/def/crs/EPSG/0/4326&BBOX=' +
-      ol.proj.transformExtent(extent, 'EPSG:3857','EPSG:4326').join(',') +
-      ',http://www.opengis.net/def/crs/EPSG/0/4326'
-    );
+  format: formatWFS.gmlFormat_,
+  loader: function(extent, resolution, projection, success, failure) {
+    const proj = projection.getCode();
+    const url = '/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=GetFeature&TYPENAMES=boscop:Hazard&' +
+                'SRSNAME=' + boscopProjection.getCode() + 
+                '&BBOX=' + ol.proj.transformExtent(extent, projection, boscopProjection).join(',') + ',' + boscopProjection.getCode()
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    const onError = function() {
+      hazardSource.removeLoadedExtent(extent);
+      failure();
+    }
+    xhr.onerror = onError;
+    xhr.onload = function() {
+      if (xhr.status == 200) {
+        const features = hazardSource.getFormat().readFeatures(xhr.responseText);
+        
+        // OpenLayers handles the PointType SRS incorrectly? This is a manual fix
+        // to get the correct EPSG:4326 latlon ordering
+        features.forEach((feature) => {
+          let newCoord = [feature.getGeometry().getFirstCoordinate()[1], feature.getGeometry().getFirstCoordinate()[0]]
+          feature.getGeometry().setCoordinates(newCoord, "XY")
+          feature.getGeometry().transform(boscopProjection, projection);
+        });
+
+        hazardSource.addFeatures(features);
+        success(features);
+      } else {
+        onError();
+      }
+    }
+    xhr.send();
   },
   strategy: ol.loadingstrategy.bbox
 });
@@ -181,20 +228,20 @@ document.getElementById('typeSelect').addEventListener('change', function () {
     e.feature.setProperties({
       "areaType": typeSelect.value
     });
-    e.feature.getGeometry().transform('EPSG:3857', 'EPSG:4326');
+    e.feature.getGeometry().transform('EPSG:3857', boscopProjection);
     const node = formatWFS.writeTransaction([e.feature], null, null, {
       featureNS: 'urn:ns:de:turnertech:boscop',
       featurePrefix: 'boscop',
       featureType: 'Area',
-      srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326',
+      srsName: boscopProjection.getCode(),
       version: '2.0.0',
       gmlOptions: {
         featureNS: 'urn:ns:de:turnertech:boscop',
         featureType: 'Area',
-        srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
+        srsName: boscopProjection.getCode()
       }
     });
-    e.feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+    e.feature.getGeometry().transform(boscopProjection, 'EPSG:3857');
     const xs = new XMLSerializer();
     const payload = xs.serializeToString(node);
     console.log(payload);
@@ -220,7 +267,8 @@ document.getElementById('hazardSelect').addEventListener('change', function () {
     e.feature.setProperties({
       "hazardType": hazardSelect.value
     });
-    e.feature.getGeometry().transform('EPSG:3857', 'EPSG:4326');
+
+    e.feature.getGeometry().transform('EPSG:3857', boscopProjection);
     const node = formatWFS.writeTransaction([e.feature], null, null, {
       featureNS: 'urn:ns:de:turnertech:boscop',
       featurePrefix: 'boscop',
@@ -233,7 +281,7 @@ document.getElementById('hazardSelect').addEventListener('change', function () {
         srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
       }
     });
-    e.feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+    e.feature.getGeometry().transform(boscopProjection, 'EPSG:3857');
     const xs = new XMLSerializer();
     const payload = xs.serializeToString(node);
     console.log(payload);
@@ -260,7 +308,7 @@ document.getElementById('unitSelect').addEventListener('change', function () {
     e.feature.setProperties({
       "hazardType": unitSelect.value
     });
-    e.feature.getGeometry().transform('EPSG:3857', 'EPSG:4326');
+    e.feature.getGeometry().transform('EPSG:3857', boscopProjection);
     const node = formatWFS.writeTransaction([e.feature], null, null, {
       featureNS: 'urn:ns:de:turnertech:boscop',
       featurePrefix: 'boscop',
@@ -273,7 +321,7 @@ document.getElementById('unitSelect').addEventListener('change', function () {
         srsName: 'http://www.opengis.net/def/crs/EPSG/0/4326'
       }
     });
-    e.feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+    e.feature.getGeometry().transform(boscopProjection, 'EPSG:3857');
     const xs = new XMLSerializer();
     const payload = xs.serializeToString(node);
     console.log(payload);

@@ -25,6 +25,7 @@ import de.turnertech.thw.cop.headers.HeadersHandler;
 import de.turnertech.thw.cop.trackers.TrackerAccessFilter;
 import de.turnertech.thw.cop.trackers.TrackerServlet;
 import de.turnertech.thw.cop.trackers.TrackerSubServlet;
+import de.turnertech.thw.cop.trackers.TrackerToken;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 
@@ -34,7 +35,7 @@ public class Main {
         Settings.parseArguments(args);
 
         /**
-         * Folder initialisation and basic startup
+         * Folder initialisation and basic startup (Order dependant)
          */
 
         File dataFolder = Settings.getDataDirectory();
@@ -47,9 +48,15 @@ public class Main {
         featureTypesFolder.mkdirs();
 
         File usersFile = Settings.getUsersFile();
+        if(!usersFile.exists()) {
+            Logging.LOG.severe(() -> "Could not load Users.txt from the configured boscop.data directory. This file must exist with at least one user!. The current boscop.data directory is: " + Settings.getDataDirectory().toString());
+            System.exit(-1);
+        }
 
         File frontendDirectory = Settings.getFrontendDirectory();
         
+        TrackerToken.load();
+
         /**
          * Server startup
          */

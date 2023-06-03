@@ -52,6 +52,6 @@ public class TrackerSubServlet extends HttpServlet {
         }
         
         response.setStatus(HttpServletResponse.SC_OK);
-        Logging.LOG.fine("Update Tracker (API): " + opta);
+        Logging.LOG.fine(() -> "TrackerSubServlet: " + opta);
     }
 }

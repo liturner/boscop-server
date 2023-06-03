@@ -11,6 +11,8 @@ public interface OwsContext {
 
     public ModelProvider getModelProvider();
 
+    public ModelEncoderProvider getModelEncoderProvider();
+
     public WfsCapabilities getWfsCapabilities();
 
     public String getXmlNamespacePrefix(String namespace);

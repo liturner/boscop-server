@@ -1,5 +1,6 @@
 package de.turnertech.ows.common;
 
+import java.io.File;
 import java.util.Collection;
 
 import de.turnertech.ows.filter.BoundingBoxFilter;
@@ -22,5 +23,11 @@ public interface Model extends BoundingBoxFilter, BoundingBoxProvider {
     public boolean addAll(Collection<IFeature> dataObjects);
 
     public boolean removeAll(Collection<IFeature> dataObjects);
+
+    /**
+     * Returns an absolute path to the file storag for this {@link Model}
+     * @return an absolute path to the file storag for this {@link Model}
+     */
+    public File getStorageLocation();
     
 }

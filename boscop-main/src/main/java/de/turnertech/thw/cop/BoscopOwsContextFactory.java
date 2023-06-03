@@ -1,13 +1,18 @@
 package de.turnertech.thw.cop;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 
 import de.turnertech.ows.common.DefaultModelProvider;
+import de.turnertech.ows.common.Model;
 import de.turnertech.ows.common.ModelProvider;
 import de.turnertech.ows.common.OwsContextFactory;
 import de.turnertech.ows.common.WfsCapabilities;
+import de.turnertech.thw.cop.model.AreaFeatureListDecoder;
 import de.turnertech.thw.cop.model.AreaModel;
+import de.turnertech.thw.cop.model.HazardFeatureListDecoder;
 import de.turnertech.thw.cop.model.HazardModel;
 import de.turnertech.thw.cop.model.UnitModel;
 
@@ -16,8 +21,17 @@ public class BoscopOwsContextFactory extends OwsContextFactory {
     @Override
     public ModelProvider createModelProvider() {
         DefaultModelProvider modelProvider = new DefaultModelProvider();
-        modelProvider.putModel(AreaModel.INSTANCE.getFeatureType(), AreaModel.INSTANCE);
-        modelProvider.putModel(HazardModel.INSTANCE.getFeatureType(), HazardModel.INSTANCE);
+
+        File storage = Paths.get(Settings.getDataDirectory().toString(), AreaModel.TYPENAME + ".gml").toFile();
+        AreaFeatureListDecoder areaFeatureListDecoder = new AreaFeatureListDecoder();
+        Model featureList = areaFeatureListDecoder.decode(storage);
+        modelProvider.putModel(featureList.getFeatureType(), featureList);
+
+        storage = Paths.get(Settings.getDataDirectory().toString(), HazardModel.TYPENAME + ".gml").toFile();
+        HazardFeatureListDecoder hazardFeatureListDecoder = new HazardFeatureListDecoder();
+        featureList = hazardFeatureListDecoder.decode(storage);
+        modelProvider.putModel(featureList.getFeatureType(), featureList);
+
         modelProvider.putModel(UnitModel.INSTANCE.getFeatureType(), UnitModel.INSTANCE);
         return modelProvider;
     }
