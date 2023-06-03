@@ -46,7 +46,7 @@ public class Settings {
     }
 
     public static File getUsersFile() {
-        return Path.of(settingsStorage.getProperty(CFG), "users.txt").toAbsolutePath().toFile();
+        return Path.of(settingsStorage.getProperty(DATA), "Users.txt").toAbsolutePath().toFile();
     }
 
     public static int getPort() {

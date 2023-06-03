@@ -2,7 +2,7 @@ package de.turnertech.thw.cop.trackers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Optional;
+import java.util.Map.Entry;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
@@ -14,7 +14,6 @@ import de.turnertech.ows.servlet.ErrorServlet;
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.model.UnitModel;
-import de.turnertech.thw.cop.persistance.TrackerToken;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -93,18 +92,13 @@ public class TrackerServlet extends HttpServlet {
                     out.writeCharacters("Key");
                     out.writeEndElement();
                 out.writeEndElement();
-            for (IFeature tracker : UnitModel.INSTANCE.getAll()) {
-                Optional<String> trackerKey = TrackerToken.getKey(tracker.getPropertyValue("opta").toString());
-                if(trackerKey.isEmpty()) {
-                    Logging.LOG.severe("Tracker found with no key!");
-                    continue;
-                }
+            for (Entry<Object, Object> trackerKey : TrackerToken.entrySet()) {
                 out.writeStartElement("tr");
                     out.writeStartElement("td");
-                    out.writeCharacters(tracker.getPropertyValue("opta").toString());
+                    out.writeCharacters(trackerKey.getKey().toString());
                     out.writeEndElement();
                     out.writeStartElement("td");
-                    out.writeCharacters(trackerKey.get());
+                    out.writeCharacters(trackerKey.getValue().toString());
                     out.writeEndElement();
                 out.writeEndElement();
             }
@@ -156,7 +150,8 @@ public class TrackerServlet extends HttpServlet {
         if(newTracker == null) {
             newTracker = UnitModel.INSTANCE.getFeatureType().createInstance();
             TrackerToken.generateKey(opta);
-        }           
+            TrackerToken.save();
+        }
         newTracker.setPropertyValue("opta", opta);
         newTracker.setPropertyValue("geometry", new Point(Double.valueOf(lonString), Double.valueOf(latString)));
 

@@ -19,7 +19,7 @@ import de.turnertech.ows.gml.GmlDecoderContext;
 import de.turnertech.ows.gml.IFeature;
 import de.turnertech.thw.cop.Logging;
 
-public class HazardFeatureListDecoder extends FeatureListDecoder {
+public class AreaFeatureListDecoder extends FeatureListDecoder {
     
     @Override
     public Model decode(File file) {
@@ -28,7 +28,7 @@ public class HazardFeatureListDecoder extends FeatureListDecoder {
         factory.setNamespaceAware(true);
         factory.setIgnoringElementContentWhitespace(true);
         factory.setIgnoringComments(true);
-        FeatureType featureType = HazardModel.INSTANCE.getFeatureType();
+        FeatureType featureType = AreaModel.INSTANCE.getFeatureType();
         // TODO: factory.setSchema(loadSchemaFromConfig...);
 
         try(FileInputStream fis = new FileInputStream(file)) {
@@ -44,19 +44,19 @@ public class HazardFeatureListDecoder extends FeatureListDecoder {
                 
                 IFeature decodedFeature = FeatureDecoder.decode(feature, decoderContext, featureType);
                 if(decodedFeature == null) {
-                    Logging.LOG.severe("HazardFeatureListDecoder: Could not decode feature!");
+                    Logging.LOG.severe("AreaFeatureListDecoder: Could not decode feature!");
                     continue;
                 }
 
-                HazardModel.INSTANCE.add(decodedFeature);
+                AreaModel.INSTANCE.add(decodedFeature);
             }
 
         } catch (Exception e) {
-            Logging.LOG.severe("HazardFeatureListDecoder: Could not decode model");
+            Logging.LOG.severe("AreaFeatureListDecoder: Could not decode model");
         }
 
-        Logging.LOG.fine("HazardFeatureListDecoder: Decoded Hazard FeatureList");
-        return HazardModel.INSTANCE;
+        Logging.LOG.fine("AreaFeatureListDecoder: Decoded Hazard FeatureList");
+        return AreaModel.INSTANCE;
     }
 
 }

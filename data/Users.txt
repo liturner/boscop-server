@@ -1,1 +1,2 @@
 admin: adminpass,admin,user
+user: userpass,user

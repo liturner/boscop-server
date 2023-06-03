@@ -41,6 +41,10 @@ public class WfsTransactionRequest implements RequestHandler  {
 
         Set<Model> modelsToSave = new HashSet<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        factory.setIgnoringElementContentWhitespace(true);
+        factory.setIgnoringComments(true);
+        
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(request.getInputStream());

@@ -19,7 +19,7 @@ public class FeatureDecoder {
                 continue;
             }
 
-            String propertyName = propertyNode.getNodeName();
+            String propertyName = propertyNode.getLocalName();
             String propertyNamespace = propertyNode.getNamespaceURI();
 
             //TODO: Here we need to rely on the FeatureType, and its map of FeatureProperty instances, which will
