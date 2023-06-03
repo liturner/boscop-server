@@ -3,7 +3,6 @@ let styleCache = {};
 let selectedThings = []
 
 export function setSelectedSource(source) {
-  console.log("set selected source")
   selectedThings = source;
 }
 
@@ -32,7 +31,6 @@ export class OptaStyle {
   }
 
   static styleFunction(feature) {
-    console.log('Styling Opta');
     const opta = feature.get('opta');
     let style = styleCache[opta];
     if (!style) {
@@ -107,7 +105,6 @@ export class HazardStyle {
   }
 
   static styleSelectedFunction(feature) {
-    console.log('Styling Selected Hazard');
 
     const hazardType = feature.get('hazardType');
     let style = HazardStyle.selectedStyleCache[hazardType];
@@ -127,14 +124,10 @@ export class HazardStyle {
 
   static styleFunction(feature) {    
     for(let selectedFeature of selectedThings) {
-      console.log(selectedFeature.getId())
-      console.log(feature.getId())
       if(selectedFeature.getId() === feature.getId()) {
         return HazardStyle.styleSelectedFunction(feature);
       }
     }
-
-    console.log('Styling Regular Hazard');
 
     const hazardType = feature.get('hazardType');
     let style = styleCache[hazardType];
@@ -179,7 +172,6 @@ export class AreaStyle {
   }
 
   static styleSelectedFunction(feature) {
-    console.log('Styling Selected Area');
     return new ol.style.Style({
       //Width of the stroke
       stroke: new ol.style.Stroke({
@@ -197,14 +189,11 @@ export class AreaStyle {
   static styleFunction(feature) {
 
     for(let selectedFeature of selectedThings) {
-      console.log(selectedFeature.getId())
-      console.log(feature.getId())
       if(selectedFeature.getId() === feature.getId()) {
         return AreaStyle.styleSelectedFunction(feature);
       }
     }
 
-    console.log('Styling Regular Area');
     return new ol.style.Style({
       //Width of the stroke
       stroke: new ol.style.Stroke({
