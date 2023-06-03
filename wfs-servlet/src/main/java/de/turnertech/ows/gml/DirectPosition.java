@@ -48,7 +48,7 @@ public class DirectPosition implements GmlElement {
     public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
-            out.writeCharacters(Double.toString(getX()) + " " + Double.toString(getY()));
+            out.writeCharacters(Double.toString(getY()) + " " + Double.toString(getX()));
             out.writeEndElement();
         } catch (Exception e) {
             Logging.LOG.severe("Could not get GML for DirectPosition");
