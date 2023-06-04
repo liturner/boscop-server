@@ -4,6 +4,4 @@ DIR=`dirname $0`
 
 # The exec is important and makes the process run as a single parent 
 # thread, not a parent and child. (#11)
-echo Before
-java $VM_OPTIONS -jar $DIR/lib/boscop.jar "$@"
-echo After
+exec java $VM_OPTIONS -jar $DIR/lib/boscop.jar "$@"

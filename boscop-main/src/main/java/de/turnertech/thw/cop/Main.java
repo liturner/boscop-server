@@ -34,14 +34,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Settings.parseArguments(args);
 
-
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-        @Override
-            public void run() {
-                System.out.println("Inside Add Shutdown Hook");
-            }   
-        }); 
-
         /**
          * Folder initialisation and basic startup (Order dependant)
          */
