@@ -13,6 +13,7 @@
       <includes>
         <include>conf/</include>
         <include>frontend/</include>
+        <include>data/</include>
         <include>README*</include>
         <include>LICENSE*</include>
         <include>NOTICE*</include>
