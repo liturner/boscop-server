@@ -19,36 +19,44 @@ public class TrackerSubServlet extends HttpServlet {
         final Optional<String> latString = Optional.ofNullable(request.getParameter("lat"));
         final Optional<String> lonString = Optional.ofNullable(request.getParameter("lon"));
 
-        final String opta = request.getParameter("opta");
+        final String opta = request.getParameter(UnitModel.OPTA_FIELD);
         if(opta == null) {
             // Server Error, because the filter should already have prevented us getting here.
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "opta parameter must be present.");
             return;
         }
 
+        Optional<String> apiKey = TrackerToken.getKey(opta);
+        if(apiKey.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "opta is not registered.");
+            return;
+        }
+
         IFeature existingTracker = null;
         for(IFeature tracker : UnitModel.INSTANCE.getAll()) {
-            if(opta.equals(tracker.getPropertyValue("opta"))) {
+            if(opta.equals(tracker.getPropertyValue(UnitModel.OPTA_FIELD))) {
                 existingTracker = tracker;
                 break;
             }
         }
-
         if(existingTracker == null) {
-            // Server Error, because the filter should already have prevented us getting here.
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "opta is not registered as a tracker.");
-            return;
+            // This can occur after a restart. There is a stored Key, but no active tracker.
+            existingTracker = UnitModel.INSTANCE.getFeatureType().createInstance();
+            existingTracker.setPropertyValue(UnitModel.ID_FIELD, opta);
+            existingTracker.setPropertyValue(UnitModel.OPTA_FIELD, opta);
+            existingTracker.setPropertyValue(UnitModel.GEOMETRY_FIELD, new Point(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
+            UnitModel.INSTANCE.add(existingTracker);
         }
 
-        Point trackerLocation = (Point)existingTracker.getPropertyValue("geometry");
+        Point trackerLocation = (Point)existingTracker.getPropertyValue(UnitModel.GEOMETRY_FIELD);
 
         if(latString.isPresent()) {
             trackerLocation.setY(Double.valueOf(latString.get()));
-            existingTracker.setPropertyValue("geometry", trackerLocation);
+            existingTracker.setPropertyValue(UnitModel.GEOMETRY_FIELD, trackerLocation);
         }
         if(lonString.isPresent()) {
             trackerLocation.setX(Double.valueOf(lonString.get()));
-            existingTracker.setPropertyValue("geometry", trackerLocation);
+            existingTracker.setPropertyValue(UnitModel.GEOMETRY_FIELD, trackerLocation);
         }
         
         response.setStatus(HttpServletResponse.SC_OK);
