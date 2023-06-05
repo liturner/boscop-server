@@ -17,6 +17,11 @@ nav {
   position: relative;
 }
 
+main {
+  order: 50;
+  height: 100%;
+}
+
 footer {
   background-color: #007ACB;
   height: 50px;
@@ -63,6 +68,13 @@ footer {
 #insertHazard {
   width: 75px;
 }
+
+#tracker-table {
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 
 nav li {
   display: inline-block;

@@ -56,60 +56,90 @@ public class TrackerServlet extends HttpServlet {
 
             out.writeStartElement("body");
 
-            out.writeStartElement("form");
-            out.writeAttribute("action", "/tracker");
-            out.writeAttribute("method", "post");
-                out.writeStartElement("label");
-                    out.writeAttribute("for", "fopta");
-                    out.writeCharacters("OPTA: (e.g. BUTHWND ONEB 2110)");
-                out.writeEndElement();
-                out.writeEmptyElement("br");
-
-                out.writeEmptyElement("input");
-                out.writeAttribute("type", "text");
-                out.writeAttribute("id", "fopta");
-                out.writeAttribute("name", "opta");
-
-                out.writeEmptyElement("input");
-                out.writeAttribute("type", "hidden");
-                out.writeAttribute("name", "lat");
-                out.writeAttribute("value", "0.0");
-
-                out.writeEmptyElement("input");
-                out.writeAttribute("type", "hidden");
-                out.writeAttribute("name", "lon");
-                out.writeAttribute("value", "0.0");
-
-                out.writeEmptyElement("input");
-                out.writeAttribute("type", "submit");
-                out.writeAttribute("value", "Submit");
-            out.writeEndElement();
-
-            out.writeStartElement("table");
-            out.writeAttribute("class", "table");
-                out.writeStartElement("tr");
-                    out.writeStartElement("th");
-                    out.writeCharacters("OPTA");
+            out.writeStartElement("nav");
+                out.writeStartElement("ul");
+                    out.writeStartElement("li");
+                        out.writeStartElement("a");
+                            out.writeAttribute("href", "/");
+                            out.writeCharacters("Map");
+                        out.writeEndElement();
                     out.writeEndElement();
-                    out.writeStartElement("th");
-                    out.writeCharacters("Key");
+                    out.writeStartElement("li");
+                        out.writeStartElement("a");
+                            out.writeAttribute("href", "tracker");
+                            out.writeAttribute("class", "active");
+                            out.writeCharacters("Trackers");
+                        out.writeEndElement();
+                    out.writeEndElement();
+                    out.writeStartElement("li");
+                        out.writeStartElement("a");
+                            out.writeAttribute("href", "api");
+                            out.writeCharacters("API");
+                        out.writeEndElement();
                     out.writeEndElement();
                 out.writeEndElement();
-            for (Entry<Object, Object> trackerKey : TrackerToken.entrySet()) {
-                out.writeStartElement("tr");
-                    out.writeStartElement("td");
-                    out.writeCharacters(trackerKey.getKey().toString());
+            out.writeEndElement();
+
+            out.writeStartElement("main");
+                out.writeStartElement("form");
+                out.writeAttribute("action", "/tracker");
+                out.writeAttribute("method", "post");
+                    out.writeStartElement("label");
+                        out.writeAttribute("for", "fopta");
+                        out.writeCharacters("OPTA: (e.g. BUTHWND ONEB 2110)");
                     out.writeEndElement();
-                    out.writeStartElement("td");
-                    out.writeCharacters(trackerKey.getValue().toString());
-                    out.writeEndElement();
+                    out.writeEmptyElement("br");
+
+                    out.writeEmptyElement("input");
+                    out.writeAttribute("type", "text");
+                    out.writeAttribute("id", "fopta");
+                    out.writeAttribute("name", "opta");
+
+                    out.writeEmptyElement("input");
+                    out.writeAttribute("type", "hidden");
+                    out.writeAttribute("name", "lat");
+                    out.writeAttribute("value", "0.0");
+
+                    out.writeEmptyElement("input");
+                    out.writeAttribute("type", "hidden");
+                    out.writeAttribute("name", "lon");
+                    out.writeAttribute("value", "0.0");
+
+                    out.writeEmptyElement("input");
+                    out.writeAttribute("type", "submit");
+                    out.writeAttribute("value", "Submit");
                 out.writeEndElement();
-            }
-            out.writeEndElement();
 
-            out.writeEndElement();
+                out.writeStartElement("table");
+                    out.writeAttribute("id", "tracker-table");
+                    out.writeAttribute("class", "table");
+                    out.writeStartElement("tr");
+                        out.writeStartElement("th");
+                        out.writeCharacters("OPTA");
+                        out.writeEndElement();
+                        out.writeStartElement("th");
+                        out.writeCharacters("Key");
+                        out.writeEndElement();
+                    out.writeEndElement();
+                for (Entry<Object, Object> trackerKey : TrackerToken.entrySet()) {
+                    out.writeStartElement("tr");
+                        out.writeStartElement("td");
+                        out.writeCharacters(trackerKey.getKey().toString());
+                        out.writeEndElement();
+                        out.writeStartElement("td");
+                        out.writeCharacters(trackerKey.getValue().toString());
+                        out.writeEndElement();
+                    out.writeEndElement();
+                }
+                out.writeEndElement();
+                out.writeEndElement();
 
-            out.writeEndElement();
+                out.writeStartElement("footer");
+                out.writeEndElement();
+
+                out.writeEndElement(); // body
+
+            out.writeEndElement(); // html
         } catch (Exception e) {
             response.sendError(500, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PROCESSING_FAILED.toString(), "GetFeatures", "XML Construction of the response failed."));
         }
