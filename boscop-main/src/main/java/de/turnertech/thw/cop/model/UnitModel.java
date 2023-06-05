@@ -23,6 +23,12 @@ public class UnitModel implements Model {
     public static final UnitModel INSTANCE = new UnitModel();
 
     public static final String TYPENAME = "Unit";
+    
+    public static final String ID_FIELD = "id";
+    
+    public static final String OPTA_FIELD = "opta";
+
+    public static final String GEOMETRY_FIELD = "geometry";
 
     private static final List<IFeature> features = new LinkedList<>();
 
@@ -31,9 +37,9 @@ public class UnitModel implements Model {
     private UnitModel() {
         featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
         featureType.setSrs(SpatialReferenceSystem.EPSG4327);
-        featureType.putProperty(new FeatureProperty("id", FeaturePropertyType.ID));
-        featureType.putProperty(new FeatureProperty("opta", FeaturePropertyType.TEXT));
-        featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.POINT));
+        featureType.putProperty(new FeatureProperty(ID_FIELD, FeaturePropertyType.ID));
+        featureType.putProperty(new FeatureProperty(OPTA_FIELD, FeaturePropertyType.TEXT));
+        featureType.putProperty(new FeatureProperty(GEOMETRY_FIELD, FeaturePropertyType.POINT));
     }
 
     @Override

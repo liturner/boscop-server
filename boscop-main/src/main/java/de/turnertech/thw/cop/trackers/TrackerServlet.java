@@ -46,6 +46,9 @@ public class TrackerServlet extends HttpServlet {
             out.writeEmptyElement("link");
             out.writeAttribute("rel", "stylesheet");
             out.writeAttribute("href", "bootstrap/bootstrap.min.css");
+            out.writeEmptyElement("link");
+            out.writeAttribute("rel", "stylesheet");
+            out.writeAttribute("href", "boscop/style.css");
             out.writeStartElement("title");
             out.writeCharacters("BOSCOP Trackers");
             out.writeEndElement();
@@ -140,7 +143,7 @@ public class TrackerServlet extends HttpServlet {
         IFeature newTracker = null;
         boolean isNewTracker = true;
         for(IFeature tracker : UnitModel.INSTANCE.getAll()) {
-            if(opta.equals(tracker.getPropertyValue("opta"))) {
+            if(opta.equals(tracker.getPropertyValue(UnitModel.OPTA_FIELD))) {
                 newTracker = tracker;
                 isNewTracker = false;
                 break;
@@ -152,8 +155,10 @@ public class TrackerServlet extends HttpServlet {
             TrackerToken.generateKey(opta);
             TrackerToken.save();
         }
-        newTracker.setPropertyValue("opta", opta);
-        newTracker.setPropertyValue("geometry", new Point(Double.valueOf(lonString), Double.valueOf(latString)));
+
+        newTracker.setPropertyValue(UnitModel.ID_FIELD, opta);
+        newTracker.setPropertyValue(UnitModel.OPTA_FIELD, opta);
+        newTracker.setPropertyValue(UnitModel.GEOMETRY_FIELD, new Point(Double.valueOf(lonString), Double.valueOf(latString)));
 
         if(isNewTracker) {
             UnitModel.INSTANCE.add(newTracker);

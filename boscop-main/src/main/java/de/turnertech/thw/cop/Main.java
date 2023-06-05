@@ -101,7 +101,6 @@ public class Main {
         FilterHolder trackerAccessFilterHolder = new FilterHolder(trackerAccessFilter);
 
         ServletHolder errorServletHolder = new ServletHolder("Error-Servlet", new ErrorServlet());
-        ServletHolder tokenServletHolder = new ServletHolder(new TokenServlet());
         ServletHolder trackerServletHolder = new ServletHolder(new TrackerServlet());
         ServletHolder trackerSubServletHolder = new ServletHolder(new TrackerSubServlet());
 
@@ -114,7 +113,6 @@ public class Main {
         ServletContextHandler contextHandler = new ServletContextHandler();
         contextHandler.setBaseResource(Resource.newResource(frontendDirectory.toString()));
         contextHandler.addServlet(defaultServletHolder, "/");
-        contextHandler.addServlet(tokenServletHolder, "/token");
         contextHandler.addServlet(errorServletHolder, Constants.Paths.ERROR);
         contextHandler.addServlet(wfsServletHolder, Constants.Paths.WFS);
         contextHandler.addServlet(trackerServletHolder, Constants.Paths.TRACKER_USER);
