@@ -20,12 +20,12 @@ public class DirectPositionList extends ArrayList<DirectPosition> implements Gml
 
     public DirectPositionList(int initialCapacity) {
         super(initialCapacity);
-        this.srs = SpatialReferenceSystem.EPSG4327;
+        this.srs = SpatialReferenceSystem.EPSG4326;
     }
 
     public DirectPositionList(DirectPosition... positions) {
         super(Arrays.asList(positions));
-        this.srs = SpatialReferenceSystem.EPSG4327;
+        this.srs = SpatialReferenceSystem.EPSG4326;
     }
 
     public SpatialReferenceSystem getSrs() {

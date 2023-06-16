@@ -32,7 +32,7 @@ public class AreaModel implements Model {
 
     private AreaModel() {
         featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
-        featureType.setSrs(SpatialReferenceSystem.EPSG4327);
+        featureType.setSrs(SpatialReferenceSystem.EPSG4326);
         featureType.setTitle(NAME);
 
         featureType.putProperty(new FeatureProperty("id", FeaturePropertyType.ID));

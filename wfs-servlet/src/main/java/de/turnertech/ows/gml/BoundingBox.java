@@ -121,7 +121,7 @@ public class BoundingBox implements GmlElement {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
                 out.writeStartElement(GmlElement.NAMESPACE, "Envelope");
-                out.writeAttribute(GmlElement.NAMESPACE, "srsName", SpatialReferenceSystem.EPSG4327.getUri());
+                out.writeAttribute(GmlElement.NAMESPACE, "srsName", SpatialReferenceSystem.EPSG4326.getUri());
                     out.writeStartElement(GmlElement.NAMESPACE, "lowerCorner");
                         out.writeCharacters(decimalFormat.format(south) + " " + decimalFormat.format(west));
                     out.writeEndElement();

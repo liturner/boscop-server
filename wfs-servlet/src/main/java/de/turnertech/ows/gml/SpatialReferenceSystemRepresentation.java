@@ -6,9 +6,9 @@ public class SpatialReferenceSystemRepresentation {
 
     public static final int URN = 2;
 
-    public static final SpatialReferenceSystemRepresentation EPSG4327_URI = new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4327, URI);
+    public static final SpatialReferenceSystemRepresentation EPSG4327_URI = new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4326, URI);
 
-    public static final SpatialReferenceSystemRepresentation EPSG4327_URN = new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4327, URN);
+    public static final SpatialReferenceSystemRepresentation EPSG4327_URN = new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4326, URN);
 
     public SpatialReferenceSystem srs;
 
@@ -17,6 +17,10 @@ public class SpatialReferenceSystemRepresentation {
     public SpatialReferenceSystemRepresentation(SpatialReferenceSystem srs, int representation) {
         this.representation = representation;
         this.srs = srs;
+    }
+
+    public SpatialReferenceSystem getSrs() {
+        return srs;
     }
 
 }
