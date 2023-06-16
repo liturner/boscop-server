@@ -6,6 +6,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 public interface GmlElement {
     

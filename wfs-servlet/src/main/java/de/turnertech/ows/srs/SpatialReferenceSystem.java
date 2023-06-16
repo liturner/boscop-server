@@ -1,4 +1,4 @@
-package de.turnertech.ows.gml;
+package de.turnertech.ows.srs;
 
 public enum SpatialReferenceSystem {
 

@@ -9,5 +9,5 @@ module de.turnertech.ows {
     exports de.turnertech.ows.gml;
     exports de.turnertech.ows.parameter;
     exports de.turnertech.ows.servlet;
-     
+    exports de.turnertech.ows.srs;     
 }

@@ -6,6 +6,8 @@ import java.util.Arrays;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 /**
  * gml:posList

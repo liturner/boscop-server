@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import de.turnertech.ows.gml.DirectPosition;
-import de.turnertech.ows.gml.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
 
 public class DirectPositionTests {
     

@@ -5,6 +5,7 @@ import javax.xml.stream.XMLStreamWriter;
 import de.turnertech.ows.Logging;
 import de.turnertech.ows.common.Unit;
 import de.turnertech.ows.common.UnitConverter;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 /**
  * gml:measure

@@ -14,7 +14,7 @@ import de.turnertech.ows.gml.FeatureProperty;
 import de.turnertech.ows.gml.FeaturePropertyType;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
-import de.turnertech.ows.gml.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.Settings;
 

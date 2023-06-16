@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 public class Feature implements IFeature {
 

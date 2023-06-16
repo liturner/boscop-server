@@ -12,7 +12,7 @@ import javax.xml.stream.XMLStreamWriter;
 import de.turnertech.ows.gml.BoundingBox;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
-import de.turnertech.ows.gml.SpatialReferenceSystemRepresentation;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 public class Gml32ModelEncoder implements ModelEncoder {
 

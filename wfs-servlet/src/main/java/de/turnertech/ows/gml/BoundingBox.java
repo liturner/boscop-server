@@ -7,6 +7,8 @@ import java.util.Locale;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 public class BoundingBox implements GmlElement {
 
