@@ -3,6 +3,9 @@ package de.turnertech.ows.srs;
 public enum SpatialReferenceSystem {
 
     /** WGS84 */
+    CRS84("OGC:CRS84", "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "urn:ogc:def:crs:OGC:1.3:CRS84", (byte)2, (byte)0, (byte)1),
+
+    /** WGS84 */
     EPSG4326("EPSG:4326", "http://www.opengis.net/def/crs/EPSG/0/4326", "urn:ogc:def:crs:EPSG::4326", (byte)2, (byte)1, (byte)0),
 
     /** WebMercator */

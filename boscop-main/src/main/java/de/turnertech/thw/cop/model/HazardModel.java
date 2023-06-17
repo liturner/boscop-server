@@ -32,7 +32,7 @@ public class HazardModel implements Model {
 
     private HazardModel() {
         featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
-        featureType.setSrs(SpatialReferenceSystem.EPSG4326);
+        featureType.setSrs(SpatialReferenceSystem.CRS84);
         featureType.putProperty(new FeatureProperty("id", FeaturePropertyType.ID));
         featureType.putProperty(new FeatureProperty("hazardType", FeaturePropertyType.TEXT));
         featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.POINT));

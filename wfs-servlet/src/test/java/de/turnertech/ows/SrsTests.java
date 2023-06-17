@@ -76,4 +76,84 @@ public class SrsTests {
         assertTrue(convertedPosition.get().getY() > -80.001);
     }
 
+    @Test
+    void CRS84toEPSG4326() {
+        DirectPosition pos = new DirectPosition(SpatialReferenceSystem.CRS84, 12.0, 18.0);
+        assertEquals("12.0 18.0", pos.toString());
+        Optional<DirectPosition> convertedPosition = SpatialReferenceSystemConverter.convertDirectPosition(pos, SpatialReferenceSystem.EPSG4326);
+        assertNotNull(convertedPosition);
+        assertTrue(convertedPosition.isPresent());
+        assertEquals(12.0, convertedPosition.get().getX());
+        assertEquals(18.0, convertedPosition.get().getY());
+        assertEquals("18.0 12.0", convertedPosition.get().toString());
+    }
+
+    @Test
+    void EPSG4326toCRS84() {
+        DirectPosition pos = new DirectPosition(SpatialReferenceSystem.EPSG4326, 12.0, 18.0);
+        assertEquals("18.0 12.0", pos.toString());
+        Optional<DirectPosition> convertedPosition = SpatialReferenceSystemConverter.convertDirectPosition(pos, SpatialReferenceSystem.CRS84);
+        assertNotNull(convertedPosition);
+        assertTrue(convertedPosition.isPresent());
+        assertEquals(12.0, convertedPosition.get().getX());
+        assertEquals(18.0, convertedPosition.get().getY());
+        assertEquals("12.0 18.0", convertedPosition.get().toString());
+    }
+
+    @Test
+    void EPSG3857toCRS84() {
+        DirectPosition pos = new DirectPosition(SpatialReferenceSystem.EPSG3857, 0.0, 0.0);
+        Optional<DirectPosition> convertedPosition = SpatialReferenceSystemConverter.convertDirectPosition(pos, SpatialReferenceSystem.CRS84);
+        assertNotNull(convertedPosition);
+        assertTrue(convertedPosition.isPresent());
+        assertEquals(0.0, convertedPosition.get().getX());
+        assertEquals(0.0, convertedPosition.get().getY());
+
+        pos = new DirectPosition(SpatialReferenceSystem.EPSG3857, 1113194.9079, 1118889.9748);
+        convertedPosition = SpatialReferenceSystemConverter.convertDirectPosition(pos, SpatialReferenceSystem.CRS84);
+        assertNotNull(convertedPosition);
+        assertTrue(convertedPosition.isPresent());
+        assertTrue(convertedPosition.get().getX() > 9.999);
+        assertTrue(convertedPosition.get().getX() < 10.001);
+        assertTrue(convertedPosition.get().getY() > 9.999);
+        assertTrue(convertedPosition.get().getY() < 10.001);
+
+        pos = new DirectPosition(SpatialReferenceSystem.EPSG3857, -8905559.2634, -15538711.0963);
+        convertedPosition = SpatialReferenceSystemConverter.convertDirectPosition(pos, SpatialReferenceSystem.CRS84);
+        assertNotNull(convertedPosition);
+        assertTrue(convertedPosition.isPresent());
+        assertTrue(convertedPosition.get().getX() < -79.999);
+        assertTrue(convertedPosition.get().getX() > -80.001);
+        assertTrue(convertedPosition.get().getY() < -79.999);
+        assertTrue(convertedPosition.get().getY() > -80.001);
+    }
+
+    @Test
+    void CRS84toEPSG3857() {
+        DirectPosition pos = new DirectPosition(SpatialReferenceSystem.CRS84, 0.0, 0.0);
+        Optional<DirectPosition> convertedPosition = SpatialReferenceSystemConverter.convertDirectPosition(pos, SpatialReferenceSystem.EPSG3857);
+        assertNotNull(convertedPosition);
+        assertTrue(convertedPosition.isPresent());
+        assertEquals(0.0, convertedPosition.get().getX());
+        assertEquals(0.0, convertedPosition.get().getY());
+
+        pos = new DirectPosition(SpatialReferenceSystem.CRS84, 10.0, 10.0);
+        convertedPosition = SpatialReferenceSystemConverter.convertDirectPosition(pos, SpatialReferenceSystem.EPSG3857);
+        assertNotNull(convertedPosition);
+        assertTrue(convertedPosition.isPresent());
+        assertTrue(convertedPosition.get().getX() > 1113194.90);
+        assertTrue(convertedPosition.get().getX() < 1113194.91);
+        assertTrue(convertedPosition.get().getY() > 1118889.97);
+        assertTrue(convertedPosition.get().getY() < 1118889.98);
+
+        pos = new DirectPosition(SpatialReferenceSystem.CRS84, -80.0, -80.0);
+        convertedPosition = SpatialReferenceSystemConverter.convertDirectPosition(pos, SpatialReferenceSystem.EPSG3857);
+        assertNotNull(convertedPosition);
+        assertTrue(convertedPosition.isPresent());
+        assertTrue(convertedPosition.get().getX() < -8905559.26);
+        assertTrue(convertedPosition.get().getX() > -8905559.27);
+        assertTrue(convertedPosition.get().getY() < -15538711.09);
+        assertTrue(convertedPosition.get().getY() > -15538711.10);
+    }
+
 }

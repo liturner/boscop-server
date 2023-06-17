@@ -5,6 +5,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Optional;
 
+import de.turnertech.ows.Logging;
 import de.turnertech.ows.gml.DirectPosition;
 
 public class SpatialReferenceSystemConverter {
@@ -20,13 +21,37 @@ public class SpatialReferenceSystemConverter {
             return Optional.of(pos);
         }
 
-        if(SpatialReferenceSystem.EPSG3857.equals(pos.getSrs()) && SpatialReferenceSystem.EPSG4326.equals(targetSrs)) {
-            return Optional.of(convertEPSG3857toEPSG4326(pos));
-        } else if(SpatialReferenceSystem.EPSG4326.equals(pos.getSrs()) && SpatialReferenceSystem.EPSG3857.equals(targetSrs)) {
-            return Optional.of(convertEPSG4326toEPSG3857(pos));
+        DirectPosition epsg4326Pos = null;
+        switch(pos.getSrs()) {
+            case CRS84:
+                epsg4326Pos = convertCRS84toEPSG4326(pos);
+                break;
+            case EPSG3857:
+                epsg4326Pos = convertEPSG3857toEPSG4326(pos);
+                break;
+            case EPSG4326:
+                epsg4326Pos = pos;
+                break;
+            default:
+                Logging.LOG.severe("Could not convert from unsupported SRS: "+ pos.getSrs().toString());
+                return Optional.empty();
         }
 
-        return Optional.empty();
+        switch(targetSrs) {
+            case CRS84:
+                return Optional.of(convertEPSG4326toCRS84(epsg4326Pos));
+            case EPSG3857:
+                return Optional.of(convertEPSG4326toEPSG3857(epsg4326Pos));
+            case EPSG4326:
+                return Optional.of(epsg4326Pos);
+            default:
+                Logging.LOG.severe("Could not convert from unsupported SRS: "+ pos.getSrs().toString());
+                return Optional.empty();
+        }
+    }
+
+    private static DirectPosition convertEPSG4326toCRS84(DirectPosition pos) {
+        return new DirectPosition(SpatialReferenceSystem.CRS84, pos.getX(), pos.getY());
     }
 
     private static DirectPosition convertEPSG4326toEPSG3857(DirectPosition pos) {
@@ -36,6 +61,10 @@ public class SpatialReferenceSystemConverter {
         y = Math.log(Math.tan(((90 + y) * Math.PI) / 360)) / (Math.PI / 180);
         y = (y * 20037508.34) / 180;
         return new DirectPosition(SpatialReferenceSystem.EPSG3857, BigDecimal.valueOf(x).setScale(8, RoundingMode.HALF_UP).doubleValue(), BigDecimal.valueOf(y).setScale(8, RoundingMode.HALF_UP).doubleValue());
+    }
+
+    private static DirectPosition convertCRS84toEPSG4326(DirectPosition pos) {
+        return new DirectPosition(SpatialReferenceSystem.EPSG4326, pos.getX(), pos.getY());
     }
 
     private static DirectPosition convertEPSG3857toEPSG4326(DirectPosition pos) {
