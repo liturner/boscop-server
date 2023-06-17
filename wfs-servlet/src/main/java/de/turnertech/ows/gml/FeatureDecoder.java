@@ -12,6 +12,9 @@ public class FeatureDecoder {
         Feature returnFeature = featureType.createInstance();
         xmlRootNode.normalize();
 
+        gmlContext.setFeatureType(featureType);
+        gmlContext.getSrsDeque().push(featureType.getSrs());
+
         NodeList propertyNodes = xmlRootNode.getChildNodes();
         for(int i = 0; i < propertyNodes.getLength(); ++i) {
             Node propertyNode = propertyNodes.item(i);

@@ -38,6 +38,8 @@ public class Point implements GmlElement, BoundingBoxProvider {
         this.pos.setY(y);
     }
 
+    
+
     @Override
     public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
@@ -60,6 +62,14 @@ public class Point implements GmlElement, BoundingBoxProvider {
     @Override
     public BoundingBox getBoundingBox() {
         return new BoundingBox(getY() - 0.00001, getX() - 0.00001, getY() + 0.00001, getX() + 0.00001);
+    }
+
+    public DirectPosition getPos() {
+        return pos;
+    }
+
+    public void setPos(DirectPosition pos) {
+        this.pos = pos;
     }    
 
 }

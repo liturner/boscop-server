@@ -3,6 +3,8 @@ package de.turnertech.ows.gml;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+
 public class PointDecoder implements GmlDecoder<Point> {
     
     @Override
@@ -10,8 +12,12 @@ public class PointDecoder implements GmlDecoder<Point> {
         Point returnElement = new Point();
         
         Node srsNode = root.getAttributes().getNamedItem("srsName");
+        SpatialReferenceSystem srs = null;
         if(srsNode != null) {
-            // TODO: Actually Decode this and set it
+            srs = SpatialReferenceSystem.from(srsNode.getNodeValue());
+            if(srs != null) {
+                context.getSrsDeque().push(srs);
+            }
         }
 
         NodeList children = root.getChildNodes();
@@ -22,9 +28,12 @@ public class PointDecoder implements GmlDecoder<Point> {
             }
             if("pos".equals(child.getNodeName())) {
                 DirectPosition pos = new DirectPositionDecoder().decode(child, context);
-                returnElement.setX(pos.getX());
-                returnElement.setY(pos.getY());
+                returnElement.setPos(pos);
             }
+        }
+
+        if(srs != null) {
+            context.getSrsDeque().pop();
         }
 
         return returnElement;

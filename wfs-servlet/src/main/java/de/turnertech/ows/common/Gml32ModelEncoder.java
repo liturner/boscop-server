@@ -12,7 +12,6 @@ import javax.xml.stream.XMLStreamWriter;
 import de.turnertech.ows.gml.BoundingBox;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
-import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.ows.srs.SpatialReferenceSystemFormat;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
@@ -46,12 +45,12 @@ public class Gml32ModelEncoder implements ModelEncoder {
         }
 
         if(features.size() > 0 && actualBoundingBox != null) {
-            actualBoundingBox.writeGml(xmlStreamWriter);
+            actualBoundingBox.writeGml(xmlStreamWriter, BoundingBox.GML_NAME, BoundingBox.NAMESPACE, new SpatialReferenceSystemRepresentation(model.getFeatureType().getSrs(), SpatialReferenceSystemFormat.URI));
         }
 
         for(IFeature feature : features) {
             xmlStreamWriter.writeStartElement(OwsContext.GML_URI, "featureMember");
-            feature.writeGml(xmlStreamWriter, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace(), new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4326, SpatialReferenceSystemFormat.URI));
+            feature.writeGml(xmlStreamWriter, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace(), new SpatialReferenceSystemRepresentation(feature.getFeatureType().getSrs(), SpatialReferenceSystemFormat.URI));
             xmlStreamWriter.writeEndElement();
         }
 

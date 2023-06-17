@@ -24,7 +24,6 @@ import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.parameter.ResultType;
 import de.turnertech.ows.parameter.WfsRequestParameter;
 import de.turnertech.ows.parameter.WfsVersionValue;
-import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.ows.srs.SpatialReferenceSystemFormat;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 import jakarta.servlet.ServletException;
@@ -47,10 +46,7 @@ public class WfsGetFeatureRequest implements RequestHandler {
         final String resultTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.RESULTTYPE).orElse(ResultType.RESULTS.toString());
         final ResultType resultType = ResultType.valueOfIgnoreCase(resultTypeString);
         SpatialReferenceSystemRepresentation targetSrs = requestContext.getRequestedSrs();
-        if(targetSrs == null) {
-            SpatialReferenceSystemFormat srsFormat = requestContext.getOwsVersion() == WfsVersionValue.V2_0_0 ? SpatialReferenceSystemFormat.URN : SpatialReferenceSystemFormat.URI;
-            targetSrs = new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4326, srsFormat);
-        }
+        SpatialReferenceSystemFormat srsFormat = requestContext.getOwsVersion() == WfsVersionValue.V2_0_0 ? SpatialReferenceSystemFormat.URN : SpatialReferenceSystemFormat.URI;
 
         List<FeatureType> typenames = requestContext.getFeatureTypes();
 
@@ -107,15 +103,25 @@ public class WfsGetFeatureRequest implements RequestHandler {
             out.writeAttribute(OwsContext.WFS_URI, "numberReturned", ResultType.HITS == resultType ? "0" : Integer.toString(features.size()));
 
             if(ResultType.RESULTS == resultType) {
+
+                SpatialReferenceSystemRepresentation bboxSrs = null;
+                if(targetSrs == null) {
+                    if(typenames.size() == 1) {
+                        bboxSrs = new SpatialReferenceSystemRepresentation(typenames.get(0).getSrs(), srsFormat);
+                    }
+                } else {
+                    bboxSrs = targetSrs;
+                }
+
                 if(features.size() > 0 && requestedBoundingBox.isPresent()) {
-                    requestedBoundingBox.get().writeGml(out, BoundingBox.GML_NAME, BoundingBox.NAMESPACE, targetSrs);
+                    requestedBoundingBox.get().writeGml(out, BoundingBox.GML_NAME, BoundingBox.NAMESPACE, bboxSrs);
                 } else if(features.size() > 0 && actualBoundingBox != null) {
-                    actualBoundingBox.writeGml(out, BoundingBox.GML_NAME, BoundingBox.NAMESPACE, targetSrs);
+                    actualBoundingBox.writeGml(out, BoundingBox.GML_NAME, BoundingBox.NAMESPACE, bboxSrs);
                 }
 
                 for (IFeature feature : features) {
                     out.writeStartElement(OwsContext.GML_URI, "featureMember");
-                    feature.writeGml(out, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace(), targetSrs);
+                    feature.writeGml(out, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace(), targetSrs == null ? new SpatialReferenceSystemRepresentation(feature.getFeatureType().getSrs(), srsFormat) : targetSrs);
                     out.writeEndElement();
                 }
             }
