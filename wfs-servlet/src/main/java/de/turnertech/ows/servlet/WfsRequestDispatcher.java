@@ -11,6 +11,7 @@ import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.parameter.WfsRequestParameter;
 import de.turnertech.ows.parameter.WfsRequestValue;
 import de.turnertech.ows.parameter.WfsVersionValue;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -98,7 +99,17 @@ class WfsRequestDispatcher implements RequestHandler {
         if(WfsRequestValue.DESCRIBE_FEATURE_TYPE.equals(wfsRequestType)) {
             describeFeatureTypeRequestHandler.handleRequest(request, response, owsContext, requestContext);
             return;
-        } 
+        }
+
+        final String srsnameValue = WfsRequestParameter.findValue(request, WfsRequestParameter.SRSNAME).orElse(null);
+        if(srsnameValue != null) {
+            SpatialReferenceSystemRepresentation requestedSrs = SpatialReferenceSystemRepresentation.from(srsnameValue);
+            if(requestedSrs == null) {
+                response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.INVALID_PARAMETER_VALUE.toString(), WfsRequestParameter.SRSNAME.toString(), "Requested SRS is not known to the system."));
+                return;
+            }
+            requestContext.setRequestedSrs(requestedSrs);
+        }
 
         if(WfsRequestValue.GET_FEATURE.equals(wfsRequestType)) {
             getFeatureRequestHandler.handleRequest(request, response, owsContext, requestContext);

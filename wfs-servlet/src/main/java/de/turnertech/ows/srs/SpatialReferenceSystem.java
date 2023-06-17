@@ -52,5 +52,17 @@ public enum SpatialReferenceSystem {
     public byte getYIndex() {
         return yIndex;
     }
+
+    public static SpatialReferenceSystem from(String value) {
+        if(value == null) return null;
+
+        for(SpatialReferenceSystem srs : SpatialReferenceSystem.values()) {
+            if(srs.getUri().equalsIgnoreCase(value) || srs.getUrn().equalsIgnoreCase(value) || srs.getCode().equalsIgnoreCase(value)) {
+                return srs;
+            }
+        }
+
+        return null;
+    }
     
 }

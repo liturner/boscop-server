@@ -12,6 +12,7 @@ public enum WfsRequestParameter {
     TYPENAMES("TYPENAMES"),
     RESULTTYPE("RESULTTYPE"),
     BBOX("BBOX"),
+    SRSNAME("SRSNAME"),
     NONE("");
 
     private final String parameter;

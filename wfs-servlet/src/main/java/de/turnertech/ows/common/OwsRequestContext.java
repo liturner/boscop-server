@@ -6,6 +6,7 @@ import java.util.List;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.parameter.OwsServiceValue;
 import de.turnertech.ows.parameter.WfsVersionValue;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 public class OwsRequestContext {
 
@@ -14,6 +15,8 @@ public class OwsRequestContext {
     public WfsVersionValue owsVersion;
 
     public List<FeatureType> featureTypes;
+
+    public SpatialReferenceSystemRepresentation requestedSrs;
 
     public OwsRequestContext() {
         owsVersion = null;
@@ -53,6 +56,14 @@ public class OwsRequestContext {
      */
     public List<FeatureType> getFeatureTypes() {
         return featureTypes;
+    }
+
+    public SpatialReferenceSystemRepresentation getRequestedSrs() {
+        return requestedSrs;
+    }
+
+    public void setRequestedSrs(SpatialReferenceSystemRepresentation requestedSrs) {
+        this.requestedSrs = requestedSrs;
     }
 
 }

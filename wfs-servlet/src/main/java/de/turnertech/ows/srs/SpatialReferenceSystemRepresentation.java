@@ -23,6 +23,21 @@ public class SpatialReferenceSystemRepresentation {
         return format;
     }
 
+    public static SpatialReferenceSystemRepresentation from(String value) {
+        SpatialReferenceSystem srs = SpatialReferenceSystem.from(value);
+        if(srs == null) {
+            return null;
+        }
+
+        if(srs.getCode().equalsIgnoreCase(value)) {
+            return new SpatialReferenceSystemRepresentation(srs, SpatialReferenceSystemFormat.CODE);
+        } else if(srs.getUri().equalsIgnoreCase(value)) {
+            return new SpatialReferenceSystemRepresentation(srs, SpatialReferenceSystemFormat.URI);
+        } else {
+            return new SpatialReferenceSystemRepresentation(srs, SpatialReferenceSystemFormat.URN);
+        }
+    }
+
     @Override
     public String toString() {
         switch(format) {
