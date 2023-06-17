@@ -46,7 +46,7 @@ public class SpatialReferenceSystemRepresentation {
             case URI:
                 return srs.getUri();
             case URN:
-                return srs.getCode();
+                return srs.getUrn();
             default:
                 return "Error, unsupported SpatialReferenceSystemFormat";
         }

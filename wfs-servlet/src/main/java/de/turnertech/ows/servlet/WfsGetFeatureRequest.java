@@ -48,7 +48,7 @@ public class WfsGetFeatureRequest implements RequestHandler {
         final ResultType resultType = ResultType.valueOfIgnoreCase(resultTypeString);
         SpatialReferenceSystemRepresentation targetSrs = requestContext.getRequestedSrs();
         if(targetSrs == null) {
-            SpatialReferenceSystemFormat srsFormat = requestContext.getOwsVersion() == WfsVersionValue.V2_0_0 ? SpatialReferenceSystemFormat.URN : SpatialReferenceSystemFormat.URN;
+            SpatialReferenceSystemFormat srsFormat = requestContext.getOwsVersion() == WfsVersionValue.V2_0_0 ? SpatialReferenceSystemFormat.URN : SpatialReferenceSystemFormat.URI;
             targetSrs = new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4326, srsFormat);
         }
 

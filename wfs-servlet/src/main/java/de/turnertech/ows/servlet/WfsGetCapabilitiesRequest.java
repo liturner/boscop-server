@@ -26,13 +26,18 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
     public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {
         response.setContentType(RequestHandler.CONTENT_XML);
         XMLStreamWriter out = null;
+        WfsVersionValue requestedVersion = WfsVersionValue.V2_0_2;
+        if(requestContext.getOwsVersion() != null) {
+            requestedVersion = requestContext.getOwsVersion();
+        }
+        SpatialReferenceSystemFormat srsFormat = requestedVersion == WfsVersionValue.V2_0_0 ? SpatialReferenceSystemFormat.URN : SpatialReferenceSystemFormat.URI;
 
         try {
             out = XMLOutputFactory.newInstance().createXMLStreamWriter(response.getOutputStream(), "UTF-8");
             out.writeStartDocument("UTF-8", "1.0");
             out.writeStartElement("WFS_Capabilities");
             out.writeAttribute("service", "WFS");
-            out.writeAttribute("version", WfsVersionValue.V2_0_2.toString());
+            out.writeAttribute("version", requestedVersion.toString());
             out.writeDefaultNamespace(OwsContext.WFS_URI);
             out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.XSI_URI), OwsContext.XSI_URI);
             out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.GML_URI), OwsContext.GML_URI);
@@ -122,12 +127,12 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
                         out.writeEmptyElement(OwsContext.WFS_URI, "NoCRS");
                     } else {
                         out.writeStartElement(OwsContext.WFS_URI, "DefaultCRS");
-                            out.writeCharacters(new SpatialReferenceSystemRepresentation(featureType.getSrs(), SpatialReferenceSystemFormat.URI).toString());
+                            out.writeCharacters(new SpatialReferenceSystemRepresentation(featureType.getSrs(), srsFormat).toString());
                         out.writeEndElement();
                         for(SpatialReferenceSystem srs : SpatialReferenceSystem.values()) {
                             if(srs != featureType.getSrs()) {
                                 out.writeStartElement(OwsContext.WFS_URI, "OtherCRS");
-                                    out.writeCharacters(new SpatialReferenceSystemRepresentation(srs, SpatialReferenceSystemFormat.URI).toString());
+                                    out.writeCharacters(new SpatialReferenceSystemRepresentation(srs, srsFormat).toString());
                                 out.writeEndElement();
                             }
                         }
