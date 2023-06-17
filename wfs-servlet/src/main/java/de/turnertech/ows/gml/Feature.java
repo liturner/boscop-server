@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 public class Feature implements IFeature {
 
@@ -70,15 +71,15 @@ public class Feature implements IFeature {
                     out.writeEndElement();
                 } else if(propertyType == FeaturePropertyType.POLYGON) {
                     out.writeStartElement(namespaceURI, field.getKey());
-                    ((Polygon)field.getValue()).writeGml(out);
+                    ((Polygon)field.getValue()).writeGml(out, Polygon.GML_NAME, Polygon.NAMESPACE, srs);
                     out.writeEndElement();
                 } else if(propertyType == FeaturePropertyType.ID) {
                     // Do Nothing, special field
                 } else if(propertyType == FeaturePropertyType.POINT) {
                     out.writeStartElement(namespaceURI, field.getKey());
-                    ((Point)field.getValue()).writeGml(out);
+                    ((Point)field.getValue()).writeGml(out, Point.GML_NAME, Point.NAMESPACE, srs);
                     out.writeEndElement();
-                }else {
+                } else {
                     out.writeEmptyElement(namespaceURI, field.getKey());
                     Logging.LOG.severe("Feature: parameter not written as property type not implemented: " + propertyType);
                 }

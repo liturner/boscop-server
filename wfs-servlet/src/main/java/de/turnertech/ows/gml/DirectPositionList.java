@@ -2,10 +2,14 @@ package de.turnertech.ows.gml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystemConverter;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 /**
  * gml:posList
@@ -14,18 +18,24 @@ public class DirectPositionList extends ArrayList<DirectPosition> implements Gml
     
     private SpatialReferenceSystem srs;
 
+    public static final String GML_NAME = "posList";
+
     public DirectPositionList() {
         this(10);
     }
 
     public DirectPositionList(int initialCapacity) {
+        this(SpatialReferenceSystem.EPSG4326, initialCapacity);
+    }
+
+    public DirectPositionList(SpatialReferenceSystem srs, int initialCapacity) {
         super(initialCapacity);
-        this.srs = SpatialReferenceSystem.EPSG4327;
+        this.srs = srs;
     }
 
     public DirectPositionList(DirectPosition... positions) {
         super(Arrays.asList(positions));
-        this.srs = SpatialReferenceSystem.EPSG4327;
+        this.srs = SpatialReferenceSystem.EPSG4326;
     }
 
     public SpatialReferenceSystem getSrs() {
@@ -36,16 +46,21 @@ public class DirectPositionList extends ArrayList<DirectPosition> implements Gml
      * {@inheritDoc}
      */
     @Override
-    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srsRepresentation) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
-            out.writeAttribute("srsDimension", "2");
+
+            String[] outPosList = new String[this.size()];
             for(int i = 0; i < this.size(); ++i) {
-                out.writeCharacters(Double.toString(this.get(i).getY()) + " " + Double.toString(this.get(i).getX()));
-                if(i != this.size() - 1) {
-                    out.writeCharacters(" ");
+                DirectPosition outPos = this.get(i);
+                Optional<DirectPosition> transformedPos = SpatialReferenceSystemConverter.convertDirectPosition(outPos, srsRepresentation.getSrs());
+                if (transformedPos.isPresent()) {
+                    outPos = transformedPos.get();
                 }
+                outPosList[i] = outPos.toString();
             }
+            out.writeAttribute("srsDimension", Byte.toString(srsRepresentation.getSrs().getDimension()));
+            out.writeCharacters(String.join(" ", outPosList));
             out.writeEndElement();
         } catch (Exception e) {
             Logging.LOG.severe("Could not get GML for DirectPositionList");
@@ -57,7 +72,7 @@ public class DirectPositionList extends ArrayList<DirectPosition> implements Gml
      */
     @Override
     public String getGmlName() {
-        return "posList";
+        return GML_NAME;
     }
 
     /**

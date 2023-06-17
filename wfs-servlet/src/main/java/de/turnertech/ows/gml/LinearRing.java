@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 /**
  * <p>gml:LinearRing</p>
@@ -50,7 +51,7 @@ public class LinearRing implements GmlElement, Iterable<DirectPosition>, Boundin
         try {
             writeGmlStartElement(out, localName, namespaceURI);
             
-            posList.writeGml(out);
+            posList.writeGml(out, DirectPositionList.GML_NAME, DirectPositionList.NAMESPACE, srs);
 
             out.writeEndElement();
         } catch (Exception e) {

@@ -3,6 +3,8 @@ package de.turnertech.ows.gml;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+
 public class LinearRingDecoder implements GmlDecoder<LinearRing> {
 
     @Override
@@ -10,8 +12,12 @@ public class LinearRingDecoder implements GmlDecoder<LinearRing> {
         LinearRing returnElement = new LinearRing();
         
         Node srsNode = root.getAttributes().getNamedItem("srsName");
+        SpatialReferenceSystem srs = null;
         if(srsNode != null) {
-            // TODO: Actually Decode this and set it
+            srs = SpatialReferenceSystem.from(srsNode.getNodeValue());
+            if(srs != null) {
+                context.getSrsDeque().push(srs);
+            }
         }
 
         NodeList children = root.getChildNodes();
@@ -21,12 +27,14 @@ public class LinearRingDecoder implements GmlDecoder<LinearRing> {
                 continue;
             }
             if("posList".equals(child.getNodeName())) {
-                // TODO: Defer to a "posListDecoder"
                 DirectPositionList posList = new DirectPositionListDecoder().decode(child, context);
                 returnElement.setPosList(posList);
             }
         }
 
+        if(srs != null) {
+            context.getSrsDeque().pop();
+        }
 
         return returnElement;
     }

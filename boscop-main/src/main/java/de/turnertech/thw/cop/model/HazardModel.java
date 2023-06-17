@@ -14,7 +14,7 @@ import de.turnertech.ows.gml.FeatureProperty;
 import de.turnertech.ows.gml.FeaturePropertyType;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
-import de.turnertech.ows.gml.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.Settings;
 
@@ -32,7 +32,7 @@ public class HazardModel implements Model {
 
     private HazardModel() {
         featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
-        featureType.setSrs(SpatialReferenceSystem.EPSG4327);
+        featureType.setSrs(SpatialReferenceSystem.CRS84);
         featureType.putProperty(new FeatureProperty("id", FeaturePropertyType.ID));
         featureType.putProperty(new FeatureProperty("hazardType", FeaturePropertyType.TEXT));
         featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.POINT));

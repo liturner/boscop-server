@@ -13,6 +13,9 @@ import de.turnertech.ows.common.RequestHandler;
 import de.turnertech.ows.gml.BoundingBox;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.parameter.WfsVersionValue;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystemFormat;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,12 +26,18 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
     public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {
         response.setContentType(RequestHandler.CONTENT_XML);
         XMLStreamWriter out = null;
+        WfsVersionValue requestedVersion = WfsVersionValue.V2_0_2;
+        if(requestContext.getOwsVersion() != null) {
+            requestedVersion = requestContext.getOwsVersion();
+        }
+        SpatialReferenceSystemFormat srsFormat = requestedVersion == WfsVersionValue.V2_0_0 ? SpatialReferenceSystemFormat.URN : SpatialReferenceSystemFormat.URI;
+
         try {
             out = XMLOutputFactory.newInstance().createXMLStreamWriter(response.getOutputStream(), "UTF-8");
             out.writeStartDocument("UTF-8", "1.0");
             out.writeStartElement("WFS_Capabilities");
             out.writeAttribute("service", "WFS");
-            out.writeAttribute("version", WfsVersionValue.V2_0_2.toString());
+            out.writeAttribute("version", requestedVersion.toString());
             out.writeDefaultNamespace(OwsContext.WFS_URI);
             out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.XSI_URI), OwsContext.XSI_URI);
             out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.GML_URI), OwsContext.GML_URI);
@@ -70,6 +79,39 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
                 out.writeEndElement();
             out.writeEndElement();
 
+            out.writeStartElement(OwsContext.OWS_URI, "OperationsMetadata");
+                out.writeStartElement(OwsContext.OWS_URI, "Operation");
+                out.writeAttribute("name", "GetCapabilities");
+                    out.writeStartElement(OwsContext.OWS_URI, "Parameter");
+                    out.writeAttribute("name", "AcceptVersions");
+                        out.writeStartElement(OwsContext.OWS_URI, "AllowedValues");
+                            for(WfsVersionValue allowedVersion : owsContext.getWfsCapabilities().getServiceTypeVersions()) {
+                                out.writeStartElement(OwsContext.OWS_URI, "Value");
+                                    out.writeCharacters(allowedVersion.toString());
+                                out.writeEndElement();
+                            }
+                        out.writeEndElement();
+                    out.writeEndElement();
+                out.writeEndElement();
+            out.writeEndElement();
+
+            /**
+            <ows:OperationsMetadata>
+            <ows:Operation name="GetCapabilities">
+               <ows:DCP>
+                  <ows:HTTP>
+                     <ows:Get xlink:href="http://www.BlueOx.org/wfs/wfs.cgi?"/>
+                     <ows:Post xlink:href="http://www.BlueOx.org/wfs/wfs.cgi"/>
+                  </ows:HTTP>
+               </ows:DCP>
+               <ows:Parameter name="AcceptVersions">
+                  <ows:AllowedValues>
+                  <ows:Value>2.0.2</ows:Value>
+                  <ows:Value>2.0.0</ows:Value>
+                  </ows:AllowedValues>
+               </ows:Parameter>
+            </ows:Operation> */
+
             out.writeStartElement(OwsContext.WFS_URI, "FeatureTypeList");
             for(FeatureType featureType : owsContext.getWfsCapabilities().getFeatureTypes()) {
                 out.writeStartElement(OwsContext.WFS_URI, "FeatureType");
@@ -85,8 +127,15 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
                         out.writeEmptyElement(OwsContext.WFS_URI, "NoCRS");
                     } else {
                         out.writeStartElement(OwsContext.WFS_URI, "DefaultCRS");
-                            out.writeCharacters(featureType.getSrs().getUri());
+                            out.writeCharacters(new SpatialReferenceSystemRepresentation(featureType.getSrs(), srsFormat).toString());
                         out.writeEndElement();
+                        for(SpatialReferenceSystem srs : SpatialReferenceSystem.values()) {
+                            if(srs != featureType.getSrs()) {
+                                out.writeStartElement(OwsContext.WFS_URI, "OtherCRS");
+                                    out.writeCharacters(new SpatialReferenceSystemRepresentation(srs, srsFormat).toString());
+                                out.writeEndElement();
+                            }
+                        }
                     }
 
                     BoundingBox boundingBox = owsContext.getModelProvider().getModel(featureType).getBoundingBox();

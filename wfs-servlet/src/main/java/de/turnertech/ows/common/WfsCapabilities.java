@@ -34,7 +34,7 @@ public class WfsCapabilities {
         serviceTitle = "Default Service Title";
         serviceAbstract = "Default Service Abstract";
         serviceType = OwsServiceValue.WFS;
-        serviceTypeVersions = Arrays.asList(WfsVersionValue.V2_0_2);
+        serviceTypeVersions = Arrays.asList(WfsVersionValue.V2_0_0, WfsVersionValue.V2_0_2);
         keywords = Arrays.asList("Default Keyword");
         fees = "NONE";
         accessConstraints = "NONE";

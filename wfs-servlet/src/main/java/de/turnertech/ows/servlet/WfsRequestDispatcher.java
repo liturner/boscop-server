@@ -11,6 +11,7 @@ import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.parameter.WfsRequestParameter;
 import de.turnertech.ows.parameter.WfsRequestValue;
 import de.turnertech.ows.parameter.WfsVersionValue;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,30 +42,26 @@ class WfsRequestDispatcher implements RequestHandler {
             response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.REQUEST.toString(), "Invalid REQUEST parameter supplied: " + wfsRequest.get()));
             return;
         }
+        /**
+         * Get and set the VERSION. Note, optional for GetCapabilities, mandatory for all others
+         */
+        final Optional<String> wfsVersion = WfsRequestParameter.findValue(request, WfsRequestParameter.VERSION);
+        requestContext.setOwsVersion(WfsVersionValue.valueOfIgnoreCase(wfsVersion.orElse(null)));
+        if(wfsVersion.isPresent() && !owsContext.getWfsCapabilities().getServiceTypeVersions().contains(requestContext.getOwsVersion())) {
+            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.VERSION.toString(), "Unsupported VERSION parameter supplied: " + wfsVersion.get()));
+            return;
+        }
 
         if(WfsRequestValue.GET_CAPABILITIES.equals(wfsRequestType)) {
             getCapabilitiesRequestHandler.handleRequest(request, response, owsContext, requestContext);
             return;
         }
         
-        /**
-         * Get and set the VERSION
-         */
-        final Optional<String> wfsVersion = WfsRequestParameter.findValue(request, WfsRequestParameter.VERSION);
-        if(wfsVersion.isEmpty()) {
+        if(requestContext.getOwsVersion() == null) {
             response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.VERSION.toString(), "No VERSION parameter supplied"));
             return;
         }
-        requestContext.setOwsVersion(WfsVersionValue.valueOfIgnoreCase(wfsVersion.get()));
-        if(requestContext.getOwsVersion() == null) {
-            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.VERSION.toString(), "Invalid VERSION parameter supplied: " + wfsVersion.get()));
-            return;
-        }
-        if(!owsContext.getWfsCapabilities().getServiceTypeVersions().contains(requestContext.getOwsVersion())) {
-            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.VERSION.toString(), "Unsupported VERSION parameter supplied: " + wfsVersion.get()));
-            return;
-        }
-
+        
         if(WfsRequestValue.TRANSACTION.equals(wfsRequestType)) {
             transactionRequestHandler.handleRequest(request, response, owsContext, requestContext);
             return;
@@ -98,7 +95,17 @@ class WfsRequestDispatcher implements RequestHandler {
         if(WfsRequestValue.DESCRIBE_FEATURE_TYPE.equals(wfsRequestType)) {
             describeFeatureTypeRequestHandler.handleRequest(request, response, owsContext, requestContext);
             return;
-        } 
+        }
+
+        final String srsnameValue = WfsRequestParameter.findValue(request, WfsRequestParameter.SRSNAME).orElse(null);
+        if(srsnameValue != null) {
+            SpatialReferenceSystemRepresentation requestedSrs = SpatialReferenceSystemRepresentation.from(srsnameValue);
+            if(requestedSrs == null) {
+                response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.INVALID_PARAMETER_VALUE.toString(), WfsRequestParameter.SRSNAME.toString(), "Requested SRS is not known to the system."));
+                return;
+            }
+            requestContext.setRequestedSrs(requestedSrs);
+        }
 
         if(WfsRequestValue.GET_FEATURE.equals(wfsRequestType)) {
             getFeatureRequestHandler.handleRequest(request, response, owsContext, requestContext);
