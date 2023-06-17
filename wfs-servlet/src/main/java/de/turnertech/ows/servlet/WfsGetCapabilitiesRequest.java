@@ -26,6 +26,7 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
     public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {
         response.setContentType(RequestHandler.CONTENT_XML);
         XMLStreamWriter out = null;
+
         try {
             out = XMLOutputFactory.newInstance().createXMLStreamWriter(response.getOutputStream(), "UTF-8");
             out.writeStartDocument("UTF-8", "1.0");
@@ -73,6 +74,39 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
                 out.writeEndElement();
             out.writeEndElement();
 
+            out.writeStartElement(OwsContext.OWS_URI, "OperationsMetadata");
+                out.writeStartElement(OwsContext.OWS_URI, "Operation");
+                out.writeAttribute("name", "GetCapabilities");
+                    out.writeStartElement(OwsContext.OWS_URI, "Parameter");
+                    out.writeAttribute("name", "AcceptVersions");
+                        out.writeStartElement(OwsContext.OWS_URI, "AllowedValues");
+                            for(WfsVersionValue allowedVersion : owsContext.getWfsCapabilities().getServiceTypeVersions()) {
+                                out.writeStartElement(OwsContext.OWS_URI, "Value");
+                                    out.writeCharacters(allowedVersion.toString());
+                                out.writeEndElement();
+                            }
+                        out.writeEndElement();
+                    out.writeEndElement();
+                out.writeEndElement();
+            out.writeEndElement();
+
+            /**
+            <ows:OperationsMetadata>
+            <ows:Operation name="GetCapabilities">
+               <ows:DCP>
+                  <ows:HTTP>
+                     <ows:Get xlink:href="http://www.BlueOx.org/wfs/wfs.cgi?"/>
+                     <ows:Post xlink:href="http://www.BlueOx.org/wfs/wfs.cgi"/>
+                  </ows:HTTP>
+               </ows:DCP>
+               <ows:Parameter name="AcceptVersions">
+                  <ows:AllowedValues>
+                  <ows:Value>2.0.2</ows:Value>
+                  <ows:Value>2.0.0</ows:Value>
+                  </ows:AllowedValues>
+               </ows:Parameter>
+            </ows:Operation> */
+
             out.writeStartElement(OwsContext.WFS_URI, "FeatureTypeList");
             for(FeatureType featureType : owsContext.getWfsCapabilities().getFeatureTypes()) {
                 out.writeStartElement(OwsContext.WFS_URI, "FeatureType");
@@ -97,7 +131,6 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
                                 out.writeEndElement();
                             }
                         }
-                        
                     }
 
                     BoundingBox boundingBox = owsContext.getModelProvider().getModel(featureType).getBoundingBox();

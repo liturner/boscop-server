@@ -42,30 +42,26 @@ class WfsRequestDispatcher implements RequestHandler {
             response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.REQUEST.toString(), "Invalid REQUEST parameter supplied: " + wfsRequest.get()));
             return;
         }
+        /**
+         * Get and set the VERSION. Note, optional for GetCapabilities, mandatory for all others
+         */
+        final Optional<String> wfsVersion = WfsRequestParameter.findValue(request, WfsRequestParameter.VERSION);
+        requestContext.setOwsVersion(WfsVersionValue.valueOfIgnoreCase(wfsVersion.orElse(null)));
+        if(wfsVersion.isPresent() && !owsContext.getWfsCapabilities().getServiceTypeVersions().contains(requestContext.getOwsVersion())) {
+            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.VERSION.toString(), "Unsupported VERSION parameter supplied: " + wfsVersion.get()));
+            return;
+        }
 
         if(WfsRequestValue.GET_CAPABILITIES.equals(wfsRequestType)) {
             getCapabilitiesRequestHandler.handleRequest(request, response, owsContext, requestContext);
             return;
         }
         
-        /**
-         * Get and set the VERSION
-         */
-        final Optional<String> wfsVersion = WfsRequestParameter.findValue(request, WfsRequestParameter.VERSION);
-        if(wfsVersion.isEmpty()) {
+        if(requestContext.getOwsVersion() == null) {
             response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.VERSION.toString(), "No VERSION parameter supplied"));
             return;
         }
-        requestContext.setOwsVersion(WfsVersionValue.valueOfIgnoreCase(wfsVersion.get()));
-        if(requestContext.getOwsVersion() == null) {
-            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.VERSION.toString(), "Invalid VERSION parameter supplied: " + wfsVersion.get()));
-            return;
-        }
-        if(!owsContext.getWfsCapabilities().getServiceTypeVersions().contains(requestContext.getOwsVersion())) {
-            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.MISSING_PARAMETER_VALUE.toString(), WfsRequestParameter.VERSION.toString(), "Unsupported VERSION parameter supplied: " + wfsVersion.get()));
-            return;
-        }
-
+        
         if(WfsRequestValue.TRANSACTION.equals(wfsRequestType)) {
             transactionRequestHandler.handleRequest(request, response, owsContext, requestContext);
             return;
