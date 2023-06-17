@@ -51,7 +51,7 @@ public class LinearRing implements GmlElement, Iterable<DirectPosition>, Boundin
         try {
             writeGmlStartElement(out, localName, namespaceURI);
             
-            posList.writeGml(out);
+            posList.writeGml(out, DirectPositionList.GML_NAME, DirectPositionList.NAMESPACE, srs);
 
             out.writeEndElement();
         } catch (Exception e) {

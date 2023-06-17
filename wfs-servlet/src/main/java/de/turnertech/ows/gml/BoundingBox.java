@@ -3,11 +3,12 @@ package de.turnertech.ows.gml;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
-import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystemConverter;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 public class BoundingBox implements GmlElement {
@@ -116,19 +117,32 @@ public class BoundingBox implements GmlElement {
     }
 
     @Override
-    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
+    public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srsRepresentation) {
         DecimalFormat decimalFormat = new DecimalFormat("0.", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         decimalFormat.setMaximumFractionDigits(8);
+
+        DirectPosition sw = new DirectPosition(west, south);
+        DirectPosition ne = new DirectPosition(east, north);
+
+        Optional<DirectPosition> transformedPos = SpatialReferenceSystemConverter.convertDirectPosition(sw, srsRepresentation.getSrs());
+        if (transformedPos.isPresent()) {
+            sw = transformedPos.get();
+        }
+
+        transformedPos = SpatialReferenceSystemConverter.convertDirectPosition(ne, srsRepresentation.getSrs());
+        if (transformedPos.isPresent()) {
+            ne = transformedPos.get();
+        }
 
         try {
             writeGmlStartElement(out, localName, namespaceURI);
                 out.writeStartElement(GmlElement.NAMESPACE, "Envelope");
-                out.writeAttribute(GmlElement.NAMESPACE, "srsName", SpatialReferenceSystem.EPSG4326.getUri());
+                out.writeAttribute(GmlElement.NAMESPACE, "srsName", srsRepresentation.toString());
                     out.writeStartElement(GmlElement.NAMESPACE, "lowerCorner");
-                        out.writeCharacters(decimalFormat.format(south) + " " + decimalFormat.format(west));
+                        out.writeCharacters(sw.toString());
                     out.writeEndElement();
                     out.writeStartElement(GmlElement.NAMESPACE, "upperCorner");
-                        out.writeCharacters(decimalFormat.format(north) + " " + decimalFormat.format(east));
+                        out.writeCharacters(ne.toString());
                     out.writeEndElement();
                 out.writeEndElement();
             out.writeEndElement();

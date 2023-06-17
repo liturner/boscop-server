@@ -23,6 +23,7 @@ import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.parameter.ResultType;
 import de.turnertech.ows.parameter.WfsRequestParameter;
+import de.turnertech.ows.parameter.WfsVersionValue;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.ows.srs.SpatialReferenceSystemFormat;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
@@ -45,6 +46,11 @@ public class WfsGetFeatureRequest implements RequestHandler {
     public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {
         final String resultTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.RESULTTYPE).orElse(ResultType.RESULTS.toString());
         final ResultType resultType = ResultType.valueOfIgnoreCase(resultTypeString);
+        SpatialReferenceSystemRepresentation targetSrs = requestContext.getRequestedSrs();
+        if(targetSrs == null) {
+            SpatialReferenceSystemFormat srsFormat = requestContext.getOwsVersion() == WfsVersionValue.V2_0_0 ? SpatialReferenceSystemFormat.URN : SpatialReferenceSystemFormat.URN;
+            targetSrs = new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4326, srsFormat);
+        }
 
         List<FeatureType> typenames = requestContext.getFeatureTypes();
 
@@ -101,16 +107,15 @@ public class WfsGetFeatureRequest implements RequestHandler {
             out.writeAttribute(OwsContext.WFS_URI, "numberReturned", ResultType.HITS == resultType ? "0" : Integer.toString(features.size()));
 
             if(ResultType.RESULTS == resultType) {
-
                 if(features.size() > 0 && requestedBoundingBox.isPresent()) {
-                    requestedBoundingBox.get().writeGml(out);
+                    requestedBoundingBox.get().writeGml(out, BoundingBox.GML_NAME, BoundingBox.NAMESPACE, targetSrs);
                 } else if(features.size() > 0 && actualBoundingBox != null) {
-                    actualBoundingBox.writeGml(out);
+                    actualBoundingBox.writeGml(out, BoundingBox.GML_NAME, BoundingBox.NAMESPACE, targetSrs);
                 }
 
                 for (IFeature feature : features) {
                     out.writeStartElement(OwsContext.GML_URI, "featureMember");
-                    feature.writeGml(out, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace(), new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4326, SpatialReferenceSystemFormat.URI));
+                    feature.writeGml(out, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace(), targetSrs);
                     out.writeEndElement();
                 }
             }

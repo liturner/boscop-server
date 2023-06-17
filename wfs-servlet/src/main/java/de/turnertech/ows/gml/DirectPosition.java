@@ -1,9 +1,12 @@
 package de.turnertech.ows.gml;
 
+import java.util.Optional;
+
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystemConverter;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 /**
@@ -77,8 +80,17 @@ public class DirectPosition implements GmlElement {
     public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srsRepresentation) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
-            out.writeAttribute("srsDimension", Byte.toString(srsRepresentation.getSrs().getDimension()));
-            out.writeCharacters(this.toString());
+
+            Optional<DirectPosition> transformedPos = SpatialReferenceSystemConverter.convertDirectPosition(this, srsRepresentation.getSrs());
+            DirectPosition outPos = this;
+            
+            if (transformedPos.isPresent()) {
+                outPos = transformedPos.get();
+            } 
+
+            out.writeAttribute("srsDimension", Byte.toString(outPos.getSrs().getDimension()));
+            out.writeCharacters(outPos.toString());
+
             out.writeEndElement();
         } catch (Exception e) {
             Logging.LOG.severe("Could not get GML for DirectPosition");

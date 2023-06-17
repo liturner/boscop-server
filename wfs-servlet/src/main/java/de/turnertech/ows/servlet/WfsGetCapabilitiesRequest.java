@@ -13,6 +13,9 @@ import de.turnertech.ows.common.RequestHandler;
 import de.turnertech.ows.gml.BoundingBox;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.parameter.WfsVersionValue;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystemFormat;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -85,8 +88,16 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
                         out.writeEmptyElement(OwsContext.WFS_URI, "NoCRS");
                     } else {
                         out.writeStartElement(OwsContext.WFS_URI, "DefaultCRS");
-                            out.writeCharacters(featureType.getSrs().getUri());
+                            out.writeCharacters(new SpatialReferenceSystemRepresentation(featureType.getSrs(), SpatialReferenceSystemFormat.URI).toString());
                         out.writeEndElement();
+                        for(SpatialReferenceSystem srs : SpatialReferenceSystem.values()) {
+                            if(srs != featureType.getSrs()) {
+                                out.writeStartElement(OwsContext.WFS_URI, "OtherCRS");
+                                    out.writeCharacters(new SpatialReferenceSystemRepresentation(srs, SpatialReferenceSystemFormat.URI).toString());
+                                out.writeEndElement();
+                            }
+                        }
+                        
                     }
 
                     BoundingBox boundingBox = owsContext.getModelProvider().getModel(featureType).getBoundingBox();

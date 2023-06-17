@@ -3,7 +3,6 @@ package de.turnertech.ows.gml;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
-import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 /**
@@ -35,9 +34,9 @@ public class Polygon implements GmlElement, BoundingBoxProvider {
     public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
-            out.writeAttribute("srsName", SpatialReferenceSystem.EPSG4326.getUri());
+            out.writeAttribute("srsName", srs.toString());
             out.writeStartElement(GmlElement.NAMESPACE, "exterior");
-            exterior.writeGml(out);
+            exterior.writeGml(out, LinearRing.GML_NAME, LinearRing.NAMESPACE, srs);
             out.writeEndElement();
             out.writeEndElement();
         } catch (Exception e) {

@@ -44,7 +44,7 @@ public class Point implements GmlElement, BoundingBoxProvider {
             writeGmlStartElement(out, localName, namespaceURI);
             out.writeAttribute(GmlElement.NAMESPACE, "srsName", srs.toString());
 
-            pos.writeGml(out);
+            pos.writeGml(out, DirectPosition.GML_NAME, DirectPosition.NAMESPACE, srs);
 
             out.writeEndElement();
         } catch (Exception e) {
