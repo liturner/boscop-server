@@ -23,6 +23,8 @@ import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.parameter.ResultType;
 import de.turnertech.ows.parameter.WfsRequestParameter;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystemFormat;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -108,7 +110,7 @@ public class WfsGetFeatureRequest implements RequestHandler {
 
                 for (IFeature feature : features) {
                     out.writeStartElement(OwsContext.GML_URI, "featureMember");
-                    feature.writeGml(out, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace(), SpatialReferenceSystemRepresentation.EPSG4327_URI);
+                    feature.writeGml(out, feature.getFeatureType().getName(), feature.getFeatureType().getNamespace(), new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4326, SpatialReferenceSystemFormat.URI));
                     out.writeEndElement();
                 }
             }

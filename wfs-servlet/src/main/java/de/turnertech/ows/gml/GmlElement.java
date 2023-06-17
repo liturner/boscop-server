@@ -6,6 +6,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystemFormat;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 public interface GmlElement {
@@ -13,7 +15,7 @@ public interface GmlElement {
     public static final String NAMESPACE = "http://www.opengis.net/gml/3.2";
 
     public default String toGml() {
-        return toGml(getGmlName(), NAMESPACE, SpatialReferenceSystemRepresentation.EPSG4327_URI);
+        return toGml(getGmlName(), NAMESPACE, new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4326, SpatialReferenceSystemFormat.URI));
     }
 
     public default String toGml(String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
@@ -31,7 +33,7 @@ public interface GmlElement {
     }
 
     public default void writeGml(XMLStreamWriter out) {
-        writeGml(out, getGmlName(), NAMESPACE, SpatialReferenceSystemRepresentation.EPSG4327_URI);
+        writeGml(out, getGmlName(), NAMESPACE, new SpatialReferenceSystemRepresentation(SpatialReferenceSystem.EPSG4326, SpatialReferenceSystemFormat.URI));
     }
 
     public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs);

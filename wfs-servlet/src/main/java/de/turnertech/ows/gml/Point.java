@@ -3,7 +3,6 @@ package de.turnertech.ows.gml;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
-import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 /**
@@ -43,7 +42,7 @@ public class Point implements GmlElement, BoundingBoxProvider {
     public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
-            out.writeAttribute(GmlElement.NAMESPACE, "srsName", SpatialReferenceSystem.EPSG4326.getUri());
+            out.writeAttribute(GmlElement.NAMESPACE, "srsName", srs.toString());
 
             pos.writeGml(out);
 
