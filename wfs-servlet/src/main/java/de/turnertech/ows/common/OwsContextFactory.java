@@ -51,6 +51,7 @@ public abstract class OwsContextFactory {
         returnMap.put("http://www.opengis.net/wfs/2.0", "wfs");
         returnMap.put("http://www.opengis.net/fes/2.0", "fes");
         returnMap.put("http://www.opengis.net/gml/3.2", "gml");
+        returnMap.put("http://www.w3.org/2001/XMLSchema", "xsd");
         returnMap.put("http://www.w3.org/2001/XMLSchema-instance", "xsi");
         return returnMap;
     }

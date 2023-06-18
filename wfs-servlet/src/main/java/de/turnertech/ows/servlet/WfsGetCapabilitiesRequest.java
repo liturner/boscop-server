@@ -44,7 +44,7 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
             out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.FES_URI), OwsContext.FES_URI);
             out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.OWS_URI), OwsContext.OWS_URI);
             out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.XSD_URI), OwsContext.XSD_URI);
-            out.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation", "http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsAll.xsd http://www.opengis.net/fes/2.0 http://schemas.opengis.net/filter/2.0/filterAll.xsd");
+            out.writeAttribute(OwsContext.XSI_URI, "schemaLocation", "http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsAll.xsd http://www.opengis.net/fes/2.0 http://schemas.opengis.net/filter/2.0/filterAll.xsd");
 
             out.writeStartElement(OwsContext.OWS_URI, "ServiceIdentification");
                 out.writeStartElement(OwsContext.OWS_URI, "Title");
@@ -94,23 +94,6 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
                     out.writeEndElement();
                 out.writeEndElement();
             out.writeEndElement();
-
-            /**
-            <ows:OperationsMetadata>
-            <ows:Operation name="GetCapabilities">
-               <ows:DCP>
-                  <ows:HTTP>
-                     <ows:Get xlink:href="http://www.BlueOx.org/wfs/wfs.cgi?"/>
-                     <ows:Post xlink:href="http://www.BlueOx.org/wfs/wfs.cgi"/>
-                  </ows:HTTP>
-               </ows:DCP>
-               <ows:Parameter name="AcceptVersions">
-                  <ows:AllowedValues>
-                  <ows:Value>2.0.2</ows:Value>
-                  <ows:Value>2.0.0</ows:Value>
-                  </ows:AllowedValues>
-               </ows:Parameter>
-            </ows:Operation> */
 
             out.writeStartElement(OwsContext.WFS_URI, "FeatureTypeList");
             for(FeatureType featureType : owsContext.getWfsCapabilities().getFeatureTypes()) {

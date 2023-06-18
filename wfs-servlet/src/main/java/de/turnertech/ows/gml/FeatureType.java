@@ -1,6 +1,7 @@
 package de.turnertech.ows.gml;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +94,10 @@ public class FeatureType {
 
     public FeatureProperty getProperty(String propertyName) {
         return featureTypeProperties.get(propertyName);
+    }
+
+    public Collection<FeatureProperty> getProperties() {
+        return featureTypeProperties.values();
     }
 
     public boolean hasProperty(String propertyName) {
