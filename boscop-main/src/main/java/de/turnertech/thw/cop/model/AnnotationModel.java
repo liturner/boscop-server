@@ -18,11 +18,11 @@ import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.Settings;
 
-public class HazardModel implements Model {
+public class AnnotationModel implements Model {
     
-    public static final HazardModel INSTANCE = new HazardModel();
+    public static final AnnotationModel INSTANCE = new AnnotationModel();
 
-    public static final String NAME = "Hazard";
+    public static final String NAME = "Annotation";
 
     public static final String TYPENAME = NAME;
 
@@ -30,14 +30,12 @@ public class HazardModel implements Model {
 
     private final FeatureType featureType;
 
-    private HazardModel() {
+    private AnnotationModel() {
         featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
         featureType.setSrs(SpatialReferenceSystem.CRS84);
         featureType.setTitle(NAME);
-        featureType.setDescription("A feature located at a specific single point location.");
         featureType.putProperty(new FeatureProperty("id", FeaturePropertyType.ID));
-        featureType.putProperty(new FeatureProperty("hazardType", FeaturePropertyType.TEXT));
-        featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.POINT));
+        featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.GEOMETRY));
     }
 
     @Override
@@ -71,7 +69,7 @@ public class HazardModel implements Model {
 
     @Override
     public boolean removeAll(Collection<IFeature> hazards) {
-        return HazardModel.features.removeAll(hazards);
+        return features.removeAll(hazards);
     }
 
     @Override

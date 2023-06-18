@@ -37,6 +37,7 @@ public class UnitModel implements Model {
     private UnitModel() {
         featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
         featureType.setSrs(SpatialReferenceSystem.CRS84);
+        featureType.setTitle(TYPENAME);
         featureType.putProperty(new FeatureProperty(ID_FIELD, FeaturePropertyType.ID));
         featureType.putProperty(new FeatureProperty(OPTA_FIELD, FeaturePropertyType.TEXT));
         featureType.putProperty(new FeatureProperty(GEOMETRY_FIELD, FeaturePropertyType.POINT));

@@ -1,6 +1,7 @@
 package de.turnertech.ows.gml;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ public class FeatureType {
     private SpatialReferenceSystem srs;
 
     private String title;
+
+    private String description;
 
     public FeatureType(String namespace, String name) {
         this.namespace = namespace;
@@ -70,6 +73,14 @@ public class FeatureType {
         this.srs = srs;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Feature createInstance() {
         return new Feature(this);
     }
@@ -95,12 +106,16 @@ public class FeatureType {
         return featureTypeProperties.get(propertyName);
     }
 
+    public Collection<FeatureProperty> getProperties() {
+        return featureTypeProperties.values();
+    }
+
     public boolean hasProperty(String propertyName) {
         return featureTypeProperties.containsKey(propertyName);
     }
 
     public FeatureProperty putProperty(FeatureProperty value) {
         return featureTypeProperties.put(value.getName(), value);
-    }
+    } 
 
 }
