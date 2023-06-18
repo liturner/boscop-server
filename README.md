@@ -19,6 +19,10 @@ The key features include:
 - OGC 15-005r1 (DGIWG WFS Profile, Military notes on WFS 2.0)
 - IETF RFC 4646 (Tags for Identifying Languages, came from )
 
+# Relevant Research
+
+- Řezník, Tomáš & Hynek, Zdeněk. (2009). Data Management in Crisis Situations through WFS-T client.
+
 # Detailed Design
 
 ## URNs

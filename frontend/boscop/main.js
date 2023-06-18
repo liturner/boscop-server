@@ -15,6 +15,19 @@ const formatWFS = new ol.format.WFS({
   })
 });
 
+const lineSource = new ol.source.Vector({
+  format: new ol.format.GML32({
+    srsName: "EPSG:3857"
+  }),
+  url: function (extent) {
+    return (
+      '/ows?SERVICE=WFS&VERSION=2.0.2&REQUEST=GetFeature&TYPENAMES=boscop:Line&' +
+      'SRSNAME=EPSG:3857'
+    );
+  },
+  strategy: ol.loadingstrategy.bbox
+});
+
 const copWfsSource = new ol.source.Vector({
   format: formatWFS.gmlFormat_,
   url: function (extent) {
@@ -167,6 +180,16 @@ const hazardLayer = new ol.layer.Vector({
   style: HazardStyle.styleFunction
 });
 
+const lineLayer = new ol.layer.Vector({
+  source: lineSource,
+  style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'rgba(0, 0, 255, 1.0)',
+      width: 2,
+    }),
+  }),
+});
+
 const map = new ol.Map({
   controls: ol.control.defaults.defaults().extend([new ol.control.FullScreen(), new ol.control.ScaleLine()]),
   target: 'map',
@@ -174,7 +197,8 @@ const map = new ol.Map({
     basemap,
     copLayer,
     unitLayer,
-    hazardLayer
+    hazardLayer,
+    lineLayer
   ],
   view: new ol.View({
     center: [1244800, 6230600],
