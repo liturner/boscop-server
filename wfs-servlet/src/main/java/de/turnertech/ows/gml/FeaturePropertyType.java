@@ -25,6 +25,7 @@ public enum FeaturePropertyType {
     POINT(true, new QName(OwsContext.GML_URI, "PointPropertyType")),
     POINT_TYPE(true, new QName(OwsContext.GML_URI, "Point")),
     POLYGON(true, new QName(OwsContext.GML_URI, "SurfacePropertyType")),
+    LINE_STRING(true, new QName(OwsContext.GML_URI, "CurvePropertyType")),
     POLYGON_TYPE(true, new QName(OwsContext.GML_URI, "Polygon")),
     GEOMETRY(true, new QName(OwsContext.GML_URI, "GeometryPropertyType"));
 

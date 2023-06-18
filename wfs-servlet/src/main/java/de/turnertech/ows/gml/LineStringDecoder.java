@@ -1,16 +1,15 @@
 package de.turnertech.ows.gml;
 
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 
-public class PolygonDecoder implements GmlDecoder<Polygon> {
+public class LineStringDecoder implements GmlDecoder<LineString> {
 
     @Override
-    public Polygon decode(Node root, GmlDecoderContext context) {
-        Polygon returnPolygon = new Polygon();
+    public LineString decode(Node root, GmlDecoderContext context) {
+        LineString returnElement = new LineString();
         
         Node srsNode = root.getAttributes().getNamedItem("srsName");
         SpatialReferenceSystem srs = null;
@@ -27,10 +26,9 @@ public class PolygonDecoder implements GmlDecoder<Polygon> {
             if(child.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
-            if("exterior".equals(child.getNodeName())) {
-                Element element = (Element)child;
-                LinearRing exterior = new LinearRingDecoder().decode(element.getElementsByTagName("LinearRing").item(0), context);
-                returnPolygon.setExterior(exterior);
+            if("posList".equals(child.getNodeName())) {
+                DirectPositionList posList = new DirectPositionListDecoder().decode(child, context);
+                returnElement.setPosList(posList);
             }
         }
 
@@ -38,7 +36,6 @@ public class PolygonDecoder implements GmlDecoder<Polygon> {
             context.getSrsDeque().pop();
         }
 
-        return returnPolygon;
+        return returnElement;
     }
-    
 }

@@ -69,22 +69,22 @@ public class Feature implements IFeature {
                     out.writeStartElement(namespaceURI, field.getKey());
                     out.writeCharacters(field.getValue().toString());
                     out.writeEndElement();
-                } else if(propertyType == FeaturePropertyType.POLYGON) {
+                } else if(
+                        propertyType == FeaturePropertyType.POLYGON || 
+                        propertyType == FeaturePropertyType.POINT || 
+                        propertyType == FeaturePropertyType.LINE_STRING || 
+                        propertyType == FeaturePropertyType.GEOMETRY) {
+                    GmlElement geom = (GmlElement)field.getValue();
                     out.writeStartElement(namespaceURI, field.getKey());
-                    ((Polygon)field.getValue()).writeGml(out, Polygon.GML_NAME, Polygon.NAMESPACE, srs);
+                    geom.writeGml(out, geom.getGmlName(), GmlElement.NAMESPACE, srs);
                     out.writeEndElement();
                 } else if(propertyType == FeaturePropertyType.ID) {
                     // Do Nothing, special field
-                } else if(propertyType == FeaturePropertyType.POINT) {
-                    out.writeStartElement(namespaceURI, field.getKey());
-                    ((Point)field.getValue()).writeGml(out, Point.GML_NAME, Point.NAMESPACE, srs);
-                    out.writeEndElement();
                 } else {
                     out.writeEmptyElement(namespaceURI, field.getKey());
                     Logging.LOG.severe("Feature: parameter not written as property type not implemented: " + propertyType);
                 }
             }
-
             out.writeEndElement();
         } catch (Exception e) {
             Logging.LOG.severe("Could not get GML for Feature");

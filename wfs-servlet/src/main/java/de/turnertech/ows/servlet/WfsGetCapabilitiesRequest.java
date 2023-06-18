@@ -27,6 +27,14 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
         response.setContentType(RequestHandler.CONTENT_XML);
         XMLStreamWriter out = null;
         WfsVersionValue requestedVersion = WfsVersionValue.V2_0_2;
+        String port;
+        if("http".equalsIgnoreCase(request.getScheme()) && request.getServerPort() == 80 || "https".equalsIgnoreCase(request.getScheme()) && request.getServerPort() == 443) {
+            port = "";
+        } else {
+            port = ":" + Integer.toString(request.getServerPort());
+        }
+        String currentUrl = request.getScheme() + "://" + request.getServerName() + port + request.getContextPath() + request.getServletPath();
+
         if(requestContext.getOwsVersion() != null) {
             requestedVersion = requestContext.getOwsVersion();
         }
@@ -44,6 +52,7 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
             out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.FES_URI), OwsContext.FES_URI);
             out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.OWS_URI), OwsContext.OWS_URI);
             out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.XSD_URI), OwsContext.XSD_URI);
+            out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.XLINK_URI), OwsContext.XLINK_URI);
             out.writeAttribute(OwsContext.XSI_URI, "schemaLocation", "http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsAll.xsd http://www.opengis.net/fes/2.0 http://schemas.opengis.net/filter/2.0/filterAll.xsd");
 
             out.writeStartElement(OwsContext.OWS_URI, "ServiceIdentification");
@@ -82,6 +91,17 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
             out.writeStartElement(OwsContext.OWS_URI, "OperationsMetadata");
                 out.writeStartElement(OwsContext.OWS_URI, "Operation");
                 out.writeAttribute("name", "GetCapabilities");
+
+                    out.writeStartElement(OwsContext.OWS_URI, "DCP");
+                        out.writeStartElement(OwsContext.OWS_URI, "HTTP");
+                            out.writeEmptyElement(OwsContext.OWS_URI, "Get");
+                            out.writeAttribute(OwsContext.XLINK_URI, "href", currentUrl + "?");
+                            out.writeEmptyElement(OwsContext.OWS_URI, "Post");
+                            out.writeAttribute(OwsContext.XLINK_URI, "href", currentUrl);
+                        out.writeEndElement();
+                    out.writeEndElement();
+
+
                     out.writeStartElement(OwsContext.OWS_URI, "Parameter");
                     out.writeAttribute("name", "AcceptVersions");
                         out.writeStartElement(OwsContext.OWS_URI, "AllowedValues");
