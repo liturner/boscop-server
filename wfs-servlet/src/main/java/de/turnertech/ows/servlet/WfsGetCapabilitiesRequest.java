@@ -91,7 +91,6 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
             out.writeStartElement(OwsContext.OWS_URI, "OperationsMetadata");
                 out.writeStartElement(OwsContext.OWS_URI, "Operation");
                 out.writeAttribute("name", "GetCapabilities");
-
                     out.writeStartElement(OwsContext.OWS_URI, "DCP");
                         out.writeStartElement(OwsContext.OWS_URI, "HTTP");
                             out.writeEmptyElement(OwsContext.OWS_URI, "Get");
@@ -113,7 +112,49 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
                         out.writeEndElement();
                     out.writeEndElement();
                 out.writeEndElement();
+                out.writeStartElement(OwsContext.OWS_URI, "Operation");
+                out.writeAttribute("name", "DescribeFeatureType");
+                    out.writeStartElement(OwsContext.OWS_URI, "DCP");
+                        out.writeStartElement(OwsContext.OWS_URI, "HTTP");
+                            out.writeEmptyElement(OwsContext.OWS_URI, "Get");
+                            out.writeAttribute(OwsContext.XLINK_URI, "href", currentUrl + "?");
+                            out.writeEmptyElement(OwsContext.OWS_URI, "Post");
+                            out.writeAttribute(OwsContext.XLINK_URI, "href", currentUrl);
+                        out.writeEndElement();
+                    out.writeEndElement();
+                out.writeEndElement();
+                out.writeStartElement(OwsContext.OWS_URI, "Operation");
+                out.writeAttribute("name", "GetFeature");
+                    out.writeStartElement(OwsContext.OWS_URI, "DCP");
+                        out.writeStartElement(OwsContext.OWS_URI, "HTTP");
+                            out.writeEmptyElement(OwsContext.OWS_URI, "Get");
+                            out.writeAttribute(OwsContext.XLINK_URI, "href", currentUrl + "?");
+                            out.writeEmptyElement(OwsContext.OWS_URI, "Post");
+                            out.writeAttribute(OwsContext.XLINK_URI, "href", currentUrl);
+                        out.writeEndElement();
+                    out.writeEndElement();
+                out.writeEndElement();
+                out.writeStartElement(OwsContext.OWS_URI, "Operation");
+                out.writeAttribute("name", "Transaction");
+                    out.writeStartElement(OwsContext.OWS_URI, "DCP");
+                        out.writeStartElement(OwsContext.OWS_URI, "HTTP");
+                            out.writeEmptyElement(OwsContext.OWS_URI, "Post");
+                            out.writeAttribute(OwsContext.XLINK_URI, "href", currentUrl);
+                        out.writeEndElement();
+                    out.writeEndElement();
+                    out.writeStartElement(OwsContext.OWS_URI, "Parameter");
+                    out.writeAttribute("name", "AcceptVersions");
+                        out.writeStartElement(OwsContext.OWS_URI, "AllowedValues");
+                            for(WfsVersionValue allowedVersion : owsContext.getWfsCapabilities().getServiceTypeVersions()) {
+                                out.writeStartElement(OwsContext.OWS_URI, "Value");
+                                    out.writeCharacters(allowedVersion.toString());
+                                out.writeEndElement();
+                            }
+                        out.writeEndElement();
+                    out.writeEndElement();
+                out.writeEndElement();
             out.writeEndElement();
+
 
             out.writeStartElement(OwsContext.WFS_URI, "FeatureTypeList");
             for(FeatureType featureType : owsContext.getWfsCapabilities().getFeatureTypes()) {
