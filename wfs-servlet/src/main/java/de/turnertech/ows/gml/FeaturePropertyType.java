@@ -13,7 +13,7 @@ public enum FeaturePropertyType {
     INSTANT(false, new QName(OwsContext.XSD_URI, "dateTime ")),
     POINT(true, new QName(OwsContext.GML_URI, "PointPropertyType")),
     POINT_TYPE(true, new QName(OwsContext.GML_URI, "PointPropertyType")),
-    POLYGON(true, new QName(OwsContext.GML_URI, "SurfaceProperty")),
+    POLYGON(true, new QName(OwsContext.GML_URI, "SurfacePropertyType")),
     POLYGON_TYPE(true, new QName(OwsContext.GML_URI, "SurfacePropertyType")), // TODO: Explain that the difference is the element name, and that this references the xsd "gml:PolygonType", making this an "is a" Polygon, rather than a "has a" Polygon
     GEOMETRY_PROPERTY_TYPE(true, new QName(OwsContext.GML_URI, "GeometryPropertyType"));
 
