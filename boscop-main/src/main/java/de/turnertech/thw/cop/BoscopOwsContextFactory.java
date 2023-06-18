@@ -43,7 +43,7 @@ public class BoscopOwsContextFactory extends OwsContextFactory {
         WfsCapabilities wfsCapabilities = new WfsCapabilities();
 
         wfsCapabilities.setServiceTitle("BOSCOP WFS");
-        wfsCapabilities.setFeatureTypes(Arrays.asList(AreaModel.INSTANCE.getFeatureType(), HazardModel.INSTANCE.getFeatureType(), UnitModel.INSTANCE.getFeatureType(), AnnotationModel.INSTANCE.getFeatureType()));
+        wfsCapabilities.setFeatureTypes(Arrays.asList(AreaModel.INSTANCE.getFeatureType(), HazardModel.INSTANCE.getFeatureType(), UnitModel.INSTANCE.getFeatureType()));
 
         return wfsCapabilities;
     }

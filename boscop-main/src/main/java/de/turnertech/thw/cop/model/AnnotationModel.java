@@ -33,8 +33,9 @@ public class AnnotationModel implements Model {
     private AnnotationModel() {
         featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
         featureType.setSrs(SpatialReferenceSystem.CRS84);
+        featureType.setTitle(NAME);
         featureType.putProperty(new FeatureProperty("id", FeaturePropertyType.ID));
-        featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.GEOMETRY_PROPERTY_TYPE));
+        featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.GEOMETRY));
     }
 
     @Override

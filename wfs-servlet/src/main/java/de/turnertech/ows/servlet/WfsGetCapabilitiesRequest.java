@@ -106,6 +106,11 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
                             out.writeCharacters(featureType.getTitle());
                         out.writeEndElement();
                     }
+                    if(featureType.getDescription() != null) {
+                        out.writeStartElement(OwsContext.WFS_URI, "Abstract");
+                            out.writeCharacters(featureType.getDescription());
+                        out.writeEndElement();
+                    }
                     if(featureType.getSrs() == null) {
                         out.writeEmptyElement(OwsContext.WFS_URI, "NoCRS");
                     } else {

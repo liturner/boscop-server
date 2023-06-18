@@ -23,6 +23,8 @@ public class FeatureType {
 
     private String title;
 
+    private String description;
+
     public FeatureType(String namespace, String name) {
         this.namespace = namespace;
         this.name = name;
@@ -71,6 +73,14 @@ public class FeatureType {
         this.srs = srs;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Feature createInstance() {
         return new Feature(this);
     }
@@ -106,6 +116,6 @@ public class FeatureType {
 
     public FeatureProperty putProperty(FeatureProperty value) {
         return featureTypeProperties.put(value.getName(), value);
-    }
+    } 
 
 }

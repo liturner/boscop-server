@@ -33,6 +33,8 @@ public class HazardModel implements Model {
     private HazardModel() {
         featureType = new FeatureType(Constants.Model.NAMESPACE, TYPENAME);
         featureType.setSrs(SpatialReferenceSystem.CRS84);
+        featureType.setTitle(NAME);
+        featureType.setDescription("A feature located at a specific single point location.");
         featureType.putProperty(new FeatureProperty("id", FeaturePropertyType.ID));
         featureType.putProperty(new FeatureProperty("hazardType", FeaturePropertyType.TEXT));
         featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.POINT));
