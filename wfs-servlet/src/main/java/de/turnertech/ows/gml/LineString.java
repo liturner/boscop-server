@@ -8,7 +8,7 @@ import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 /**
  * gml:LineString
  */
-public class LineString implements GmlElement {
+public class LineString implements GmlElement, BoundingBoxProvider {
     
     public static final String GML_NAME = "LineString";
 
@@ -34,8 +34,9 @@ public class LineString implements GmlElement {
     public void writeGml(XMLStreamWriter out, String localName, String namespaceURI, SpatialReferenceSystemRepresentation srs) {
         try {
             writeGmlStartElement(out, localName, namespaceURI);
-            
-            posList.writeGml(out);
+            out.writeAttribute(GmlElement.NAMESPACE, "srsName", srs.toString());
+
+            posList.writeGml(out, DirectPositionList.GML_NAME, DirectPositionList.NAMESPACE, srs);
 
             out.writeEndElement();
         } catch (Exception e) {
@@ -46,6 +47,11 @@ public class LineString implements GmlElement {
     @Override
     public String getGmlName() {
         return GML_NAME;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return posList.getBoundingBox();
     }
 
 }

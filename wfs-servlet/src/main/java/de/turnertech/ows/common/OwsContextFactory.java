@@ -53,6 +53,7 @@ public abstract class OwsContextFactory {
         returnMap.put("http://www.opengis.net/gml/3.2", "gml");
         returnMap.put("http://www.w3.org/2001/XMLSchema", "xsd");
         returnMap.put("http://www.w3.org/2001/XMLSchema-instance", "xsi");
+        returnMap.put(OwsContext.XLINK_URI, "xlink");
         return returnMap;
     }
 

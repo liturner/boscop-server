@@ -15,6 +15,8 @@ import de.turnertech.thw.cop.model.AreaFeatureListDecoder;
 import de.turnertech.thw.cop.model.AreaModel;
 import de.turnertech.thw.cop.model.HazardFeatureListDecoder;
 import de.turnertech.thw.cop.model.HazardModel;
+import de.turnertech.thw.cop.model.LineFeatureListDecoder;
+import de.turnertech.thw.cop.model.LineModel;
 import de.turnertech.thw.cop.model.UnitModel;
 
 public class BoscopOwsContextFactory extends OwsContextFactory {
@@ -33,6 +35,11 @@ public class BoscopOwsContextFactory extends OwsContextFactory {
         featureList = hazardFeatureListDecoder.decode(storage);
         modelProvider.putModel(featureList.getFeatureType(), featureList);
 
+        storage = Paths.get(Settings.getDataDirectory().toString(), LineModel.TYPENAME + ".gml").toFile();
+        LineFeatureListDecoder lineFeatureListDecoder = new LineFeatureListDecoder();
+        featureList = lineFeatureListDecoder.decode(storage);
+        modelProvider.putModel(featureList.getFeatureType(), featureList);
+
         modelProvider.putModel(UnitModel.INSTANCE.getFeatureType(), UnitModel.INSTANCE);
         modelProvider.putModel(AnnotationModel.INSTANCE.getFeatureType(), AnnotationModel.INSTANCE);
         return modelProvider;
@@ -43,7 +50,7 @@ public class BoscopOwsContextFactory extends OwsContextFactory {
         WfsCapabilities wfsCapabilities = new WfsCapabilities();
 
         wfsCapabilities.setServiceTitle("BOSCOP WFS");
-        wfsCapabilities.setFeatureTypes(Arrays.asList(AreaModel.INSTANCE.getFeatureType(), HazardModel.INSTANCE.getFeatureType(), UnitModel.INSTANCE.getFeatureType()));
+        wfsCapabilities.setFeatureTypes(Arrays.asList(AreaModel.INSTANCE.getFeatureType(), HazardModel.INSTANCE.getFeatureType(), UnitModel.INSTANCE.getFeatureType(), LineModel.INSTANCE.getFeatureType()));
 
         return wfsCapabilities;
     }
