@@ -64,6 +64,32 @@ export class OptaStyle {
   };
 }
 
+export class LineStyle {
+  static styleSelectedFunction(feature) {
+    return new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: '#ffcc33',
+        width: 2,
+      }),
+    })
+  }
+
+  static styleFunction(feature) {    
+    for(let selectedFeature of selectedThings) {
+      if(selectedFeature.getId() === feature.getId()) {
+        return LineStyle.styleSelectedFunction(feature);
+      }
+    }
+
+    return new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: '#00dd00',
+        width: 2,
+      }),
+    })
+  }
+}
+
 export class HazardStyle {
 
   static selectedStyleCache = {};

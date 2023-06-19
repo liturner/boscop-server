@@ -1,5 +1,5 @@
 import { basemap } from "./basemap.js";
-import { AreaStyle, HazardStyle, OptaStyle, setSelectedSource } from "./style.js";
+import { AreaStyle, HazardStyle, LineStyle, OptaStyle, setSelectedSource } from "./style.js";
 
 let selected;
 
@@ -7,9 +7,11 @@ let draw;
 
 let boscopProjection = ol.proj.get('http://www.opengis.net/def/crs/EPSG/0/4326')
 
+let boscopNamespace = 'urn:ns:de:turnertech:boscop'
+
 const formatWFS = new ol.format.WFS({
   version: '2.0.0',
-  featureNS: 'urn:ns:de:turnertech:boscop',
+  featureNS: boscopNamespace,
   gmlFormat: new ol.format.GML32({
     srsName: boscopProjection.getCode()
   })
@@ -26,6 +28,34 @@ const lineSource = new ol.source.Vector({
     );
   },
   strategy: ol.loadingstrategy.bbox
+});
+
+lineSource.on("removefeature", function (e) {
+  console.log("lineSource - removing feature");
+  const node = formatWFS.writeTransaction(null, null, [e.feature], {
+    featureNS: boscopNamespace,
+    featurePrefix: 'boscop',
+    featureType: 'Line',
+    srsName: "EPSG:3857",
+    version: '2.0.0',
+    gmlOptions: {
+      featureNS: boscopNamespace,
+      featureType: 'Line',
+      srsName: "EPSG:3857"
+    }
+  });
+  const xs = new XMLSerializer();
+  const payload = xs.serializeToString(node);
+  console.log(payload);
+  fetch('/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=Transaction', {
+    method: "POST",
+    body: payload
+  });
+});
+
+const lineLayer = new ol.layer.Vector({
+  source: lineSource,
+  style: LineStyle.styleFunction
 });
 
 const copWfsSource = new ol.source.Vector({
@@ -180,16 +210,6 @@ const hazardLayer = new ol.layer.Vector({
   style: HazardStyle.styleFunction
 });
 
-const lineLayer = new ol.layer.Vector({
-  source: lineSource,
-  style: new ol.style.Style({
-    stroke: new ol.style.Stroke({
-      color: 'rgba(0, 0, 255, 1.0)',
-      width: 2,
-    }),
-  }),
-});
-
 const map = new ol.Map({
   controls: ol.control.defaults.defaults().extend([new ol.control.FullScreen(), new ol.control.ScaleLine()]),
   target: 'map',
@@ -217,6 +237,7 @@ function refreshCopLayer() {
   copLayer.getSource().refresh();
   unitLayer.getSource().refresh();
   hazardLayer.getSource().refresh();
+  lineLayer.getSource().refresh();
 }
 
 function deleteSelected() {
@@ -224,6 +245,7 @@ function deleteSelected() {
     console.log("Removing: " + selectedElement.id_);
     hazardSource.removeFeature(hazardSource.getFeatureById(selectedElement.id_));
     copWfsSource.removeFeature(copWfsSource.getFeatureById(selectedElement.id_));
+    lineSource.removeFeature(lineSource.getFeatureById(selectedElement.id_));
   });
   selected = [];
 }
@@ -364,6 +386,40 @@ document.getElementById('delete').addEventListener('click', function () {
     map.removeInteraction(draw);
   }
   deleteSelected();
+});
+
+document.getElementById('addLine').addEventListener('click', function () {
+  draw = new ol.interaction.Draw({
+    source: lineSource,
+    type: 'LineString'
+  });
+  draw.on('drawend', function (e) {
+    //e.feature.setProperties({
+    //  "hazardType": hazardSelect.value
+    //});
+    const node = formatWFS.writeTransaction([e.feature], null, null, {
+      featureNS: 'urn:ns:de:turnertech:boscop',
+      featurePrefix: 'boscop',
+      featureType: 'Line',
+      srsName: 'EPSG:3857',
+      version: '2.0.0',
+      gmlOptions: {
+        featureNS: 'urn:ns:de:turnertech:boscop',
+        featureType: 'Line',
+        srsName: 'EPSG:3857'
+      }
+    });
+    const xs = new XMLSerializer();
+    const payload = xs.serializeToString(node);
+    console.log(payload);
+    fetch('/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=Transaction', {
+      method: "POST",
+      body: payload
+    }).then(() => map.removeInteraction(draw))
+    .then(() => clearInsertSelection())
+    .then(() => refreshCopLayer());
+  });
+  map.addInteraction(draw);
 });
 
 /**
