@@ -10,7 +10,7 @@ import de.turnertech.ows.gml.DirectPosition;
 
 public class SpatialReferenceSystemConverter {
     
-    private static final MathContext MATH_CONTEXT = new MathContext(5);
+    private static final MathContext MATH_CONTEXT = new MathContext(13);
 
     private SpatialReferenceSystemConverter() {
         // Static Converter
@@ -57,10 +57,10 @@ public class SpatialReferenceSystemConverter {
     private static DirectPosition convertEPSG4326toEPSG3857(DirectPosition pos) {
         double x = pos.getX();
         double y = pos.getY();
-        x = (x * 20037508.34) / 180;
-        y = Math.log(Math.tan(((90 + y) * Math.PI) / 360)) / (Math.PI / 180);
-        y = (y * 20037508.34) / 180;
-        return new DirectPosition(SpatialReferenceSystem.EPSG3857, BigDecimal.valueOf(x).setScale(8, RoundingMode.HALF_UP).doubleValue(), BigDecimal.valueOf(y).setScale(8, RoundingMode.HALF_UP).doubleValue());
+        x = (x * 20037508.34) / 180.0;
+        y = Math.log(Math.tan(((90.0 + y) * Math.PI) / 360.0)) / (Math.PI / 180.0);
+        y = (y * 20037508.34) / 180.0;
+        return new DirectPosition(SpatialReferenceSystem.EPSG3857, BigDecimal.valueOf(x).setScale(13, RoundingMode.HALF_UP).doubleValue(), BigDecimal.valueOf(y).setScale(8, RoundingMode.HALF_UP).doubleValue());
     }
 
     private static DirectPosition convertCRS84toEPSG4326(DirectPosition pos) {
@@ -70,9 +70,9 @@ public class SpatialReferenceSystemConverter {
     private static DirectPosition convertEPSG3857toEPSG4326(DirectPosition pos) {
         double x = pos.getX();
         double y = pos.getY();
-        x = (x * 180) / 20037508.34;
-        y = (y * 180) / 20037508.34;
-        y = (Math.atan(Math.pow(Math.E, y * (Math.PI / 180))) * 360) / Math.PI - 90;
+        x = (x * 180.0) / 20037508.34;
+        y = (y * 180.0) / 20037508.34;
+        y = (Math.atan(Math.pow(Math.E, y * (Math.PI / 180.0))) * 360.0) / Math.PI - 90.0;
         return new DirectPosition(SpatialReferenceSystem.EPSG4326, BigDecimal.valueOf(x).round(MATH_CONTEXT).doubleValue(), BigDecimal.valueOf(y).round(MATH_CONTEXT).doubleValue());
     }
 
