@@ -69,7 +69,7 @@ export class LineStyle {
     return new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: '#ffcc33',
-        width: 2,
+        width: 3,
       }),
     })
   }
@@ -84,7 +84,7 @@ export class LineStyle {
     return new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: '#00dd00',
-        width: 2,
+        width: 3,
       }),
     })
   }
