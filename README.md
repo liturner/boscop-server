@@ -23,6 +23,33 @@ The key features include:
 
 - Řezník, Tomáš & Hynek, Zdeněk. (2009). Data Management in Crisis Situations through WFS-T client.
 
+# Building & Deploying
+
+## The Website
+
+The Maven Site is a fully fledged multi-module site, deployed to GitHub Pages. To be certain that the build fully works run the following commands in order (there are some nuances due to the tests module).
+
+```bash
+# compile needed because the tests maven module is not a named module
+# site only generates the individual sites in the various modules
+# site:stage brings all the sites together
+# scm-publish:publish-scm because scm-deploy doesnt work for mutli module at time of writing
+
+mvn clean compile site site:stage
+mvn scm-publish:publish-scm
+```
+
+## The Package
+
+Sometimes the release:prepare fails on the first try. This seems to be related to the tests project. Just run release:prepare again and it should work.
+
+```bash
+mvn clean verify
+mvn release:prepare
+# Use the tag "taktische-zeichen-..."
+mvn release:perform
+```
+
 # Detailed Design
 
 ## URNs

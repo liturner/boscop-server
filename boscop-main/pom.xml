@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -9,42 +10,12 @@
 
   <groupId>de.turnertech.boscop</groupId>
   <artifactId>boscop-main</artifactId>
-  <name>THW COP Server</name>
+  <name>BOSCOP Server</name>
   <inceptionYear>2023</inceptionYear>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <url>https://liturner.github.io/THW-COP-Server/</url>
 
   <description>A leightweight server application for tracking the common operational picture in the context of the THW</description>
-
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/liturner/THW-COP-Server/issues</url>
-  </issueManagement>
-
-  <distributionManagement>
-    <downloadUrl>https://central.sonatype.dev/artifact/de.turnertech/taktische-zeichen/1.0</downloadUrl>
-    <repository>
-      <id>sonatype</id>
-      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-    <snapshotRepository>
-      <id>sonatype-snapshot</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-    </snapshotRepository>
-    <site>
-      <id>github</id>
-      <url>scm:git:https://github.com/liturner/THW-COP-Server.git</url>
-    </site>
-  </distributionManagement>
-
-  <licenses>
-    <license>
-      <name>MIT</name>
-      <url>https://raw.githubusercontent.com/liturner/Taktische-Zeichen-Java/main/LICENSE</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
 
   <build>
     <finalName>boscop</finalName>
@@ -59,27 +30,7 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.12.1</version>
-          <configuration>
-            <skipDeploy>true</skipDeploy><!-- don't deploy site with maven-site-plugin -->
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-publish-plugin</artifactId>
-          <version>3.1.0</version>
-          <configuration>
-            <scmBranch>site</scmBranch>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-
+    
     <plugins>
       <!-- Generate an Assembly -->
       <plugin>
@@ -115,24 +66,6 @@
           </archive>
         </configuration>
       </plugin>
-
-      <!-- Download dependencies
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeScope>runtime</includeScope>
-              <outputDirectory>${project.build.directory}/lib</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin> -->
     </plugins>
   </build>
 
