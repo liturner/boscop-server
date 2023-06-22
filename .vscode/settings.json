@@ -8,6 +8,18 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "maven.terminal.favorites": [
         {
+            "command": "clean verify",
+            "debug": false
+        },
+        {
+            "command": "clean install",
+            "debug": false
+        },
+        {
+            "command": "clean deploy",
+            "debug": false
+        },
+        {
             "command": "release:prepare",
             "debug": false
         },
@@ -21,6 +33,14 @@
         },
         {
             "command": "dependency:resolve  -Dclassifier=sources",
+            "debug": false
+        },
+        {
+            "command": "clean compile site site:stage",
+            "debug": false
+        },
+        {
+            "command": "scm-publish:publish-scm",
             "debug": false
         }
     ],

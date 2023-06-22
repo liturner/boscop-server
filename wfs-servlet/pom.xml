@@ -10,9 +10,12 @@
 
   <groupId>de.turnertech.ows</groupId>
   <artifactId>wfs-servlet</artifactId>
+  <name>WFS Servlet</name>
   <inceptionYear>2023</inceptionYear>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
+
+  <description>A zero dependency WFS Servlet.</description>
     
   <dependencies>
     <dependency>
