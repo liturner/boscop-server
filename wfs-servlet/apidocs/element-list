@@ -1,0 +1,7 @@
+module:de.turnertech.ows
+de.turnertech.ows.common
+de.turnertech.ows.filter
+de.turnertech.ows.gml
+de.turnertech.ows.parameter
+de.turnertech.ows.servlet
+de.turnertech.ows.srs
