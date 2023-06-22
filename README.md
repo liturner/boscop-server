@@ -1,6 +1,6 @@
 # Introduction
 
-BOSCOP is a project producing a set of products aimed at supplying the organizational structure of emergency deployments with more up to date and use full information in a centralised presentation, from decentralised sources.
+BOSCOP is a project producing a set of products aimed at supplying the organizational structure of emergency deployments with more up to date and usefull information in a centralised presentation, from decentralised sources.
 
 The key features include:
 
@@ -52,9 +52,18 @@ mvn release:perform
 
 # Detailed Design
 
-## URNs
+## URNs & Namespaces
 
-urn:ns:de:turnertech:boscop
+- <pre>urn:ns:de:turnertech:boscop</pre>
+- http://turnertech.de/boscop
+
+## Technology
+
+- Java 17
+- Jakarta Servlet
+- Jetty Embeded Server
+- OpenLayers
+- VS Code
 
 ## Security Considerations
 
