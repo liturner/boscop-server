@@ -1,25 +1,24 @@
 package de.turnertech.ows.filter;
 
 public class BetweenComparisonOperator extends ComparisonOperator {
-    
-    private Expression expression;
 
-    private Expression lowerBoundary;
+    private final Expression lowerBoundary;
 
-    private Expression upperBoundary;
+    private final Expression expression;
+
+    private final Expression upperBoundary;
+
+    public BetweenComparisonOperator(final Expression lowerBoundary, final Expression expression, final Expression upperBoundary) {
+        this.lowerBoundary = lowerBoundary;
+        this.expression = expression;
+        this.upperBoundary = upperBoundary;
+    }
 
     /**
      * @return the expression
      */
     public Expression getExpression() {
         return expression;
-    }
-
-    /**
-     * @param expression the expression to set
-     */
-    public void setExpression(Expression expression) {
-        this.expression = expression;
     }
 
     /**
@@ -30,24 +29,17 @@ public class BetweenComparisonOperator extends ComparisonOperator {
     }
 
     /**
-     * @param lowerBoundary the lowerBoundary to set
-     */
-    public void setLowerBoundary(Expression lowerBoundary) {
-        this.lowerBoundary = lowerBoundary;
-    }
-
-    /**
      * @return the upperBoundary
      */
     public Expression getUpperBoundary() {
         return upperBoundary;
     }
 
-    /**
-     * @param upperBoundary the upperBoundary to set
-     */
-    public void setUpperBoundary(Expression upperBoundary) {
-        this.upperBoundary = upperBoundary;
+    @Override
+    public boolean getAsBoolean() {
+        // TODO Auto-generated method stub
+        // Feels like here we can use the Comparable interface?
+        throw new UnsupportedOperationException("Unimplemented method 'getAsBoolean'");
     }
     
 }

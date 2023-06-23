@@ -2,7 +2,11 @@ package de.turnertech.ows.filter;
 
 public class NullOperator extends ComparisonOperator {
     
-    private Expression expression;
+    private final Expression expression;
+
+    public NullOperator(final Expression expression) {
+        this.expression = expression;
+    }
 
     /**
      * @return the expression
@@ -11,11 +15,9 @@ public class NullOperator extends ComparisonOperator {
         return expression;
     }
 
-    /**
-     * @param expression the expression to set
-     */
-    public void setExpression(Expression expression) {
-        this.expression = expression;
+    @Override
+    public boolean getAsBoolean() {
+        return expression.get() == null;
     }
     
 }

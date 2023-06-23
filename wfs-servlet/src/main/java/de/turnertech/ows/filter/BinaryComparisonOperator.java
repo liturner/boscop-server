@@ -15,5 +15,11 @@ public class BinaryComparisonOperator extends ComparisonOperator {
         this.matchCase = true;
         this.matchAction = MatchAction.ANY;
     }
+
+    @Override
+    public boolean getAsBoolean() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAsBoolean'");
+    }
     
 }

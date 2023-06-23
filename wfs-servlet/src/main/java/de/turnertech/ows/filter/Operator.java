@@ -1,5 +1,9 @@
 package de.turnertech.ows.filter;
 
-public abstract class Operator {
+import java.util.function.BooleanSupplier;
+
+public abstract class Operator implements BooleanSupplier {
+    
+
     
 }

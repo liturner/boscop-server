@@ -59,6 +59,12 @@ public class LikeOperator extends ComparisonOperator {
         this.escapeChar = escapeChar;
     }
 
+    @Override
+    public boolean getAsBoolean() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAsBoolean'");
+    }
+
     
 
 }

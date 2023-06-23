@@ -1,20 +1,19 @@
 package de.turnertech.ows.filter;
 
+import java.util.Objects;
+
 public class BinaryLogicOperator extends LogicalOperator {
 
-    private final NonIdOperator[] operands;
+    private final NonIdOperator leftOperand;
 
-    private BinaryLogicType operatorType;
+    private final BinaryLogicType operatorType;
 
-    public BinaryLogicOperator() {
-        this.operands = new NonIdOperator[2];
-    }
+    private final NonIdOperator rightOperand;
 
-    /**
-     * @return the operands
-     */
-    public NonIdOperator[] getOperands() {
-        return operands;
+    public BinaryLogicOperator(final NonIdOperator leftOperand, final BinaryLogicType operatorType, final NonIdOperator rightOperand) {
+        this.leftOperand = Objects.requireNonNull(leftOperand);
+        this.operatorType = Objects.requireNonNull(operatorType);
+        this.rightOperand = Objects.requireNonNull(rightOperand);
     }
 
     /**
@@ -24,11 +23,17 @@ public class BinaryLogicOperator extends LogicalOperator {
         return operatorType;
     }
 
-    /**
-     * @param operatorType the operatorType to set
-     */
-    public void setOperatorType(BinaryLogicType operatorType) {
-        this.operatorType = operatorType;
+    public NonIdOperator getLeftOperand() {
+        return leftOperand;
+    }
+
+    public NonIdOperator getRightOperand() {
+        return rightOperand;
+    }
+
+    @Override
+    public boolean getAsBoolean() {
+        return operatorType.test(leftOperand, rightOperand);
     }
 
 }

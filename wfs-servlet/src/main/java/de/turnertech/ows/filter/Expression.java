@@ -1,5 +1,7 @@
 package de.turnertech.ows.filter;
 
-public abstract class Expression {
+import java.util.function.Supplier;
+
+public abstract class Expression implements Supplier<Object> {
     
 }

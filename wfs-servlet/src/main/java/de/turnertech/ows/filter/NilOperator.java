@@ -18,4 +18,10 @@ public class NilOperator extends ComparisonOperator {
         this.expression = expression;
     }
 
+    @Override
+    public boolean getAsBoolean() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAsBoolean'");
+    }
+
 }
