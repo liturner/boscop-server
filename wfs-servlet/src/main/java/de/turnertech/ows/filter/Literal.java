@@ -1,6 +1,10 @@
 package de.turnertech.ows.filter;
 
-public class Literal extends Expression {
+import java.util.function.Supplier;
+
+import de.turnertech.ows.gml.IFeature;
+
+public class Literal implements Expression, Supplier<Object> {
 
     private final Object value;
 
@@ -9,8 +13,13 @@ public class Literal extends Expression {
     }
 
     @Override
-    public Object get() {
+    public Object apply(IFeature feature) {
         return value;
+    }
+
+    @Override
+    public Object get() {
+        return this.apply(null);
     }
 
 }

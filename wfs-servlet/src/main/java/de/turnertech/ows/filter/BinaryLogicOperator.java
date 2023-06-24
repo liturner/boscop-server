@@ -2,7 +2,9 @@ package de.turnertech.ows.filter;
 
 import java.util.Objects;
 
-public class BinaryLogicOperator extends LogicalOperator {
+import de.turnertech.ows.gml.IFeature;
+
+public class BinaryLogicOperator implements LogicalOperator {
 
     private final NonIdOperator leftOperand;
 
@@ -32,8 +34,8 @@ public class BinaryLogicOperator extends LogicalOperator {
     }
 
     @Override
-    public boolean getAsBoolean() {
-        return operatorType.test(leftOperand, rightOperand);
+    public boolean test(IFeature feature) {
+        return operatorType.test(leftOperand.test(feature), rightOperand.test(feature));
     }
 
 }

@@ -1,5 +1,5 @@
 package de.turnertech.ows.filter;
 
-public abstract class ExtensionOperator extends NonIdOperator {
+public abstract class ExtensionOperator implements NonIdOperator {
     
 }

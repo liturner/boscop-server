@@ -1,6 +1,8 @@
 package de.turnertech.ows.filter;
 
-public class LikeOperator extends ComparisonOperator {
+import de.turnertech.ows.gml.IFeature;
+
+public class LikeOperator implements ComparisonOperator {
     
     private final Expression[] expression = new Expression[2];
 
@@ -60,7 +62,7 @@ public class LikeOperator extends ComparisonOperator {
     }
 
     @Override
-    public boolean getAsBoolean() {
+    public boolean test(IFeature feature) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getAsBoolean'");
     }

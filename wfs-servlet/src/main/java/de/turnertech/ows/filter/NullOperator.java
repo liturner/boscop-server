@@ -1,6 +1,8 @@
 package de.turnertech.ows.filter;
 
-public class NullOperator extends ComparisonOperator {
+import de.turnertech.ows.gml.IFeature;
+
+public class NullOperator implements ComparisonOperator {
     
     private final Expression expression;
 
@@ -16,8 +18,8 @@ public class NullOperator extends ComparisonOperator {
     }
 
     @Override
-    public boolean getAsBoolean() {
-        return expression.get() == null;
+    public boolean test(IFeature feature) {
+        return expression.apply(feature) == null;
     }
     
 }

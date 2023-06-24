@@ -1,6 +1,8 @@
 package de.turnertech.ows.filter;
 
-public class BetweenComparisonOperator extends ComparisonOperator {
+import de.turnertech.ows.gml.IFeature;
+
+public class BetweenComparisonOperator implements ComparisonOperator {
 
     private final Expression lowerBoundary;
 
@@ -36,10 +38,10 @@ public class BetweenComparisonOperator extends ComparisonOperator {
     }
 
     @Override
-    public boolean getAsBoolean() {
-        // TODO Auto-generated method stub
-        // Feels like here we can use the Comparable interface?
-        throw new UnsupportedOperationException("Unimplemented method 'getAsBoolean'");
+    public boolean test(IFeature feature) {
+        final Object testValue = expression.apply(feature);
+        return BinaryComparisonName.PROPERTY_IS_GREATER_THAN_OR_EQUAL_TO.test(testValue, lowerBoundary.apply(feature)) &&
+                BinaryComparisonName.PROPERTY_IS_LESS_THAN_OR_EQUAL_TO.test(testValue, upperBoundary.apply(feature));
     }
     
 }

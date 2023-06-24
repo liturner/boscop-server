@@ -1,6 +1,10 @@
 package de.turnertech.ows.filter;
 
-public class Filter {
+import java.util.function.Predicate;
+
+import de.turnertech.ows.gml.IFeature;
+
+public class Filter implements Predicate<IFeature> {
     
     private Operator filter;
 
@@ -16,6 +20,11 @@ public class Filter {
      */
     public void setFilter(Operator filter) {
         this.filter = filter;
+    }
+
+    @Override
+    public boolean test(IFeature feature) {
+        return filter.test(feature);
     }
 
 }

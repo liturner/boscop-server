@@ -1,11 +1,23 @@
 package de.turnertech.ows.filter;
 
-public class ValueReference extends Expression {
+import de.turnertech.ows.gml.IFeature;
+
+public class ValueReference implements Expression {
+
+    private final String reference;
+
+    public ValueReference(final String reference) {
+        this.reference = reference;
+    }
 
     @Override
-    public Object get() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+    public Object apply(IFeature feature) {
+        return feature.getPropertyValue(reference);
+    }
+
+    @Override
+    public String toString() {
+        return reference;
     }
     
 }

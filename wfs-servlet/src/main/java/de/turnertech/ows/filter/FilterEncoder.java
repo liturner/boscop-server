@@ -11,8 +11,9 @@ public class FilterEncoder {
         out.writeStartElement(owsContext.getXmlNamespacePrefix(OwsContext.FES_URI), "Filter", OwsContext.FES_URI);
         out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.FES_URI), OwsContext.FES_URI);
         out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.GML_URI), OwsContext.GML_URI);
+        out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.XSI_URI), OwsContext.XSI_URI);
 
-        filter.getFilter();
+        OperatorEncoder.encode(out, filter.getFilter(), owsContext);
 
         out.writeEndElement();
     }

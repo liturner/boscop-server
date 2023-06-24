@@ -14,6 +14,9 @@ public class BinaryLogicOperatorEncoder {
     public static void encode(final XMLStreamWriter out, final BinaryLogicOperator operator, final OwsContext owsContext) throws XMLStreamException {
         out.writeStartElement(OwsContext.FES_URI, operator.getOperatorType().toString());
 
+        OperatorEncoder.encode(out, operator.getLeftOperand(), owsContext);
+        OperatorEncoder.encode(out, operator.getRightOperand(), owsContext);
+
         out.writeEndElement();
     }
 

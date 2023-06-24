@@ -2,7 +2,7 @@ package de.turnertech.ows.filter;
 
 import java.util.function.BiPredicate;
 
-public enum BinaryLogicType implements BiPredicate<Operator, Operator> {
+public enum BinaryLogicType implements BiPredicate<Boolean, Boolean> {
 
     AND("And"),
     OR("Or");
@@ -14,12 +14,12 @@ public enum BinaryLogicType implements BiPredicate<Operator, Operator> {
     }
 
     @Override
-    public boolean test(Operator leftOperand, Operator rightOperand) {
+    public boolean test(Boolean leftOperand, Boolean rightOperand) {
         switch(this) {
             case AND:
-                return leftOperand.getAsBoolean() && rightOperand.getAsBoolean();
+                return leftOperand && rightOperand;
             case OR:
-                return leftOperand.getAsBoolean() || rightOperand.getAsBoolean();  
+                return leftOperand || rightOperand;  
             default:
                 return false;
         }

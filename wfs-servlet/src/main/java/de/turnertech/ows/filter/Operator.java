@@ -1,8 +1,10 @@
 package de.turnertech.ows.filter;
 
-import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 
-public abstract class Operator implements BooleanSupplier {
+import de.turnertech.ows.gml.IFeature;
+
+public interface Operator extends Predicate<IFeature> {
     
     
     

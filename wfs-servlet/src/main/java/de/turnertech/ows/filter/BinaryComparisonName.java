@@ -3,7 +3,7 @@ package de.turnertech.ows.filter;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
-public enum BinaryComparisonName implements BiPredicate<Expression, Expression>  {
+public enum BinaryComparisonName implements BiPredicate<Object, Object>  {
     PROPERTY_IS_EQUAL_TO("PropertyIsEqualTo"),
     PROPERTY_IS_NOT_EQUAL_TO("PropertyIsNotEqualTo"),
     PROPERTY_IS_LESS_THAN("PropertyIsLessThan"),
@@ -20,22 +20,11 @@ public enum BinaryComparisonName implements BiPredicate<Expression, Expression> 
     }
 
     @Override
-    public boolean test(Expression leftExpression, Expression rightExpression) {
-        return this.test(leftExpression, rightExpression, true);
+    public boolean test(Object left, Object right) {
+        return this.test(left, right, true);
     }
 
-    public boolean test(Expression leftExpression, Expression rightExpression, boolean matchCase) {
-
-        // Special case handling for null.
-        if(leftExpression == null && rightExpression == null && this.equals(PROPERTY_IS_EQUAL_TO)) {
-            return true;
-        }
-        if(leftExpression == null || rightExpression == null) {
-            return false;
-        }
-
-        final Object left = leftExpression.get();
-        final Object right = rightExpression.get();
+    public boolean test(Object left, Object right, boolean matchCase) {
 
         // Special case handling for null.
         if(left == null && right == null && this.equals(PROPERTY_IS_EQUAL_TO)) {
@@ -61,7 +50,7 @@ public enum BinaryComparisonName implements BiPredicate<Expression, Expression> 
         return false;
     }
 
-    public boolean test(Number leftNumber, Number rightNumber) {
+    private boolean test(Number leftNumber, Number rightNumber) {
         switch(this) {
             case PROPERTY_IS_GREATER_THAN:
                 return NUMBER_COMPARATOR.compare(leftNumber, rightNumber) > 0.0;
@@ -76,11 +65,7 @@ public enum BinaryComparisonName implements BiPredicate<Expression, Expression> 
         }
     }
 
-    public boolean test(String leftString, String rightString) {
-        return test(leftString, rightString, true);
-    }
-
-    public boolean test(String leftString, String rightString, boolean matchCase) {
+    private boolean test(String leftString, String rightString, boolean matchCase) {
         switch(this) {
             case PROPERTY_IS_GREATER_THAN:
                 return (matchCase ? leftString.compareTo(rightString) : leftString.compareToIgnoreCase(rightString)) > 0.0;

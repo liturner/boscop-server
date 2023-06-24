@@ -1,6 +1,8 @@
 package de.turnertech.ows.filter;
 
-public class BinaryComparisonOperator extends ComparisonOperator {
+import de.turnertech.ows.gml.IFeature;
+
+public class BinaryComparisonOperator implements ComparisonOperator {
 
     private final Expression leftExpression;
 
@@ -51,8 +53,19 @@ public class BinaryComparisonOperator extends ComparisonOperator {
     }
 
     @Override
-    public boolean getAsBoolean() {
-        return operatorType.test(leftExpression, rightExpression, matchCase);
+    public boolean test(IFeature feature) {
+        // Special case handling for null.
+        if(leftExpression == null && rightExpression == null && operatorType.equals(BinaryComparisonName.PROPERTY_IS_EQUAL_TO)) {
+            return true;
+        }
+        if(leftExpression == null || rightExpression == null) {
+            return false;
+        }
+
+        final Object left = leftExpression.apply(feature);
+        final Object right = rightExpression.apply(feature);
+
+        return operatorType.test(left, right, matchCase);
     }
     
 }

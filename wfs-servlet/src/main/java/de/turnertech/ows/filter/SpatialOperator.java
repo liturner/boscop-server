@@ -1,5 +1,5 @@
 package de.turnertech.ows.filter;
 
-public abstract class SpatialOperator extends NonIdOperator {
+public interface SpatialOperator extends NonIdOperator {
     
 }

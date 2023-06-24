@@ -1,9 +1,11 @@
 package de.turnertech.ows.filter;
 
-public class IdOperator extends Operator {
+import de.turnertech.ows.gml.IFeature;
+
+public class IdOperator implements Operator {
 
     @Override
-    public boolean getAsBoolean() {
+    public boolean test(IFeature feature) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getAsBoolean'");
     }
