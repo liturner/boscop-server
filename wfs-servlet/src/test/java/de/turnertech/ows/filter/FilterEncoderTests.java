@@ -18,11 +18,11 @@ public class FilterEncoderTests {
     
     @Test
     void basicFilterEncoderTest() throws XMLStreamException, FactoryConfigurationError, ServletException {
-        Filter outFilter = new Filter();
+        
         BinaryComparisonOperator o1 = new BinaryComparisonOperator(new Literal(5), BinaryComparisonName.PROPERTY_IS_EQUAL_TO, new Literal("7"));
         BinaryComparisonOperator o3 = new BinaryComparisonOperator(new ValueReference("hazard-type"), BinaryComparisonName.PROPERTY_IS_EQUAL_TO, new Literal("brand"));
         BinaryLogicOperator o2 = new BinaryLogicOperator(o1, BinaryLogicType.AND, o3);
-        outFilter.setFilter(o2);
+        Filter outFilter = new Filter(o2);
         
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         XMLStreamWriter out = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, StandardCharsets.UTF_8.name());

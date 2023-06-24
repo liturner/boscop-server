@@ -6,20 +6,17 @@ import de.turnertech.ows.gml.IFeature;
 
 public class Filter implements Predicate<IFeature> {
     
-    private Operator filter;
+    private final Operator filter;
+
+    public Filter(final Operator filter) {
+        this.filter = filter;
+    }
 
     /**
      * @return the filter
      */
     public Operator getFilter() {
         return filter;
-    }
-
-    /**
-     * @param filter the filter to set
-     */
-    public void setFilter(Operator filter) {
-        this.filter = filter;
     }
 
     @Override
