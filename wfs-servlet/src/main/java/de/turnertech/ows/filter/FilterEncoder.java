@@ -6,6 +6,10 @@ import javax.xml.stream.XMLStreamWriter;
 import de.turnertech.ows.common.OwsContext;
 
 public class FilterEncoder {
+
+    private FilterEncoder() {
+        
+    }
     
     public static void encode(final XMLStreamWriter out, final Filter filter, final OwsContext owsContext) throws XMLStreamException {
         out.writeStartElement(owsContext.getXmlNamespacePrefix(OwsContext.FES_URI), "Filter", OwsContext.FES_URI);

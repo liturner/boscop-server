@@ -8,7 +8,7 @@ import de.turnertech.ows.common.OwsContext;
 /**
  * Partially Delegating Encoder
  */
-public class BinaryComparisonOperatorEncoder {
+class BinaryComparisonOperatorEncoder {
 
     private BinaryComparisonOperatorEncoder() {
         

@@ -22,7 +22,8 @@ public class FilterEncoderTests {
         BinaryComparisonOperator o1 = new BinaryComparisonOperator(new Literal(5), BinaryComparisonName.PROPERTY_IS_EQUAL_TO, new Literal("7"));
         BinaryComparisonOperator o3 = new BinaryComparisonOperator(new ValueReference("hazard-type"), BinaryComparisonName.PROPERTY_IS_EQUAL_TO, new Literal("brand"));
         BinaryLogicOperator o2 = new BinaryLogicOperator(o1, BinaryLogicType.AND, o3);
-        Filter outFilter = new Filter(o2);
+        BinaryLogicOperator and2 = new BinaryLogicOperator(o2, BinaryLogicType.AND, o1);
+        Filter outFilter = new Filter(and2);
         
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         XMLStreamWriter out = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, StandardCharsets.UTF_8.name());
@@ -34,6 +35,23 @@ public class FilterEncoderTests {
 
         String xmlOut = outStream.toString(StandardCharsets.UTF_8);
         System.out.print(xmlOut);
+    }
+
+    @Test
+    void idTest() throws XMLStreamException, FactoryConfigurationError, ServletException {
+        Filter outFilter = new Filter(new IdOperator(new ResourceId("082hf3j3")));
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        XMLStreamWriter out = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, StandardCharsets.UTF_8.name());
+        OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
+
+        out.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
+
+        FilterEncoder.encode(out, outFilter, owsContext);
+
+        String xmlOut = outStream.toString(StandardCharsets.UTF_8);
+        System.out.print(xmlOut);
+        
+        ;
     }
 
 }
