@@ -36,21 +36,23 @@ public class BinaryComparisonOperator extends ComparisonOperator {
         return matchCase;
     }
 
-    public void setMatchCase(boolean matchCase) {
+    public BinaryComparisonOperator setMatchCase(boolean matchCase) {
         this.matchCase = matchCase;
+        return this;
     }
 
     public MatchAction getMatchAction() {
         return matchAction;
     }
 
-    public void setMatchAction(MatchAction matchAction) {
+    public BinaryComparisonOperator setMatchAction(MatchAction matchAction) {
         this.matchAction = matchAction;
+        return this;
     }
 
     @Override
     public boolean getAsBoolean() {
-        return operatorType.test(leftExpression, rightExpression);
+        return operatorType.test(leftExpression, rightExpression, matchCase);
     }
     
 }

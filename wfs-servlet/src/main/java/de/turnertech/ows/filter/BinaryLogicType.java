@@ -4,8 +4,14 @@ import java.util.function.BiPredicate;
 
 public enum BinaryLogicType implements BiPredicate<Operator, Operator> {
 
-    AND,
-    OR;
+    AND("And"),
+    OR("Or");
+
+    private final String xmlName;
+
+    private BinaryLogicType(final String xmlName) {
+        this.xmlName = xmlName;
+    }
 
     @Override
     public boolean test(Operator leftOperand, Operator rightOperand) {
@@ -17,5 +23,10 @@ public enum BinaryLogicType implements BiPredicate<Operator, Operator> {
             default:
                 return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        return xmlName;
     }
 }
