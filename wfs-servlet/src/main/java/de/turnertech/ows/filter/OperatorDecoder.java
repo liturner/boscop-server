@@ -11,13 +11,14 @@ import de.turnertech.ows.common.OwsContext;
 class OperatorDecoder {
     
     public static Operator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+        Operator returnOperator = null;
         System.out.println("Operator Decoder");
         if("ResourceId".equals(in.getLocalName())) {
-            System.out.println("ResourceId (Go to leaf decoder)");
+            returnOperator = IdOperatorDecoder.decode(in, owsContext);
         } else {
-            System.out.println("Not ResourceId (Go to next full delegating decoder)");
+            returnOperator = NonIdOperatorDecoder.decode(in, owsContext);
         }
-        return null;
+        return returnOperator;
     }
 
 }

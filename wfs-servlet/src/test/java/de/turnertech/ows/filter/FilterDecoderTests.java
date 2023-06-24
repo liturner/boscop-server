@@ -25,4 +25,15 @@ public class FilterDecoderTests {
         Filter decodedFilter = FilterDecoder.decode(xmlStreamReader, owsContext);
     }
 
+    @Test
+    void basicDecoderTest2() throws XMLStreamException, ServletException {
+        OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
+        String xml = "<Filter><ResourceId rid=\"082hf3j3\"/></Filter>";
+        StringReader stringReader = new StringReader(xml);
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        XMLStreamReader xmlStreamReader  = xmlInputFactory.createXMLStreamReader(stringReader);
+
+        Filter decodedFilter = FilterDecoder.decode(xmlStreamReader, owsContext);
+    }
+
 }
