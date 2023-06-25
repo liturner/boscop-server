@@ -31,7 +31,7 @@ public class FilterDecoderTests {
     @Test
     void basicDecoderTest() throws XMLStreamException, ServletException {
         OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
-        String xml = "<Filter><And/></Filter>";
+        String xml = "<Filter></Filter>";
         StringReader stringReader = new StringReader(xml);
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         XMLStreamReader xmlStreamReader  = xmlInputFactory.createXMLStreamReader(stringReader);

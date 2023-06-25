@@ -19,6 +19,10 @@ public class BinaryComparisonOperatorDecoder {
         final BinaryComparisonName binaryComparisonName = BinaryComparisonName.fromString(in.getLocalName());
         final List<Expression> expressions = new ArrayList<>(2);
 
+        if(binaryComparisonName == null) {
+            throw new XMLStreamException("Unknown Binary Comparison Operator " + in.getLocalName(), in.getLocation());
+        }
+
         System.out.println(">" + binaryComparisonName.toString());
 
         while(in.hasNext()) {
@@ -32,6 +36,10 @@ public class BinaryComparisonOperatorDecoder {
                 System.out.println("<" + binaryComparisonName.toString());
                 break;
             }
+        }
+
+        if(expressions.size() < 2) {
+            throw new XMLStreamException("Binary Comparison Operator does not contain two expressions.", in.getLocation());
         }
 
         return new BinaryComparisonOperator(expressions.get(0), binaryComparisonName, expressions.get(1));
