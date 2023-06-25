@@ -2,6 +2,10 @@ package de.turnertech.ows.filter;
 
 import org.w3c.dom.Node;
 
+/**
+ * @deprecated use {@link Filter}
+ */
+@Deprecated
 public class OgcFilterDecoder {
     
     public static OgcFilter getFilter(Node ogcFilter) {

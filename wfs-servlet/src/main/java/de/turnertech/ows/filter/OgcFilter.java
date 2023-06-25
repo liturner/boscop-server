@@ -3,6 +3,10 @@ package de.turnertech.ows.filter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated use {@link Filter}
+ */
+@Deprecated
 public class OgcFilter {
 
     private final List<String> featureIdFilters;
