@@ -29,4 +29,13 @@ public enum BinaryLogicType implements BiPredicate<Boolean, Boolean> {
     public String toString() {
         return xmlName;
     }
+
+    public static BinaryLogicType fromString(final String binaryLogicType) {
+        for(BinaryLogicType element : BinaryLogicType.values()) {
+            if(element.xmlName.equals(binaryLogicType)) {
+                return element;
+            }
+        }
+        return null;
+    }
 }

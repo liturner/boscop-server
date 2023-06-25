@@ -84,4 +84,13 @@ public enum BinaryComparisonName implements BiPredicate<Object, Object>  {
     public String toString() {
         return xmlName;
     }
+
+    public static BinaryComparisonName fromString(final String comparator) {
+        for(BinaryComparisonName entry : BinaryComparisonName.values()) {
+            if(entry.toString().equals(comparator)) {
+                return entry;
+            }
+        }
+        return null;
+    }
 }

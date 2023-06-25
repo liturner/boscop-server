@@ -10,8 +10,11 @@ import de.turnertech.ows.common.OwsContext;
  */
 class LogicalOperatorDecoder {
     
+    private LogicalOperatorDecoder() {
+
+    }
+
     public static LogicalOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
-        System.out.println("Logical Operator Decoder");
         LogicalOperator returnOperator = null;
         if("And".equals(in.getLocalName()) || "Or".equals(in.getLocalName())) {
             returnOperator = BinaryLogicOperatorDecoder.decode(in, owsContext);

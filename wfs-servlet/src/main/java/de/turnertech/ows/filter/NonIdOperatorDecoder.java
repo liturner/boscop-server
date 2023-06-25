@@ -21,9 +21,8 @@ public class NonIdOperatorDecoder {
 
     public static NonIdOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         NonIdOperator returnOperator = null;
-        System.out.println("Non Id Operator Decoder");
         if(COMPARISON_OPERATORS.contains(in.getLocalName())) {
-            System.out.println("Go To Comparator Decoder");
+            returnOperator = ComparisonOperatorDecoder.decode(in, owsContext);
         } else if(LOGICAL_OPERATORS.contains(in.getLocalName())) {
             returnOperator = LogicalOperatorDecoder.decode(in, owsContext);
         }
