@@ -18,7 +18,7 @@ import de.turnertech.ows.common.Model;
 import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.common.OwsRequestContext;
 import de.turnertech.ows.common.RequestHandler;
-import de.turnertech.ows.gml.BoundingBox;
+import de.turnertech.ows.gml.Envelope;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.parameter.ResultType;
@@ -32,13 +32,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class WfsGetFeatureRequest implements RequestHandler {
     
-    private static Optional<BoundingBox> getBoundingBox(HttpServletRequest request) {
+    private static Optional<Envelope> getBoundingBox(HttpServletRequest request) {
         String bboxTypeString = WfsRequestParameter.findValue(request, WfsRequestParameter.BBOX).orElse(null);
         if(bboxTypeString == null || bboxTypeString.trim().equals("")) {
             return Optional.empty();
         }
         String[] parts = bboxTypeString.split(",", 5);
-        return Optional.of(new BoundingBox(Double.valueOf(parts[1]), Double.valueOf(parts[0]), Double.valueOf(parts[3]), Double.valueOf(parts[2])));
+        return Optional.of(new Envelope(Double.valueOf(parts[1]), Double.valueOf(parts[0]), Double.valueOf(parts[3]), Double.valueOf(parts[2])));
     }
 
     @Override
@@ -50,9 +50,9 @@ public class WfsGetFeatureRequest implements RequestHandler {
 
         List<FeatureType> typenames = requestContext.getFeatureTypes();
 
-        Optional<BoundingBox> requestedBoundingBox = getBoundingBox(request);
+        Optional<Envelope> requestedBoundingBox = getBoundingBox(request);
 
-        BoundingBox actualBoundingBox = null;
+        Envelope actualBoundingBox = null;
     
         response.setContentType(RequestHandler.CONTENT_XML);
 
@@ -114,9 +114,9 @@ public class WfsGetFeatureRequest implements RequestHandler {
                 }
 
                 if(features.size() > 0 && requestedBoundingBox.isPresent()) {
-                    requestedBoundingBox.get().writeGml(out, BoundingBox.GML_NAME, BoundingBox.NAMESPACE, bboxSrs);
+                    requestedBoundingBox.get().writeGml(out, Envelope.GML_NAME, Envelope.NAMESPACE, bboxSrs);
                 } else if(features.size() > 0 && actualBoundingBox != null) {
-                    actualBoundingBox.writeGml(out, BoundingBox.GML_NAME, BoundingBox.NAMESPACE, bboxSrs);
+                    actualBoundingBox.writeGml(out, Envelope.GML_NAME, Envelope.NAMESPACE, bboxSrs);
                 }
 
                 for (IFeature feature : features) {

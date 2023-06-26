@@ -50,7 +50,7 @@ public class LineString implements GmlElement, BoundingBoxProvider {
     }
 
     @Override
-    public BoundingBox getBoundingBox() {
+    public Envelope getBoundingBox() {
         return posList.getBoundingBox();
     }
 

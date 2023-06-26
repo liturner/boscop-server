@@ -9,7 +9,7 @@ import java.util.List;
 
 import de.turnertech.ows.common.Model;
 import de.turnertech.ows.filter.OgcFilter;
-import de.turnertech.ows.gml.BoundingBox;
+import de.turnertech.ows.gml.Envelope;
 import de.turnertech.ows.gml.FeatureProperty;
 import de.turnertech.ows.gml.FeaturePropertyType;
 import de.turnertech.ows.gml.FeatureType;
@@ -41,7 +41,7 @@ public class LineModel implements Model {
     }
 
     @Override
-    public List<IFeature> filter(BoundingBox boundingBox) {
+    public List<IFeature> filter(Envelope boundingBox) {
         List<IFeature> returnItems = new LinkedList<>();
         for(IFeature area : features) {
             if(boundingBox.intersects(area.getBoundingBox())) {
@@ -89,10 +89,10 @@ public class LineModel implements Model {
     }
 
     @Override
-    public BoundingBox getBoundingBox() {
-        BoundingBox boundingBox = null;
+    public Envelope getBoundingBox() {
+        Envelope boundingBox = null;
         if(features.size() > 0) {
-            boundingBox = BoundingBox.from(features.get(0).getBoundingBox());
+            boundingBox = Envelope.from(features.get(0).getBoundingBox());
         } 
         for (IFeature feature : features) {
             boundingBox.expandToFit(feature.getBoundingBox());

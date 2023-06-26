@@ -50,7 +50,7 @@ public class Polygon implements GmlElement, BoundingBoxProvider {
     }
 
     @Override
-    public BoundingBox getBoundingBox() {
+    public Envelope getBoundingBox() {
         return exterior.getBoundingBox();
     }
 

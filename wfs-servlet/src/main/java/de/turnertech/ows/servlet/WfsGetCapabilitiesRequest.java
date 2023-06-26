@@ -10,7 +10,7 @@ import de.turnertech.ows.common.ExceptionCode;
 import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.common.OwsRequestContext;
 import de.turnertech.ows.common.RequestHandler;
-import de.turnertech.ows.gml.BoundingBox;
+import de.turnertech.ows.gml.Envelope;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.parameter.WfsVersionValue;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
@@ -187,7 +187,7 @@ public class WfsGetCapabilitiesRequest implements RequestHandler {
                         }
                     }
 
-                    BoundingBox boundingBox = owsContext.getModelProvider().getModel(featureType).getBoundingBox();
+                    Envelope boundingBox = owsContext.getModelProvider().getModel(featureType).getBoundingBox();
                     if(boundingBox != null) {
                         out.writeStartElement(OwsContext.OWS_URI, "WGS84BoundingBox");
                             out.writeStartElement(OwsContext.OWS_URI, "LowerCorner");
