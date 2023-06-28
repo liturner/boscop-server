@@ -26,7 +26,7 @@ public class FilterDecoderTests {
     
     private final String ID_FILTER_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><fes:ResourceId rid=\"082hf3j3\"/></fes:Filter>";
 
-    private final String MIXED_FILTER_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><fes:And><fes:And><fes:PropertyIsEqualTo><fes:Literal>5</fes:Literal><fes:Literal>7</fes:Literal></fes:PropertyIsEqualTo><fes:PropertyIsEqualTo><fes:ValueReference>hazard-type</fes:ValueReference><fes:Literal>brand</fes:Literal></fes:PropertyIsEqualTo></fes:And><fes:PropertyIsEqualTo><fes:Literal>5.0</fes:Literal><fes:Literal>7.5</fes:Literal></fes:PropertyIsEqualTo></fes:And></fes:Filter>";
+    private final String MIXED_FILTER_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><fes:And><fes:And><fes:PropertyIsEqualTo><fes:Literal>5</fes:Literal><fes:Literal>7</fes:Literal></fes:PropertyIsEqualTo><fes:BBOX><fes:ValueReference>hazard-type</fes:ValueReference><fes:Envelope>brand</fes:Envelope></fes:BBOX></fes:And><fes:PropertyIsEqualTo><fes:Literal>5.0</fes:Literal><fes:Literal>7.5</fes:Literal></fes:PropertyIsEqualTo></fes:And></fes:Filter>";
 
     @Test
     void basicDecoderTest() throws XMLStreamException, ServletException {

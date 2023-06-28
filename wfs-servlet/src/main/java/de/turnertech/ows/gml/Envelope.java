@@ -35,6 +35,11 @@ public class Envelope implements GmlElement {
         this.upperCorner = new DirectPosition(SpatialReferenceSystem.EPSG4326, east, north);
     }
 
+    public Envelope(final DirectPosition lowerCorner, final DirectPosition upperCorner) {
+        this.lowerCorner = lowerCorner;
+        this.upperCorner = upperCorner;
+    }
+
     public boolean contains(double latitude, double longitute) {
         return !(latitude > upperCorner.getY() || latitude < lowerCorner.getY() || longitute > upperCorner.getX() || longitute < lowerCorner.getX());
     }
