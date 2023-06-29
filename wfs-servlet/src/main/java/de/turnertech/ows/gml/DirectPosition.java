@@ -2,9 +2,11 @@ package de.turnertech.ows.gml;
 
 import java.util.Optional;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.ows.srs.SpatialReferenceSystemConverter;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
@@ -22,6 +24,14 @@ import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 public class DirectPosition implements GmlElement {
     
     public static final String GML_NAME = "pos";
+
+    public static final QName QNAME = new QName(OwsContext.GML_URI, "DirectPosition");
+
+    public static final QName LOWER_CORNER_QNAME = new QName(OwsContext.GML_URI, "lowerCorner");
+
+    public static final QName UPPER_CORNER_QNAME = new QName(OwsContext.GML_URI, "upperCorner");
+
+    public static final QName POS_QNAME = new QName(OwsContext.GML_URI, "pos");
 
     private final double[] pos;
 
