@@ -5,56 +5,58 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Optional;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.ows.srs.SpatialReferenceSystemConverter;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
-public class BoundingBox implements GmlElement {
+public class Envelope implements GmlElement {
 
+    @Deprecated
     public static final String GML_NAME = "boundedBy";
 
-    protected double south;
-    
-    protected double west;
-    
-    protected double north;
-    
-    protected double east;
+    public static final QName QNAME = new QName(OwsContext.GML_URI, "Envelope");
+
+    protected DirectPosition upperCorner;
+
+    protected DirectPosition lowerCorner;
 
     // Use with care! This is an inverted and unusable box!
-    public BoundingBox() {
-        this.south = Double.POSITIVE_INFINITY;
-        this.west = Double.POSITIVE_INFINITY;
-        this.north = Double.NEGATIVE_INFINITY;
-        this.east = Double.NEGATIVE_INFINITY;
+    public Envelope() {
+        this(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
     }
 
-    public BoundingBox(double south, double west, double north, double east) {
-        this.south = south;
-        this.west = west;
-        this.north = north;
-        this.east = east;
+    public Envelope(double south, double west, double north, double east) {
+        this.lowerCorner = new DirectPosition(SpatialReferenceSystem.EPSG4326, west, south);
+        this.upperCorner = new DirectPosition(SpatialReferenceSystem.EPSG4326, east, north);
+    }
+
+    public Envelope(final DirectPosition lowerCorner, final DirectPosition upperCorner) {
+        this.lowerCorner = lowerCorner;
+        this.upperCorner = upperCorner;
     }
 
     public boolean contains(double latitude, double longitute) {
-        return !(latitude > north || latitude < south || longitute > east || longitute < west);
+        return !(latitude > upperCorner.getY() || latitude < lowerCorner.getY() || longitute > upperCorner.getX() || longitute < lowerCorner.getX());
     }
 
-    public boolean intersects(BoundingBox other) {
-        if(this.north < other.south) return false;
-        if(this.south > other.north) return false;
-        if(this.east < other.west) return false;
-        if(this.west > other.east) return false;
+    public boolean intersects(Envelope other) {
+        if(this.getNorth() < other.getSouth()) return false;
+        if(this.getSouth() > other.getNorth()) return false;
+        if(this.getEast() < other.getWest()) return false;
+        if(this.getWest() > other.getEast()) return false;
         return true;
     }
 
-    public static BoundingBox from(BoundingBox other) {
-        return new BoundingBox(other.south, other.west, other.north, other.east);
+    public static Envelope from(Envelope other) {
+        return new Envelope(other.getSouth(), other.getWest(), other.getNorth(), other.getEast());
     }
 
-    public static BoundingBox from(DirectPositionList posList) {
+    public static Envelope from(DirectPositionList posList) {
         double maxSouth = Double.POSITIVE_INFINITY;
         double maxWest = Double.POSITIVE_INFINITY;
         double maxNorth = Double.NEGATIVE_INFINITY;
@@ -77,43 +79,43 @@ public class BoundingBox implements GmlElement {
             maxWest -= 0.00001;
         }
 
-        return new BoundingBox(maxSouth, maxWest, maxNorth, maxEast);
+        return new Envelope(maxSouth, maxWest, maxNorth, maxEast);
     }
 
-    public void expandToFit(BoundingBox other) {
+    public void expandToFit(Envelope other) {
         if(other == null) return;
-        if(other.north > north) north = other.north;
-        if(other.south < south) south = other.south;
-        if(other.east > east) east = other.east;
-        if(other.west < west) west = other.west;
+        if(other.getNorth() > getNorth()) upperCorner.setY(other.getNorth());
+        if(other.getSouth() < getSouth()) lowerCorner.setY(other.getSouth());
+        if(other.getEast() > getEast()) upperCorner.setX(other.getEast());
+        if(other.getWest() < getWest()) lowerCorner.setX(other.getWest());
     }
 
     /**
      * @return the south
      */
     public double getSouth() {
-        return south;
+        return lowerCorner.getY();
     }
 
     /**
      * @return the west
      */
     public double getWest() {
-        return west;
+        return lowerCorner.getX();
     }
 
     /**
      * @return the north
      */
     public double getNorth() {
-        return north;
+        return upperCorner.getY();
     }
 
     /**
      * @return the east
      */
     public double getEast() {
-        return east;
+        return upperCorner.getX();
     }
 
     @Override
@@ -121,8 +123,8 @@ public class BoundingBox implements GmlElement {
         DecimalFormat decimalFormat = new DecimalFormat("0.", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         decimalFormat.setMaximumFractionDigits(8);
 
-        DirectPosition sw = new DirectPosition(west, south);
-        DirectPosition ne = new DirectPosition(east, north);
+        DirectPosition sw = new DirectPosition(getWest(), getSouth());
+        DirectPosition ne = new DirectPosition(getEast(), getNorth());
 
         Optional<DirectPosition> transformedPos = SpatialReferenceSystemConverter.convertDirectPosition(sw, srsRepresentation.getSrs());
         if (transformedPos.isPresent()) {

@@ -16,11 +16,12 @@ class ValueReferenceDecoder {
 
     }
 
+    public static boolean canDecode(final XMLStreamReader in) {
+        return ValueReference.QNAME.equals(in.getName());
+    }
+
     public static ValueReference decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
-        System.out.println(">" + "ValueReference");
-        final ValueReference returnValueReference = new ValueReference(in.getElementText());
-        System.out.println("<" + "ValueReference");
-        return returnValueReference;
+        return new ValueReference(in.getElementText());
     }
 
 }

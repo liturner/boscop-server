@@ -9,7 +9,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import de.turnertech.ows.gml.BoundingBox;
+import de.turnertech.ows.gml.Envelope;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.srs.SpatialReferenceSystemFormat;
@@ -23,7 +23,7 @@ public class Gml32ModelEncoder implements ModelEncoder {
         XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
         XMLStreamWriter xmlStreamWriter = outputFactory.createXMLStreamWriter(out, "UTF-8");
         Collection<IFeature> features = model.getAll();
-        BoundingBox actualBoundingBox = model.getBoundingBox();
+        Envelope actualBoundingBox = model.getBoundingBox();
 
         xmlStreamWriter.writeStartDocument("UTF-8", "1.0");
         
@@ -45,7 +45,7 @@ public class Gml32ModelEncoder implements ModelEncoder {
         }
 
         if(features.size() > 0 && actualBoundingBox != null) {
-            actualBoundingBox.writeGml(xmlStreamWriter, BoundingBox.GML_NAME, BoundingBox.NAMESPACE, new SpatialReferenceSystemRepresentation(model.getFeatureType().getSrs(), SpatialReferenceSystemFormat.URI));
+            actualBoundingBox.writeGml(xmlStreamWriter, Envelope.GML_NAME, Envelope.NAMESPACE, new SpatialReferenceSystemRepresentation(model.getFeatureType().getSrs(), SpatialReferenceSystemFormat.URI));
         }
 
         for(IFeature feature : features) {

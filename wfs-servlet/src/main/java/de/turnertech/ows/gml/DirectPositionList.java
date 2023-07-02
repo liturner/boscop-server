@@ -102,8 +102,8 @@ public class DirectPositionList extends ArrayList<DirectPosition> implements Gml
     }
 
     @Override
-    public BoundingBox getBoundingBox() {
-        return BoundingBox.from(this);
+    public Envelope getBoundingBox() {
+        return Envelope.from(this);
     }
 
 }

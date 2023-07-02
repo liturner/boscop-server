@@ -36,12 +36,12 @@ public class Feature implements IFeature {
     }
 
     @Override
-    public BoundingBox getBoundingBox() {
+    public Envelope getBoundingBox() {
         List<FeatureProperty> bboxProperties = featureType.getBoundingBoxProperties();
         if(bboxProperties.size() == 0) {
             return null;
         }
-        BoundingBox returnBox = new BoundingBox();
+        Envelope returnBox = new Envelope();
         for (FeatureProperty property : bboxProperties) {
             BoundingBoxProvider bboxProvider =  (BoundingBoxProvider)fields.get(property.getName());
             if(bboxProvider != null) {

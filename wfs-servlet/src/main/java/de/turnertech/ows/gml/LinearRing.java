@@ -80,7 +80,7 @@ public class LinearRing implements GmlElement, Iterable<DirectPosition>, Boundin
     }
 
     @Override
-    public BoundingBox getBoundingBox() {
+    public Envelope getBoundingBox() {
         return posList.getBoundingBox();
     }
 

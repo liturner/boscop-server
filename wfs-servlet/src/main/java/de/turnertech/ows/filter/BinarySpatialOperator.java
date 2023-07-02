@@ -4,11 +4,11 @@ import de.turnertech.ows.gml.IFeature;
 
 public class BinarySpatialOperator implements SpatialOperator {
 
-    private final ValueReference operand1;
+    protected final ValueReference operand1;
 
-    private final SpatialOperatorName operatorType;
+    protected final SpatialOperatorName operatorType;
 
-    private final SpatialDescription operand2;
+    protected final SpatialDescription operand2;
     
     public BinarySpatialOperator(final ValueReference operand1, final SpatialOperatorName operatorType, final SpatialDescription operand2) {
         this.operand1 = operand1;

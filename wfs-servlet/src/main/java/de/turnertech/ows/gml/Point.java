@@ -60,8 +60,8 @@ public class Point implements GmlElement, BoundingBoxProvider {
     }
 
     @Override
-    public BoundingBox getBoundingBox() {
-        return new BoundingBox(getY() - 0.00001, getX() - 0.00001, getY() + 0.00001, getX() + 0.00001);
+    public Envelope getBoundingBox() {
+        return new Envelope(getY() - 0.00001, getX() - 0.00001, getY() + 0.00001, getX() + 0.00001);
     }
 
     public DirectPosition getPos() {
