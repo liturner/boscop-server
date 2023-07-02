@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UnitConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.common</a> &gt; <span class="el_source">UnitConverter.java</span></div><h1>UnitConverter.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.common;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+public class UnitConverter {
+    
+    private UnitConverter() {}
+
+<span class="nc" id="L11">    private static final Map&lt;Unit[], Double&gt; scalarMap = new HashMap&lt;&gt;();</span>
+
+    static {
+<span class="nc" id="L14">        scalarMap.put(new Unit[]{Unit.NAUTICAL_MILE, Unit.CENTIMETRE}, 185200.0);</span>
+<span class="nc" id="L15">        scalarMap.put(new Unit[]{Unit.NAUTICAL_MILE, Unit.METRE}, 1852.0);</span>
+<span class="nc" id="L16">        scalarMap.put(new Unit[]{Unit.NAUTICAL_MILE, Unit.KILOMETRE}, 1.852);</span>
+<span class="nc" id="L17">        scalarMap.put(new Unit[]{Unit.KILOMETRE, Unit.METRE}, 1000.0);</span>
+<span class="nc" id="L18">        scalarMap.put(new Unit[]{Unit.KILOMETRE, Unit.CENTIMETRE}, 100000.0);</span>
+<span class="nc" id="L19">        scalarMap.put(new Unit[]{Unit.METRE, Unit.CENTIMETRE}, 100.0);</span>
+<span class="nc" id="L20">        scalarMap.put(new Unit[]{Unit.INCH, Unit.CENTIMETRE}, 2.54);</span>
+<span class="nc" id="L21">        scalarMap.put(new Unit[]{Unit.FOOT, Unit.METRE}, 0.3048);</span>
+<span class="nc" id="L22">    }</span>
+
+    public static Double putScalar(Unit from, Unit to, double scalar) {
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        if(scalar == 0.0) {</span>
+<span class="nc" id="L26">            throw new ArithmeticException(&quot;Do not add a scalar value of 0 to UnitConverter. This can cause divide by 0 fails in the event the scalar is used as a divisor&quot;);</span>
+        }
+<span class="nc" id="L28">        return scalarMap.put(new Unit[]{from, to}, scalar);</span>
+    }
+
+
+    public static Optional&lt;Double&gt; convert(Unit from, Unit to, double value) {
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if(from == to) {</span>
+<span class="nc" id="L34">            return Optional.of(value);</span>
+        }
+
+<span class="nc" id="L37">        Double scalar = scalarMap.getOrDefault(new Unit[]{from, to}, null);</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        if(scalar != null) {</span>
+<span class="nc" id="L39">            return Optional.of(value * scalar);</span>
+        }
+        
+<span class="nc" id="L42">        Double divisor = scalarMap.getOrDefault(new Unit[]{to, from}, null);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if(divisor != null) {</span>
+<span class="nc" id="L44">            return Optional.of(value / divisor);</span>
+        }
+
+<span class="nc" id="L47">        return Optional.empty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

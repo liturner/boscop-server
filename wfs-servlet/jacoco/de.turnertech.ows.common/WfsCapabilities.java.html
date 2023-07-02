@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WfsCapabilities.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.common</a> &gt; <span class="el_source">WfsCapabilities.java</span></div><h1>WfsCapabilities.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.common;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import de.turnertech.ows.gml.FeatureType;
+import de.turnertech.ows.parameter.OwsServiceValue;
+import de.turnertech.ows.parameter.WfsVersionValue;
+
+public class WfsCapabilities {
+    
+    private String serviceTitle;
+
+    private String serviceAbstract;
+
+    private List&lt;String&gt; keywords;
+
+    private OwsServiceValue serviceType;
+
+    private List&lt;WfsVersionValue&gt; serviceTypeVersions;
+
+    private List&lt;FeatureType&gt; featureTypes;
+
+    private Map&lt;String, Boolean&gt; filterConformance;
+
+    private String fees;
+
+    private String accessConstraints;
+
+<span class="fc" id="L33">    public WfsCapabilities() {</span>
+<span class="fc" id="L34">        serviceTitle = &quot;Default Service Title&quot;;</span>
+<span class="fc" id="L35">        serviceAbstract = &quot;Default Service Abstract&quot;;</span>
+<span class="fc" id="L36">        serviceType = OwsServiceValue.WFS;</span>
+<span class="fc" id="L37">        serviceTypeVersions = Arrays.asList(WfsVersionValue.V2_0_0, WfsVersionValue.V2_0_2);</span>
+<span class="fc" id="L38">        keywords = Arrays.asList(&quot;Default Keyword&quot;);</span>
+<span class="fc" id="L39">        fees = &quot;NONE&quot;;</span>
+<span class="fc" id="L40">        accessConstraints = &quot;NONE&quot;;</span>
+<span class="fc" id="L41">        featureTypes = Collections.emptyList();</span>
+        
+<span class="fc" id="L43">        filterConformance = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L44">        filterConformance.put(&quot;ImplementsQuery&quot;, false);</span>
+<span class="fc" id="L45">        filterConformance.put(&quot;ImplementsAdHocQuery&quot;, false);</span>
+<span class="fc" id="L46">        filterConformance.put(&quot;ImplementsFunctions&quot;, false);</span>
+<span class="fc" id="L47">        filterConformance.put(&quot;ImplementsMinStandardFilter&quot;, false);</span>
+<span class="fc" id="L48">        filterConformance.put(&quot;ImplementsStandardFilter&quot;, false);</span>
+<span class="fc" id="L49">        filterConformance.put(&quot;ImplementsMinSpatialFilter&quot;, false);</span>
+<span class="fc" id="L50">        filterConformance.put(&quot;ImplementsSpatialFilter&quot;, false);</span>
+<span class="fc" id="L51">        filterConformance.put(&quot;ImplementsMinTemporalFilter&quot;, false);</span>
+<span class="fc" id="L52">        filterConformance.put(&quot;ImplementsTemporalFilter&quot;, false);</span>
+<span class="fc" id="L53">        filterConformance.put(&quot;ImplementsVersionNav&quot;, false);</span>
+<span class="fc" id="L54">        filterConformance.put(&quot;ImplementsSorting&quot;, false);</span>
+<span class="fc" id="L55">        filterConformance.put(&quot;ImplementsExtendedOperators&quot;, false);</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * @return the serviceTitle
+     */
+    public String getServiceTitle() {
+<span class="nc" id="L62">        return serviceTitle;</span>
+    }
+
+    /**
+     * @param serviceTitle the serviceTitle to set
+     */
+    public void setServiceTitle(String serviceTitle) {
+<span class="nc" id="L69">        this.serviceTitle = serviceTitle;</span>
+<span class="nc" id="L70">    }</span>
+
+    /**
+     * @return the serviceAbstract
+     */
+    public String getServiceAbstract() {
+<span class="nc" id="L76">        return serviceAbstract;</span>
+    }
+
+    /**
+     * @param serviceAbstract the serviceAbstract to set
+     */
+    public void setServiceAbstract(String serviceAbstract) {
+<span class="nc" id="L83">        this.serviceAbstract = serviceAbstract;</span>
+<span class="nc" id="L84">    }</span>
+
+    /**
+     * @return the serviceType
+     */
+    public OwsServiceValue getServiceType() {
+<span class="nc" id="L90">        return serviceType;</span>
+    }
+
+    /**
+     * @return the serviceTypeVersions
+     */
+    public List&lt;WfsVersionValue&gt; getServiceTypeVersions() {
+<span class="nc" id="L97">        return serviceTypeVersions;</span>
+    }
+
+    /**
+     * @param serviceTypeVersions the serviceTypeVersions to set
+     */
+    public void setServiceTypeVersions(List&lt;WfsVersionValue&gt; serviceTypeVersions) {
+<span class="nc" id="L104">        this.serviceTypeVersions = serviceTypeVersions;</span>
+<span class="nc" id="L105">    }</span>
+
+    /**
+     * @return the fees
+     */
+    public String getFees() {
+<span class="nc" id="L111">        return fees;</span>
+    }
+
+    /**
+     * @param fees the fees to set
+     */
+    public void setFees(String fees) {
+<span class="nc" id="L118">        this.fees = fees;</span>
+<span class="nc" id="L119">    }</span>
+
+    /**
+     * @return the accessConstraints
+     */
+    public String getAccessConstraints() {
+<span class="nc" id="L125">        return accessConstraints;</span>
+    }
+
+    /**
+     * @param accessConstraints the accessConstraints to set
+     */
+    public void setAccessConstraints(String accessConstraints) {
+<span class="nc" id="L132">        this.accessConstraints = accessConstraints;</span>
+<span class="nc" id="L133">    }</span>
+
+    /**
+     * @return the keywords
+     */
+    public List&lt;String&gt; getKeywords() {
+<span class="nc" id="L139">        return keywords;</span>
+    }
+
+    /**
+     * @param keywords the keywords to set
+     */
+    public void setKeywords(List&lt;String&gt; keywords) {
+<span class="nc" id="L146">        this.keywords = keywords;</span>
+<span class="nc" id="L147">    }</span>
+
+    public FeatureType getFeatureType(String namespace, String name) {
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        for(FeatureType featureType : featureTypes) {</span>
+<span class="nc bnc" id="L151" title="All 4 branches missed.">            if(featureType.getName().equals(name) &amp;&amp; featureType.getNamespace().equals(namespace)) {</span>
+<span class="nc" id="L152">                return featureType;</span>
+            }
+<span class="nc" id="L154">        }</span>
+<span class="nc" id="L155">        return null;</span>
+    }
+
+    /**
+     * @return the featureTypes
+     */
+    public List&lt;FeatureType&gt; getFeatureTypes() {
+<span class="nc" id="L162">        return featureTypes;</span>
+    }
+
+    /**
+     * @param featureTypes the featureTypes to set
+     */
+    public void setFeatureTypes(List&lt;FeatureType&gt; featureTypes) {
+<span class="nc" id="L169">        this.featureTypes = featureTypes;</span>
+<span class="nc" id="L170">    }</span>
+
+    /**
+     * @return the filterConformance
+     */
+    public Map&lt;String, Boolean&gt; getFilterConformance() {
+<span class="nc" id="L176">        return filterConformance;</span>
+    }
+
+    
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

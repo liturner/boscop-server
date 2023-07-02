@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BinaryComparisonOperator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.filter</a> &gt; <span class="el_source">BinaryComparisonOperator.java</span></div><h1>BinaryComparisonOperator.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.filter;
+
+import de.turnertech.ows.gml.IFeature;
+
+public class BinaryComparisonOperator implements ComparisonOperator {
+
+    private final Expression leftExpression;
+
+    private final BinaryComparisonName operatorType;
+
+    private final Expression rightExpression;
+
+    private boolean matchCase;
+
+    private MatchAction matchAction;
+
+<span class="fc" id="L17">    public BinaryComparisonOperator(final Expression leftExpression, BinaryComparisonName operatorType, final Expression rightExpression) {</span>
+<span class="fc" id="L18">        this.leftExpression = leftExpression;</span>
+<span class="fc" id="L19">        this.operatorType = operatorType;</span>
+<span class="fc" id="L20">        this.rightExpression = rightExpression;</span>
+<span class="fc" id="L21">        this.matchCase = true;</span>
+<span class="fc" id="L22">        this.matchAction = MatchAction.ANY;</span>
+<span class="fc" id="L23">    }</span>
+    
+    public Expression getLeftExpression() {
+<span class="fc" id="L26">        return leftExpression;</span>
+    }
+
+    public BinaryComparisonName getOperatorType() {
+<span class="fc" id="L30">        return operatorType;</span>
+    }
+
+    public Expression getRightExpression() {
+<span class="fc" id="L34">        return rightExpression;</span>
+    }
+
+    public boolean isMatchCase() {
+<span class="nc" id="L38">        return matchCase;</span>
+    }
+
+    public BinaryComparisonOperator setMatchCase(boolean matchCase) {
+<span class="fc" id="L42">        this.matchCase = matchCase;</span>
+<span class="fc" id="L43">        return this;</span>
+    }
+
+    public MatchAction getMatchAction() {
+<span class="nc" id="L47">        return matchAction;</span>
+    }
+
+    public BinaryComparisonOperator setMatchAction(MatchAction matchAction) {
+<span class="nc" id="L51">        this.matchAction = matchAction;</span>
+<span class="nc" id="L52">        return this;</span>
+    }
+
+    @Override
+    public boolean test(IFeature feature) {
+        // Special case handling for null.
+<span class="fc bfc" id="L58" title="All 6 branches covered.">        if(leftExpression == null &amp;&amp; rightExpression == null &amp;&amp; operatorType.equals(BinaryComparisonName.PROPERTY_IS_EQUAL_TO)) {</span>
+<span class="fc" id="L59">            return true;</span>
+        }
+<span class="fc bfc" id="L61" title="All 4 branches covered.">        if(leftExpression == null || rightExpression == null) {</span>
+<span class="fc" id="L62">            return false;</span>
+        }
+
+<span class="fc" id="L65">        final Object left = leftExpression.apply(feature);</span>
+<span class="fc" id="L66">        final Object right = rightExpression.apply(feature);</span>
+
+<span class="fc" id="L68">        return operatorType.test(left, right, matchCase);</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WfsTransactionRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.servlet</a> &gt; <span class="el_source">WfsTransactionRequest.java</span></div><h1>WfsTransactionRequest.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.servlet;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import de.turnertech.ows.Logging;
+import de.turnertech.ows.common.ExceptionCode;
+import de.turnertech.ows.common.Model;
+import de.turnertech.ows.common.ModelEncoder;
+import de.turnertech.ows.common.ModelEncoderProvider;
+import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.OwsRequestContext;
+import de.turnertech.ows.common.RequestHandler;
+import de.turnertech.ows.filter.OgcFilter;
+import de.turnertech.ows.filter.OgcFilterDecoder;
+import de.turnertech.ows.gml.FeatureDecoder;
+import de.turnertech.ows.gml.FeatureType;
+import de.turnertech.ows.gml.GmlDecoderContext;
+import de.turnertech.ows.gml.IFeature;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+<span class="nc" id="L36">public class WfsTransactionRequest implements RequestHandler  {</span>
+    
+    @Override
+    public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {       
+<span class="nc" id="L40">        response.setContentType(RequestHandler.CONTENT_XML);</span>
+
+<span class="nc" id="L42">        Set&lt;Model&gt; modelsToSave = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L43">        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();</span>
+<span class="nc" id="L44">        factory.setNamespaceAware(true);</span>
+<span class="nc" id="L45">        factory.setIgnoringElementContentWhitespace(true);</span>
+<span class="nc" id="L46">        factory.setIgnoringComments(true);</span>
+        
+        try {
+<span class="nc" id="L49">            DocumentBuilder builder = factory.newDocumentBuilder();</span>
+<span class="nc" id="L50">            Document document = builder.parse(request.getInputStream());</span>
+
+<span class="nc" id="L52">            Element root = document.getDocumentElement();</span>
+<span class="nc" id="L53">            root.normalize();</span>
+
+<span class="nc" id="L55">            NodeList deleteEntries = root.getElementsByTagName(&quot;Delete&quot;);</span>
+<span class="nc" id="L56">            NodeList insertEntries = root.getElementsByTagName(&quot;Insert&quot;);</span>
+
+<span class="nc bnc" id="L58" title="All 2 branches missed.">            for(int i = 0; i &lt; deleteEntries.getLength(); ++i) {</span>
+<span class="nc" id="L59">                Logging.LOG.fine(&quot;Transaction - Delete&quot;);</span>
+
+                // Delete entries have one child element, and one attribute. There is no need to cast to Element here
+                // 15.3.4
+<span class="nc" id="L63">                Node deleteEntry = deleteEntries.item(i);</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">                if(deleteEntry == null) {</span>
+<span class="nc" id="L65">                    Logging.LOG.severe(&quot;Something went wrong getting the Delete elements from a transaction&quot;);</span>
+<span class="nc" id="L66">                    response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), &quot;Delete&quot;, &quot;Something went wrong decoding the Delete entry&quot;));</span>
+<span class="nc" id="L67">                    return;</span>
+                }
+
+<span class="nc" id="L70">                NodeList filterNodeList = ((Element)deleteEntry).getElementsByTagName(&quot;Filter&quot;);</span>
+<span class="nc bnc" id="L71" title="All 4 branches missed.">                if(filterNodeList == null || filterNodeList.getLength() == 0) {</span>
+<span class="nc" id="L72">                    Logging.LOG.severe(&quot;Something went wrong getting the Filter element from a Delete Transaction&quot;);</span>
+<span class="nc" id="L73">                    response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), &quot;Filter&quot;, &quot;Could not locate the Filter element for a Delete operation&quot;));</span>
+<span class="nc" id="L74">                    return;</span>
+                }
+<span class="nc" id="L76">                Node filter = filterNodeList.item(0);</span>
+
+<span class="nc" id="L78">                Node typeNameNode = deleteEntry.getAttributes().getNamedItem(&quot;typeName&quot;);</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">                if(typeNameNode == null) {</span>
+<span class="nc" id="L80">                    Logging.LOG.severe(&quot;Something went wrong getting the typeName attribute from a Filter&quot;);</span>
+<span class="nc" id="L81">                    response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), &quot;typeName&quot;, &quot;Could not locate the typeName element for a Filter operation&quot;));</span>
+<span class="nc" id="L82">                    return;</span>
+                }
+
+<span class="nc" id="L85">                String prefix = null;</span>
+<span class="nc" id="L86">                String typeName = typeNameNode.getNodeValue();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">                if(typeName.contains(&quot;:&quot;)) {</span>
+<span class="nc" id="L88">                    String[] parts = typeName.split(&quot;:&quot;, 2);</span>
+<span class="nc" id="L89">                    prefix = parts[0];</span>
+<span class="nc" id="L90">                    typeName = parts[1];</span>
+                }
+
+<span class="nc" id="L93">                String namespaceUri = root.getAttribute(&quot;xmlns:&quot; + prefix);</span>
+<span class="nc bnc" id="L94" title="All 4 branches missed.">                if(namespaceUri == null || &quot;&quot;.equals(namespaceUri)) {</span>
+<span class="nc" id="L95">                    Node nsElement = deleteEntry.getAttributes().getNamedItem(&quot;xmlns:&quot; + prefix);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">                    namespaceUri = nsElement == null ? null : nsElement.getTextContent();</span>
+                }
+<span class="nc bnc" id="L98" title="All 4 branches missed.">                if(namespaceUri == null || &quot;&quot;.equals(namespaceUri)) {</span>
+<span class="nc" id="L99">                    Logging.LOG.severe(&quot;Something went wrong getting the typeName xmlns attribute from a Filter&quot;);</span>
+<span class="nc" id="L100">                    response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), &quot;typeName&quot;, &quot;Could not locate the typeName xmlns element for a Filter operation&quot;));</span>
+<span class="nc" id="L101">                    return;</span>
+                }
+
+<span class="nc" id="L104">                OgcFilter ogcFilter = OgcFilterDecoder.getFilter(filter);</span>
+<span class="nc" id="L105">                FeatureType featureType = owsContext.getWfsCapabilities().getFeatureType(namespaceUri, typeName);</span>
+<span class="nc" id="L106">                Model model = owsContext.getModelProvider().getModel(featureType);</span>
+<span class="nc" id="L107">                Collection&lt;IFeature&gt; featuresToRemove = model.filter(ogcFilter);</span>
+<span class="nc" id="L108">                model.removeAll(featuresToRemove);</span>
+<span class="nc" id="L109">                modelsToSave.add(model);</span>
+            }
+
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            for(int i = 0; i &lt; insertEntries.getLength(); ++i) {</span>
+<span class="nc" id="L113">                Logging.LOG.fine(&quot;Transaction - Insert&quot;);</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">                Element insertEntry = insertEntries.item(i) instanceof Element ? (Element)insertEntries.item(i) : null;</span>
+
+<span class="nc bnc" id="L116" title="All 2 branches missed.">                if(insertEntry == null) {</span>
+<span class="nc" id="L117">                    Logging.LOG.severe(&quot;Something went wrong getting the Insert elements from a transaction&quot;);</span>
+<span class="nc" id="L118">                    continue;</span>
+                }
+
+<span class="nc" id="L121">                NodeList individualFeatureEntries = insertEntry.getChildNodes();</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">                for(int j = 0; j &lt; individualFeatureEntries.getLength(); ++j) {</span>
+<span class="nc" id="L123">                    Node featureEntry = individualFeatureEntries.item(j);</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">                    if(featureEntry.getNodeType() == Node.ELEMENT_NODE) {</span>
+<span class="nc" id="L125">                        String prefix = featureEntry.getPrefix();</span>
+<span class="nc" id="L126">                        String namespaceUri = featureEntry.getNamespaceURI();</span>
+<span class="nc" id="L127">                        String name = featureEntry.getNodeName();</span>
+<span class="nc bnc" id="L128" title="All 6 branches missed.">                        if(namespaceUri == null &amp;&amp; prefix == null &amp;&amp; name.contains(&quot;:&quot;)) {</span>
+<span class="nc" id="L129">                            String[] parts = name.split(&quot;:&quot;, 2);</span>
+<span class="nc" id="L130">                            prefix = parts[0];</span>
+<span class="nc" id="L131">                            name = parts[1];</span>
+                        }
+<span class="nc bnc" id="L133" title="All 4 branches missed.">                        if(namespaceUri == null &amp;&amp; prefix != null) {</span>
+<span class="nc" id="L134">                            namespaceUri = document.lookupNamespaceURI(prefix);</span>
+                        }
+<span class="nc bnc" id="L136" title="All 4 branches missed.">                        if(namespaceUri == null &amp;&amp; prefix != null) {</span>
+<span class="nc" id="L137">                            namespaceUri = root.getAttribute(&quot;xmlns:&quot; + prefix);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">                            namespaceUri = &quot;&quot;.equals(namespaceUri) ? null : namespaceUri;</span>
+                        }
+<span class="nc bnc" id="L140" title="All 2 branches missed.">                        if(namespaceUri == null) {</span>
+<span class="nc" id="L141">                            Node localXmlnsNode = featureEntry.getAttributes().getNamedItem(&quot;xmlns&quot;);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">                            namespaceUri = localXmlnsNode == null ? null : localXmlnsNode.getTextContent();</span>
+                        }                        
+<span class="nc bnc" id="L144" title="All 2 branches missed.">                        if(namespaceUri == null) {</span>
+<span class="nc" id="L145">                            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), &quot;xmlns&quot;, &quot;No xmlns supplied for: &quot; + featureEntry.getNodeName()));</span>
+<span class="nc" id="L146">                            return;</span>
+                        }
+
+<span class="nc" id="L149">                        FeatureType featureType = owsContext.getWfsCapabilities().getFeatureType(namespaceUri, name);</span>
+
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                        if(featureType == null) {</span>
+<span class="nc" id="L152">                            response.sendError(400, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), &quot;Insert&quot;, &quot;Feature Type not supported: &quot; + name));</span>
+<span class="nc" id="L153">                            return;</span>
+                        }
+
+<span class="nc" id="L156">                        Model model = owsContext.getModelProvider().getModel(featureType);</span>
+<span class="nc" id="L157">                        IFeature feature = FeatureDecoder.decode(featureEntry, new GmlDecoderContext(), featureType);</span>
+<span class="nc" id="L158">                        model.add(feature);</span>
+<span class="nc" id="L159">                        modelsToSave.add(model);</span>
+                    }
+                }
+            }
+
+<span class="nc" id="L164">            ModelEncoderProvider modelEncoderProvider = owsContext.getModelEncoderProvider();</span>
+<span class="nc" id="L165">            ModelEncoder encoder = modelEncoderProvider.getModelEncoder(requestContext, ModelEncoderProvider.GML32);</span>
+            
+<span class="nc bnc" id="L167" title="All 2 branches missed.">            for(Model model : modelsToSave) {</span>
+<span class="nc" id="L168">                File saveFile = model.getStorageLocation();</span>
+<span class="nc" id="L169">                try(FileOutputStream fout = new FileOutputStream(saveFile, false)) {</span>
+<span class="nc" id="L170">                    encoder.encode(model, fout, owsContext, requestContext);</span>
+<span class="nc" id="L171">                } catch (Exception e) {</span>
+<span class="nc" id="L172">                    Logging.LOG.severe(&quot;Could not save changes! Potential data loss!&quot;);</span>
+<span class="nc" id="L173">                    response.sendError(500, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PARSING_FAILED.toString(), &quot;transaction&quot;, &quot;Could not save changes! Potential data loss!&quot;));</span>
+<span class="nc" id="L174">                    return;</span>
+<span class="nc" id="L175">                }</span>
+<span class="nc" id="L176">            }</span>
+            
+<span class="nc" id="L178">        } catch (Exception e) {</span>
+<span class="nc" id="L179">            Logging.LOG.severe(&quot;Could not decode GML from Transaction&quot;);</span>
+<span class="nc" id="L180">        }</span>
+<span class="nc" id="L181">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SpatialReferenceSystem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.srs</a> &gt; <span class="el_source">SpatialReferenceSystem.java</span></div><h1>SpatialReferenceSystem.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.srs;
+
+<span class="fc" id="L3">public enum SpatialReferenceSystem {</span>
+
+    /** WGS84 */
+<span class="fc" id="L6">    CRS84(&quot;OGC:CRS84&quot;, &quot;http://www.opengis.net/def/crs/OGC/1.3/CRS84&quot;, &quot;urn:ogc:def:crs:OGC:1.3:CRS84&quot;, (byte)2, (byte)0, (byte)1),</span>
+
+    /** WGS84 */
+<span class="fc" id="L9">    EPSG4326(&quot;EPSG:4326&quot;, &quot;http://www.opengis.net/def/crs/EPSG/0/4326&quot;, &quot;urn:ogc:def:crs:EPSG::4326&quot;, (byte)2, (byte)1, (byte)0),</span>
+
+    /** WebMercator */
+<span class="fc" id="L12">    EPSG3857(&quot;EPSG:3857&quot;, &quot;http://www.opengis.net/def/crs/EPSG/0/3857&quot;, &quot;urn:ogc:def:crs:EPSG::3857&quot;, (byte)2, (byte)0, (byte)1);</span>
+
+    private final String code;
+    
+    private final String uri;
+
+    private final String urn;
+
+    private final byte dimension;
+
+    private final byte xIndex;
+
+    private final byte yIndex;
+
+<span class="fc" id="L26">    private SpatialReferenceSystem(String code, String uri, String urn, byte dimension, byte xIndex, byte yIndex) {</span>
+<span class="fc" id="L27">        this.code = code;</span>
+<span class="fc" id="L28">        this.uri = uri;</span>
+<span class="fc" id="L29">        this.dimension = dimension;</span>
+<span class="fc" id="L30">        this.urn = urn;</span>
+<span class="fc" id="L31">        this.xIndex = xIndex;</span>
+<span class="fc" id="L32">        this.yIndex = yIndex;</span>
+<span class="fc" id="L33">    }</span>
+
+    public String getCode() {
+<span class="fc" id="L36">        return code;</span>
+    }
+
+    public String getUri() {
+<span class="fc" id="L40">        return uri;</span>
+    }
+
+    public String getUrn() {
+<span class="fc" id="L44">        return urn;</span>
+    }
+
+    public byte getDimension() {
+<span class="fc" id="L48">        return dimension;</span>
+    }
+
+    public byte getXIndex() {
+<span class="fc" id="L52">        return xIndex;</span>
+    }
+
+    public byte getYIndex() {
+<span class="fc" id="L56">        return yIndex;</span>
+    }
+
+    public static SpatialReferenceSystem from(String value) {
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if(value == null) return null;</span>
+
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        for(SpatialReferenceSystem srs : SpatialReferenceSystem.values()) {</span>
+<span class="pc bpc" id="L63" title="2 of 6 branches missed.">            if(srs.getUri().equalsIgnoreCase(value) || srs.getUrn().equalsIgnoreCase(value) || srs.getCode().equalsIgnoreCase(value)) {</span>
+<span class="fc" id="L64">                return srs;</span>
+            }
+        }
+
+<span class="nc" id="L68">        return null;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

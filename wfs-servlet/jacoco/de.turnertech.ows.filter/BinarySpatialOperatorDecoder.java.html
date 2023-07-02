@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BinarySpatialOperatorDecoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.filter</a> &gt; <span class="el_source">BinarySpatialOperatorDecoder.java</span></div><h1>BinarySpatialOperatorDecoder.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.filter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.gml.Envelope;
+import de.turnertech.ows.gml.EnvelopeDecoder;
+import de.turnertech.ows.gml.GmlDecoderContext;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+
+public class BinarySpatialOperatorDecoder {
+    
+    private BinarySpatialOperatorDecoder() {
+
+    }
+
+    public static boolean canDecode(final XMLStreamReader in) {
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">        return SpatialOperatorName.valueOf(in.getName()) != null;</span>
+    }
+
+    public static BinarySpatialOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+<span class="fc" id="L27">        final SpatialOperatorName spatialOperatorName = SpatialOperatorName.valueOf(in.getName());</span>
+<span class="fc" id="L28">        final List&lt;ValueReference&gt; valueReferences = new ArrayList&lt;&gt;(2);</span>
+<span class="fc" id="L29">        final GmlDecoderContext gmlContext = new GmlDecoderContext();</span>
+<span class="fc" id="L30">        gmlContext.getSrsDeque().push(SpatialReferenceSystem.CRS84);</span>
+<span class="fc" id="L31">        Envelope envelope = null;</span>
+
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        while(in.hasNext()) {</span>
+<span class="fc" id="L34">            int xmlEvent = in.next();</span>
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            if (xmlEvent == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">                if(ValueReferenceDecoder.canDecode(in)) {</span>
+<span class="fc" id="L38">                    valueReferences.add(ValueReferenceDecoder.decode(in, owsContext));</span>
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">                } else if (EnvelopeDecoder.canDecode(in)) {</span>
+<span class="fc" id="L40">                    envelope = EnvelopeDecoder.decode(in, owsContext, gmlContext);</span>
+                }
+<span class="pc bpc" id="L42" title="1 of 4 branches missed.">            } else if (xmlEvent == XMLStreamConstants.END_ELEMENT &amp;&amp; spatialOperatorName.toString().equals(in.getLocalName())) {</span>
+<span class="fc" id="L43">                break;</span>
+            }
+<span class="fc" id="L45">        }</span>
+
+<span class="fc" id="L47">        ValueReference operand1 = null;</span>
+<span class="fc" id="L48">        SpatialDescription operand2 = null;</span>
+
+<span class="pc bpc" id="L50" title="3 of 4 branches missed.">        if(valueReferences.size() &gt; 1 &amp;&amp; valueReferences.get(2) != null) {</span>
+<span class="nc" id="L51">            operand2 = new SpatialDescription(valueReferences.get(2));</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        } else if(envelope != null) {</span>
+<span class="fc" id="L53">            operand2 = new SpatialDescription(envelope);</span>
+        }
+
+<span class="pc bpc" id="L56" title="2 of 4 branches missed.">        if(spatialOperatorName == SpatialOperatorName.BBOX &amp;&amp; envelope == null) {</span>
+<span class="nc" id="L57">            throw new XMLStreamException(&quot;BinarySpatialOperator BBOX requires an Envelope be supplied, but none was found.&quot;, in.getLocation());</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        } else if(spatialOperatorName != SpatialOperatorName.BBOX) {</span>
+<span class="nc bnc" id="L59" title="All 4 branches missed.">            if(operand1 == null || operand2 == null) {</span>
+<span class="nc" id="L60">                throw new XMLStreamException(spatialOperatorName.toString() + &quot; requires two parameters, but at least one is missing.&quot;, in.getLocation());</span>
+            }
+        }
+
+<span class="fc" id="L64">        return new BinarySpatialOperator(operand1, spatialOperatorName, operand2);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

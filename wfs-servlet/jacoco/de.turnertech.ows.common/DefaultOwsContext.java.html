@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultOwsContext.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.common</a> &gt; <span class="el_source">DefaultOwsContext.java</span></div><h1>DefaultOwsContext.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.common;
+
+import java.util.Collection;
+import java.util.Map;
+
+import de.turnertech.ows.parameter.WfsVersionValue;
+
+<span class="fc" id="L8">public class DefaultOwsContext implements OwsContext {</span>
+    
+    ModelProvider modelProvider;
+
+    ModelEncoderProvider modelEncoderProvider;
+
+    Collection&lt;WfsVersionValue&gt; supportedWfsVersions;
+
+    WfsCapabilities wfsCapabilities;
+
+    Map&lt;String, String&gt; xmlNamespacePrefixMap;
+
+    Map&lt;String, String&gt; xmlNamespaceSchemaMap;
+
+    @Override
+    public ModelProvider getModelProvider() {
+<span class="fc" id="L24">        return modelProvider;</span>
+    }
+
+    void setModelProvider(ModelProvider modelProvider) {
+<span class="fc" id="L28">        this.modelProvider = modelProvider;</span>
+<span class="fc" id="L29">    }</span>
+
+    @Override
+    public WfsCapabilities getWfsCapabilities() {
+<span class="fc" id="L33">        return wfsCapabilities;</span>
+    }
+
+    void setWfsCapabilities(WfsCapabilities wfsCapabilities) {
+<span class="fc" id="L37">        this.wfsCapabilities = wfsCapabilities;</span>
+<span class="fc" id="L38">    }</span>
+
+    /**
+     * Will generate one if not explicitely present
+     */
+    @Override
+    public String getXmlNamespacePrefix(String namespace) {
+<span class="fc" id="L45">        String prefix = xmlNamespacePrefixMap.getOrDefault(namespace, null);</span>
+
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if(prefix == null) {</span>
+<span class="nc" id="L48">            int i = -1;</span>
+            do {
+<span class="nc" id="L50">                prefix = &quot;ns&quot; + Integer.toString(++i);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">            } while(xmlNamespacePrefixMap.containsValue(prefix));</span>
+<span class="nc" id="L52">            xmlNamespacePrefixMap.put(namespace, prefix);</span>
+        }
+
+<span class="fc" id="L55">        return prefix;</span>
+    }
+
+    Map&lt;String, String&gt; getXmlNamespacePrefixMap() {
+<span class="fc" id="L59">        return xmlNamespacePrefixMap;</span>
+    }
+
+    void setXmlNamespacePrefixMap(Map&lt;String, String&gt; xmlNamespacePrefixMap) {
+<span class="fc" id="L63">        this.xmlNamespacePrefixMap = xmlNamespacePrefixMap;</span>
+<span class="fc" id="L64">    }</span>
+
+    @Override
+    public String getXmlNamespaceSchema(String namespace) {
+<span class="nc" id="L68">        return xmlNamespaceSchemaMap.getOrDefault(namespace, null);</span>
+    }
+
+    Map&lt;String, String&gt; getXmlNamespaceSchemaMap() {
+<span class="fc" id="L72">        return xmlNamespaceSchemaMap;</span>
+    }
+
+    void setXmlNamespaceSchemaMap(Map&lt;String, String&gt; xmlNamespaceSchemaMap) {
+<span class="fc" id="L76">        this.xmlNamespaceSchemaMap = xmlNamespaceSchemaMap;</span>
+<span class="fc" id="L77">    }</span>
+
+    @Override
+    public ModelEncoderProvider getModelEncoderProvider() {
+<span class="nc" id="L81">        return modelEncoderProvider;</span>
+    }
+
+    void setModelEncoderProvider(ModelEncoderProvider modelEncoderProvider) {
+<span class="fc" id="L85">        this.modelEncoderProvider = modelEncoderProvider;</span>
+<span class="fc" id="L86">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

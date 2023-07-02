@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BinaryLogicOperatorDecoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.filter</a> &gt; <span class="el_source">BinaryLogicOperatorDecoder.java</span></div><h1>BinaryLogicOperatorDecoder.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.filter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import de.turnertech.ows.common.OwsContext;
+
+class BinaryLogicOperatorDecoder {
+    
+    private BinaryLogicOperatorDecoder() {
+        
+    }
+
+    public static BinaryLogicOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+<span class="fc" id="L19">        final BinaryLogicType operatorType = BinaryLogicType.fromString(in.getLocalName());</span>
+<span class="fc" id="L20">        final List&lt;NonIdOperator&gt; operators = new ArrayList&lt;&gt;(2);</span>
+        
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if(operatorType == null) {</span>
+<span class="nc" id="L23">            throw new XMLStreamException(&quot;Unknown Binary Logic Operator &quot; + in.getLocalName(), in.getLocation());</span>
+        }
+
+<span class="fc" id="L26">        System.out.println(&quot;&gt;&quot; + operatorType.toString());</span>
+
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">        while(in.hasNext()) {</span>
+<span class="fc" id="L29">            int xmlEvent = in.next();</span>
+
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            if (xmlEvent == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L32">                operators.add(NonIdOperatorDecoder.decode(in, owsContext));</span>
+            }
+
+<span class="pc bpc" id="L35" title="1 of 4 branches missed.">            if (xmlEvent == XMLStreamConstants.END_ELEMENT &amp;&amp; operatorType.toString().equals(in.getLocalName())) {</span>
+<span class="fc" id="L36">                System.out.println(&quot;&lt;&quot; + operatorType.toString());</span>
+<span class="fc" id="L37">                break;</span>
+            }
+<span class="fc" id="L39">        }</span>
+
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if(operators.size() &lt; 2) {</span>
+<span class="nc" id="L42">            throw new XMLStreamException(&quot;Binary Logic Operator does not contain two Operators.&quot;, in.getLocation());</span>
+        }
+
+<span class="fc" id="L45">        return new BinaryLogicOperator(operators.get(0), operatorType, operators.get(1));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

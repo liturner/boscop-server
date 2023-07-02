@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FeaturePropertyType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.gml</a> &gt; <span class="el_source">FeaturePropertyType.java</span></div><h1>FeaturePropertyType.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.gml;
+
+import javax.xml.namespace.QName;
+
+import de.turnertech.ows.common.OwsContext;
+
+/**
+ * &lt;p&gt;Describes a single feature property, including aspects such as minimum occurences, XSD QNames or possible 
+ * values etc.&lt;/p&gt;
+ * 
+ * &lt;p&gt;For many GML types, there are often multiple entries such as &quot;POINT&quot; and &quot;POINT_TYPE&quot;. These have an
+ * impact on how GML will be interpreted. e.g. a Property of type POINT &quot;has a&quot; gml:Point as a nested element,
+ * whereas POINT_TYPE &quot;is a&quot; gml:Point, simply with a different element name. Be cautious and do not let the
+ * GML QName fool you, the naming is often misleading.&lt;/p&gt;
+ * 
+ * &lt;p&gt;For more information, lookup the GML Simple Features Profile.&lt;/p&gt;
+ */
+<span class="fc" id="L18">public enum FeaturePropertyType {</span>
+    
+<span class="fc" id="L20">    ID(false, new QName(OwsContext.XSD_URI, &quot;string&quot;)),</span>
+<span class="fc" id="L21">    TEXT(false, new QName(OwsContext.XSD_URI, &quot;string&quot;)),</span>
+<span class="fc" id="L22">    INTEGER(false, new QName(OwsContext.XSD_URI, &quot;integer&quot;)),</span>
+<span class="fc" id="L23">    DOUBLE(false, new QName(OwsContext.XSD_URI, &quot;double&quot;)),</span>
+<span class="fc" id="L24">    INSTANT(false, new QName(OwsContext.XSD_URI, &quot;dateTime &quot;)),</span>
+<span class="fc" id="L25">    POINT(true, new QName(OwsContext.GML_URI, &quot;PointPropertyType&quot;)),</span>
+<span class="fc" id="L26">    POINT_TYPE(true, new QName(OwsContext.GML_URI, &quot;Point&quot;)),</span>
+<span class="fc" id="L27">    POLYGON(true, new QName(OwsContext.GML_URI, &quot;SurfacePropertyType&quot;)),</span>
+<span class="fc" id="L28">    LINE_STRING(true, new QName(OwsContext.GML_URI, &quot;CurvePropertyType&quot;)),</span>
+<span class="fc" id="L29">    POLYGON_TYPE(true, new QName(OwsContext.GML_URI, &quot;Polygon&quot;)),</span>
+<span class="fc" id="L30">    GEOMETRY(true, new QName(OwsContext.GML_URI, &quot;GeometryPropertyType&quot;));</span>
+
+    private final boolean isBoundingBoxProvider;
+
+    private final QName qualifiedName;
+
+<span class="fc" id="L36">    private FeaturePropertyType(final boolean isBoundingBoxProvider, final QName qualifiedName) {</span>
+<span class="fc" id="L37">        this.isBoundingBoxProvider = isBoundingBoxProvider;</span>
+<span class="fc" id="L38">        this.qualifiedName = qualifiedName;</span>
+<span class="fc" id="L39">    }</span>
+
+    public boolean isBoundingBoxProvider() {
+<span class="nc" id="L42">        return this.isBoundingBoxProvider;</span>
+    }
+
+    public QName getQualifiedName() {
+<span class="nc" id="L46">        return qualifiedName;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

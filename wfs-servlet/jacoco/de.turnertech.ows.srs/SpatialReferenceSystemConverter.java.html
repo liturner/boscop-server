@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SpatialReferenceSystemConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.srs</a> &gt; <span class="el_source">SpatialReferenceSystemConverter.java</span></div><h1>SpatialReferenceSystemConverter.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.srs;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.Optional;
+
+import de.turnertech.ows.Logging;
+import de.turnertech.ows.gml.DirectPosition;
+
+public class SpatialReferenceSystemConverter {
+    
+<span class="fc" id="L13">    private static final MathContext MATH_CONTEXT = new MathContext(13);</span>
+
+    private SpatialReferenceSystemConverter() {
+        // Static Converter
+    }
+
+    public static Optional&lt;DirectPosition&gt; convertDirectPosition(DirectPosition pos, SpatialReferenceSystem targetSrs) {
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">        if(pos.getSrs().equals(targetSrs)) {</span>
+<span class="nc" id="L21">            return Optional.of(pos);</span>
+        }
+
+<span class="fc" id="L24">        DirectPosition epsg4326Pos = null;</span>
+<span class="pc bpc" id="L25" title="1 of 4 branches missed.">        switch(pos.getSrs()) {</span>
+            case CRS84:
+<span class="fc" id="L27">                epsg4326Pos = convertCRS84toEPSG4326(pos);</span>
+<span class="fc" id="L28">                break;</span>
+            case EPSG3857:
+<span class="fc" id="L30">                epsg4326Pos = convertEPSG3857toEPSG4326(pos);</span>
+<span class="fc" id="L31">                break;</span>
+            case EPSG4326:
+<span class="fc" id="L33">                epsg4326Pos = pos;</span>
+<span class="fc" id="L34">                break;</span>
+            default:
+<span class="nc" id="L36">                Logging.LOG.severe(&quot;Could not convert from unsupported SRS: &quot;+ pos.getSrs().toString());</span>
+<span class="nc" id="L37">                return Optional.empty();</span>
+        }
+
+<span class="pc bpc" id="L40" title="1 of 4 branches missed.">        switch(targetSrs) {</span>
+            case CRS84:
+<span class="fc" id="L42">                return Optional.of(convertEPSG4326toCRS84(epsg4326Pos));</span>
+            case EPSG3857:
+<span class="fc" id="L44">                return Optional.of(convertEPSG4326toEPSG3857(epsg4326Pos));</span>
+            case EPSG4326:
+<span class="fc" id="L46">                return Optional.of(epsg4326Pos);</span>
+            default:
+<span class="nc" id="L48">                Logging.LOG.severe(&quot;Could not convert from unsupported SRS: &quot;+ pos.getSrs().toString());</span>
+<span class="nc" id="L49">                return Optional.empty();</span>
+        }
+    }
+
+    private static DirectPosition convertEPSG4326toCRS84(DirectPosition pos) {
+<span class="fc" id="L54">        return new DirectPosition(SpatialReferenceSystem.CRS84, pos.getX(), pos.getY());</span>
+    }
+
+    private static DirectPosition convertEPSG4326toEPSG3857(DirectPosition pos) {
+<span class="fc" id="L58">        double x = pos.getX();</span>
+<span class="fc" id="L59">        double y = pos.getY();</span>
+<span class="fc" id="L60">        x = (x * 20037508.34) / 180.0;</span>
+<span class="fc" id="L61">        y = Math.log(Math.tan(((90.0 + y) * Math.PI) / 360.0)) / (Math.PI / 180.0);</span>
+<span class="fc" id="L62">        y = (y * 20037508.34) / 180.0;</span>
+<span class="fc" id="L63">        return new DirectPosition(SpatialReferenceSystem.EPSG3857, BigDecimal.valueOf(x).setScale(13, RoundingMode.HALF_UP).doubleValue(), BigDecimal.valueOf(y).setScale(8, RoundingMode.HALF_UP).doubleValue());</span>
+    }
+
+    private static DirectPosition convertCRS84toEPSG4326(DirectPosition pos) {
+<span class="fc" id="L67">        return new DirectPosition(SpatialReferenceSystem.EPSG4326, pos.getX(), pos.getY());</span>
+    }
+
+    private static DirectPosition convertEPSG3857toEPSG4326(DirectPosition pos) {
+<span class="fc" id="L71">        double x = pos.getX();</span>
+<span class="fc" id="L72">        double y = pos.getY();</span>
+<span class="fc" id="L73">        x = (x * 180.0) / 20037508.34;</span>
+<span class="fc" id="L74">        y = (y * 180.0) / 20037508.34;</span>
+<span class="fc" id="L75">        y = (Math.atan(Math.pow(Math.E, y * (Math.PI / 180.0))) * 360.0) / Math.PI - 90.0;</span>
+<span class="fc" id="L76">        return new DirectPosition(SpatialReferenceSystem.EPSG4326, BigDecimal.valueOf(x).round(MATH_CONTEXT).doubleValue(), BigDecimal.valueOf(y).round(MATH_CONTEXT).doubleValue());</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NonIdOperatorDecoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.filter</a> &gt; <span class="el_source">NonIdOperatorDecoder.java</span></div><h1>NonIdOperatorDecoder.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.filter;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import de.turnertech.ows.common.OwsContext;
+
+/**
+ * Delegating Decoder
+ */
+public class NonIdOperatorDecoder {
+    
+    private NonIdOperatorDecoder() {
+        
+    }
+
+    // TODO: Move to Filter?
+<span class="fc" id="L21">    public static List&lt;String&gt; COMPARISON_OPERATORS = Arrays.asList(&quot;PropertyIsEqualTo&quot;, &quot;PropertyIsNotEqualTo&quot;, &quot;PropertyIsLessThan&quot;, &quot;PropertyIsGreaterThan&quot;, &quot;PropertyIsLessThanOrEqualTo&quot;, &quot;PropertyIsGreaterThanOrEqualTo&quot;, &quot;PropertyIsLike&quot;, &quot;PropertyIsNull&quot;, &quot;PropertyIsNil&quot;, &quot;PropertyIsBetween&quot;);</span>
+
+    // TODO: Move to Filter?
+<span class="fc" id="L24">    public static List&lt;String&gt; LOGICAL_OPERATORS = Arrays.asList(&quot;And&quot;, &quot;Or&quot;, &quot;Not&quot;);</span>
+
+    public static boolean canDecode(final XMLStreamReader in) {
+<span class="nc" id="L27">        return BinarySpatialOperatorDecoder.canDecode(in);</span>
+    }
+
+    public static NonIdOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+<span class="fc" id="L31">        NonIdOperator returnOperator = null;</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if(COMPARISON_OPERATORS.contains(in.getLocalName())) {</span>
+<span class="fc" id="L33">            returnOperator = ComparisonOperatorDecoder.decode(in, owsContext);</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        } else if(LOGICAL_OPERATORS.contains(in.getLocalName())) {</span>
+<span class="fc" id="L35">            returnOperator = LogicalOperatorDecoder.decode(in, owsContext);</span>
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        } else if(SpatialOperatorDecoder.canDecode(in)) {</span>
+<span class="fc" id="L37">            returnOperator = SpatialOperatorDecoder.decode(in, owsContext);</span>
+        }
+<span class="fc" id="L39">        return returnOperator;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

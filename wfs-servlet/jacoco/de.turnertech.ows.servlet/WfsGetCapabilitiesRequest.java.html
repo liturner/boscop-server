@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WfsGetCapabilitiesRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.servlet</a> &gt; <span class="el_source">WfsGetCapabilitiesRequest.java</span></div><h1>WfsGetCapabilitiesRequest.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.servlet;
+
+import java.io.IOException;
+import java.util.Map.Entry;
+
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+
+import de.turnertech.ows.common.ExceptionCode;
+import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.OwsRequestContext;
+import de.turnertech.ows.common.RequestHandler;
+import de.turnertech.ows.gml.Envelope;
+import de.turnertech.ows.gml.FeatureType;
+import de.turnertech.ows.parameter.WfsVersionValue;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.srs.SpatialReferenceSystemFormat;
+import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+<span class="nc" id="L23">public class WfsGetCapabilitiesRequest implements RequestHandler {</span>
+
+    @Override
+    public void handleRequest(HttpServletRequest request, HttpServletResponse response, OwsContext owsContext, OwsRequestContext requestContext) throws ServletException, IOException {
+<span class="nc" id="L27">        response.setContentType(RequestHandler.CONTENT_XML);</span>
+<span class="nc" id="L28">        XMLStreamWriter out = null;</span>
+<span class="nc" id="L29">        WfsVersionValue requestedVersion = WfsVersionValue.V2_0_2;</span>
+        String port;
+<span class="nc bnc" id="L31" title="All 8 branches missed.">        if(&quot;http&quot;.equalsIgnoreCase(request.getScheme()) &amp;&amp; request.getServerPort() == 80 || &quot;https&quot;.equalsIgnoreCase(request.getScheme()) &amp;&amp; request.getServerPort() == 443) {</span>
+<span class="nc" id="L32">            port = &quot;&quot;;</span>
+        } else {
+<span class="nc" id="L34">            port = &quot;:&quot; + Integer.toString(request.getServerPort());</span>
+        }
+<span class="nc" id="L36">        String currentUrl = request.getScheme() + &quot;://&quot; + request.getServerName() + port + request.getContextPath() + request.getServletPath();</span>
+
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        if(requestContext.getOwsVersion() != null) {</span>
+<span class="nc" id="L39">            requestedVersion = requestContext.getOwsVersion();</span>
+        }
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        SpatialReferenceSystemFormat srsFormat = requestedVersion == WfsVersionValue.V2_0_0 ? SpatialReferenceSystemFormat.URN : SpatialReferenceSystemFormat.URI;</span>
+
+        try {
+<span class="nc" id="L44">            out = XMLOutputFactory.newInstance().createXMLStreamWriter(response.getOutputStream(), &quot;UTF-8&quot;);</span>
+<span class="nc" id="L45">            out.writeStartDocument(&quot;UTF-8&quot;, &quot;1.0&quot;);</span>
+<span class="nc" id="L46">            out.writeStartElement(&quot;WFS_Capabilities&quot;);</span>
+<span class="nc" id="L47">            out.writeAttribute(&quot;service&quot;, &quot;WFS&quot;);</span>
+<span class="nc" id="L48">            out.writeAttribute(&quot;version&quot;, requestedVersion.toString());</span>
+<span class="nc" id="L49">            out.writeDefaultNamespace(OwsContext.WFS_URI);</span>
+<span class="nc" id="L50">            out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.XSI_URI), OwsContext.XSI_URI);</span>
+<span class="nc" id="L51">            out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.GML_URI), OwsContext.GML_URI);</span>
+<span class="nc" id="L52">            out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.FES_URI), OwsContext.FES_URI);</span>
+<span class="nc" id="L53">            out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.OWS_URI), OwsContext.OWS_URI);</span>
+<span class="nc" id="L54">            out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.XSD_URI), OwsContext.XSD_URI);</span>
+<span class="nc" id="L55">            out.writeNamespace(owsContext.getXmlNamespacePrefix(OwsContext.XLINK_URI), OwsContext.XLINK_URI);</span>
+<span class="nc" id="L56">            out.writeAttribute(OwsContext.XSI_URI, &quot;schemaLocation&quot;, &quot;http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsAll.xsd http://www.opengis.net/fes/2.0 http://schemas.opengis.net/filter/2.0/filterAll.xsd&quot;);</span>
+
+<span class="nc" id="L58">            out.writeStartElement(OwsContext.OWS_URI, &quot;ServiceIdentification&quot;);</span>
+<span class="nc" id="L59">                out.writeStartElement(OwsContext.OWS_URI, &quot;Title&quot;);</span>
+<span class="nc" id="L60">                    out.writeCharacters(owsContext.getWfsCapabilities().getServiceTitle());</span>
+<span class="nc" id="L61">                out.writeEndElement();</span>
+<span class="nc" id="L62">                out.writeStartElement(OwsContext.OWS_URI, &quot;Abstract&quot;);</span>
+<span class="nc" id="L63">                    out.writeCharacters(owsContext.getWfsCapabilities().getServiceAbstract());</span>
+<span class="nc" id="L64">                out.writeEndElement();</span>
+<span class="nc" id="L65">                out.writeStartElement(OwsContext.OWS_URI, &quot;Keywords&quot;);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">                    for(String keyword : owsContext.getWfsCapabilities().getKeywords()) {</span>
+<span class="nc" id="L67">                        out.writeStartElement(OwsContext.OWS_URI, &quot;Keyword&quot;);</span>
+<span class="nc" id="L68">                            out.writeCharacters(keyword);</span>
+<span class="nc" id="L69">                        out.writeEndElement();</span>
+<span class="nc" id="L70">                    }</span>
+<span class="nc" id="L71">                    out.writeStartElement(OwsContext.OWS_URI, &quot;Type&quot;);</span>
+<span class="nc" id="L72">                        out.writeCharacters(&quot;String&quot;);</span>
+<span class="nc" id="L73">                    out.writeEndElement();</span>
+<span class="nc" id="L74">                out.writeEndElement();</span>
+<span class="nc" id="L75">                out.writeStartElement(OwsContext.OWS_URI, &quot;ServiceType&quot;);</span>
+<span class="nc" id="L76">                    out.writeCharacters(owsContext.getWfsCapabilities().getServiceType().toString());</span>
+<span class="nc" id="L77">                out.writeEndElement();</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">                for(WfsVersionValue serviceTypeVersion : owsContext.getWfsCapabilities().getServiceTypeVersions()) {</span>
+<span class="nc" id="L79">                    out.writeStartElement(OwsContext.OWS_URI, &quot;ServiceTypeVersion&quot;);</span>
+<span class="nc" id="L80">                        out.writeCharacters(serviceTypeVersion.toString());</span>
+<span class="nc" id="L81">                    out.writeEndElement();</span>
+<span class="nc" id="L82">                }</span>
+<span class="nc" id="L83">                out.writeStartElement(OwsContext.OWS_URI, &quot;Fees&quot;);</span>
+<span class="nc" id="L84">                    out.writeCharacters(owsContext.getWfsCapabilities().getFees());</span>
+<span class="nc" id="L85">                out.writeEndElement();</span>
+<span class="nc" id="L86">                out.writeStartElement(OwsContext.OWS_URI, &quot;AccessConstraints&quot;);</span>
+<span class="nc" id="L87">                    out.writeCharacters(owsContext.getWfsCapabilities().getAccessConstraints());</span>
+<span class="nc" id="L88">                out.writeEndElement();</span>
+<span class="nc" id="L89">            out.writeEndElement();</span>
+
+<span class="nc" id="L91">            out.writeStartElement(OwsContext.OWS_URI, &quot;OperationsMetadata&quot;);</span>
+<span class="nc" id="L92">                out.writeStartElement(OwsContext.OWS_URI, &quot;Operation&quot;);</span>
+<span class="nc" id="L93">                out.writeAttribute(&quot;name&quot;, &quot;GetCapabilities&quot;);</span>
+<span class="nc" id="L94">                    out.writeStartElement(OwsContext.OWS_URI, &quot;DCP&quot;);</span>
+<span class="nc" id="L95">                        out.writeStartElement(OwsContext.OWS_URI, &quot;HTTP&quot;);</span>
+<span class="nc" id="L96">                            out.writeEmptyElement(OwsContext.OWS_URI, &quot;Get&quot;);</span>
+<span class="nc" id="L97">                            out.writeAttribute(OwsContext.XLINK_URI, &quot;href&quot;, currentUrl + &quot;?&quot;);</span>
+<span class="nc" id="L98">                            out.writeEmptyElement(OwsContext.OWS_URI, &quot;Post&quot;);</span>
+<span class="nc" id="L99">                            out.writeAttribute(OwsContext.XLINK_URI, &quot;href&quot;, currentUrl);</span>
+<span class="nc" id="L100">                        out.writeEndElement();</span>
+<span class="nc" id="L101">                    out.writeEndElement();</span>
+
+
+<span class="nc" id="L104">                    out.writeStartElement(OwsContext.OWS_URI, &quot;Parameter&quot;);</span>
+<span class="nc" id="L105">                    out.writeAttribute(&quot;name&quot;, &quot;AcceptVersions&quot;);</span>
+<span class="nc" id="L106">                        out.writeStartElement(OwsContext.OWS_URI, &quot;AllowedValues&quot;);</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                            for(WfsVersionValue allowedVersion : owsContext.getWfsCapabilities().getServiceTypeVersions()) {</span>
+<span class="nc" id="L108">                                out.writeStartElement(OwsContext.OWS_URI, &quot;Value&quot;);</span>
+<span class="nc" id="L109">                                    out.writeCharacters(allowedVersion.toString());</span>
+<span class="nc" id="L110">                                out.writeEndElement();</span>
+<span class="nc" id="L111">                            }</span>
+<span class="nc" id="L112">                        out.writeEndElement();</span>
+<span class="nc" id="L113">                    out.writeEndElement();</span>
+<span class="nc" id="L114">                out.writeEndElement();</span>
+<span class="nc" id="L115">                out.writeStartElement(OwsContext.OWS_URI, &quot;Operation&quot;);</span>
+<span class="nc" id="L116">                out.writeAttribute(&quot;name&quot;, &quot;DescribeFeatureType&quot;);</span>
+<span class="nc" id="L117">                    out.writeStartElement(OwsContext.OWS_URI, &quot;DCP&quot;);</span>
+<span class="nc" id="L118">                        out.writeStartElement(OwsContext.OWS_URI, &quot;HTTP&quot;);</span>
+<span class="nc" id="L119">                            out.writeEmptyElement(OwsContext.OWS_URI, &quot;Get&quot;);</span>
+<span class="nc" id="L120">                            out.writeAttribute(OwsContext.XLINK_URI, &quot;href&quot;, currentUrl + &quot;?&quot;);</span>
+<span class="nc" id="L121">                            out.writeEmptyElement(OwsContext.OWS_URI, &quot;Post&quot;);</span>
+<span class="nc" id="L122">                            out.writeAttribute(OwsContext.XLINK_URI, &quot;href&quot;, currentUrl);</span>
+<span class="nc" id="L123">                        out.writeEndElement();</span>
+<span class="nc" id="L124">                    out.writeEndElement();</span>
+<span class="nc" id="L125">                out.writeEndElement();</span>
+<span class="nc" id="L126">                out.writeStartElement(OwsContext.OWS_URI, &quot;Operation&quot;);</span>
+<span class="nc" id="L127">                out.writeAttribute(&quot;name&quot;, &quot;GetFeature&quot;);</span>
+<span class="nc" id="L128">                    out.writeStartElement(OwsContext.OWS_URI, &quot;DCP&quot;);</span>
+<span class="nc" id="L129">                        out.writeStartElement(OwsContext.OWS_URI, &quot;HTTP&quot;);</span>
+<span class="nc" id="L130">                            out.writeEmptyElement(OwsContext.OWS_URI, &quot;Get&quot;);</span>
+<span class="nc" id="L131">                            out.writeAttribute(OwsContext.XLINK_URI, &quot;href&quot;, currentUrl + &quot;?&quot;);</span>
+<span class="nc" id="L132">                            out.writeEmptyElement(OwsContext.OWS_URI, &quot;Post&quot;);</span>
+<span class="nc" id="L133">                            out.writeAttribute(OwsContext.XLINK_URI, &quot;href&quot;, currentUrl);</span>
+<span class="nc" id="L134">                        out.writeEndElement();</span>
+<span class="nc" id="L135">                    out.writeEndElement();</span>
+<span class="nc" id="L136">                out.writeEndElement();</span>
+<span class="nc" id="L137">                out.writeStartElement(OwsContext.OWS_URI, &quot;Operation&quot;);</span>
+<span class="nc" id="L138">                out.writeAttribute(&quot;name&quot;, &quot;Transaction&quot;);</span>
+<span class="nc" id="L139">                    out.writeStartElement(OwsContext.OWS_URI, &quot;DCP&quot;);</span>
+<span class="nc" id="L140">                        out.writeStartElement(OwsContext.OWS_URI, &quot;HTTP&quot;);</span>
+<span class="nc" id="L141">                            out.writeEmptyElement(OwsContext.OWS_URI, &quot;Post&quot;);</span>
+<span class="nc" id="L142">                            out.writeAttribute(OwsContext.XLINK_URI, &quot;href&quot;, currentUrl);</span>
+<span class="nc" id="L143">                        out.writeEndElement();</span>
+<span class="nc" id="L144">                    out.writeEndElement();</span>
+<span class="nc" id="L145">                    out.writeStartElement(OwsContext.OWS_URI, &quot;Parameter&quot;);</span>
+<span class="nc" id="L146">                    out.writeAttribute(&quot;name&quot;, &quot;AcceptVersions&quot;);</span>
+<span class="nc" id="L147">                        out.writeStartElement(OwsContext.OWS_URI, &quot;AllowedValues&quot;);</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">                            for(WfsVersionValue allowedVersion : owsContext.getWfsCapabilities().getServiceTypeVersions()) {</span>
+<span class="nc" id="L149">                                out.writeStartElement(OwsContext.OWS_URI, &quot;Value&quot;);</span>
+<span class="nc" id="L150">                                    out.writeCharacters(allowedVersion.toString());</span>
+<span class="nc" id="L151">                                out.writeEndElement();</span>
+<span class="nc" id="L152">                            }</span>
+<span class="nc" id="L153">                        out.writeEndElement();</span>
+<span class="nc" id="L154">                    out.writeEndElement();</span>
+<span class="nc" id="L155">                out.writeEndElement();</span>
+<span class="nc" id="L156">            out.writeEndElement();</span>
+
+
+<span class="nc" id="L159">            out.writeStartElement(OwsContext.WFS_URI, &quot;FeatureTypeList&quot;);</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">            for(FeatureType featureType : owsContext.getWfsCapabilities().getFeatureTypes()) {</span>
+<span class="nc" id="L161">                out.writeStartElement(OwsContext.WFS_URI, &quot;FeatureType&quot;);</span>
+<span class="nc" id="L162">                    out.writeStartElement(OwsContext.WFS_URI, &quot;Name&quot;);</span>
+<span class="nc" id="L163">                        out.writeCharacters(owsContext.getXmlNamespacePrefix(featureType.getNamespace()) + &quot;:&quot; + featureType.getName());</span>
+<span class="nc" id="L164">                    out.writeEndElement();</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">                    if(featureType.getTitle() != null) {</span>
+<span class="nc" id="L166">                        out.writeStartElement(OwsContext.WFS_URI, &quot;Title&quot;);</span>
+<span class="nc" id="L167">                            out.writeCharacters(featureType.getTitle());</span>
+<span class="nc" id="L168">                        out.writeEndElement();</span>
+                    }
+<span class="nc bnc" id="L170" title="All 2 branches missed.">                    if(featureType.getDescription() != null) {</span>
+<span class="nc" id="L171">                        out.writeStartElement(OwsContext.WFS_URI, &quot;Abstract&quot;);</span>
+<span class="nc" id="L172">                            out.writeCharacters(featureType.getDescription());</span>
+<span class="nc" id="L173">                        out.writeEndElement();</span>
+                    }
+<span class="nc bnc" id="L175" title="All 2 branches missed.">                    if(featureType.getSrs() == null) {</span>
+<span class="nc" id="L176">                        out.writeEmptyElement(OwsContext.WFS_URI, &quot;NoCRS&quot;);</span>
+                    } else {
+<span class="nc" id="L178">                        out.writeStartElement(OwsContext.WFS_URI, &quot;DefaultCRS&quot;);</span>
+<span class="nc" id="L179">                            out.writeCharacters(new SpatialReferenceSystemRepresentation(featureType.getSrs(), srsFormat).toString());</span>
+<span class="nc" id="L180">                        out.writeEndElement();</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">                        for(SpatialReferenceSystem srs : SpatialReferenceSystem.values()) {</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">                            if(srs != featureType.getSrs()) {</span>
+<span class="nc" id="L183">                                out.writeStartElement(OwsContext.WFS_URI, &quot;OtherCRS&quot;);</span>
+<span class="nc" id="L184">                                    out.writeCharacters(new SpatialReferenceSystemRepresentation(srs, srsFormat).toString());</span>
+<span class="nc" id="L185">                                out.writeEndElement();</span>
+                            }
+                        }
+                    }
+
+<span class="nc" id="L190">                    Envelope boundingBox = owsContext.getModelProvider().getModel(featureType).getBoundingBox();</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">                    if(boundingBox != null) {</span>
+<span class="nc" id="L192">                        out.writeStartElement(OwsContext.OWS_URI, &quot;WGS84BoundingBox&quot;);</span>
+<span class="nc" id="L193">                            out.writeStartElement(OwsContext.OWS_URI, &quot;LowerCorner&quot;);</span>
+<span class="nc" id="L194">                                out.writeCharacters(Double.toString(boundingBox.getWest()) + &quot; &quot; + Double.toString(boundingBox.getSouth()));</span>
+<span class="nc" id="L195">                            out.writeEndElement();</span>
+<span class="nc" id="L196">                            out.writeStartElement(OwsContext.OWS_URI, &quot;UpperCorner&quot;);</span>
+<span class="nc" id="L197">                                out.writeCharacters(Double.toString(boundingBox.getEast()) + &quot; &quot; + Double.toString(boundingBox.getNorth()));</span>
+<span class="nc" id="L198">                            out.writeEndElement();</span>
+<span class="nc" id="L199">                        out.writeEndElement();</span>
+                    }
+
+<span class="nc" id="L202">                out.writeEndElement();</span>
+<span class="nc" id="L203">            }</span>
+<span class="nc" id="L204">            out.writeEndElement();</span>
+
+<span class="nc" id="L206">            out.writeStartElement(OwsContext.FES_URI, &quot;Filter_Capabilities&quot;);</span>
+<span class="nc" id="L207">                out.writeStartElement(OwsContext.FES_URI, &quot;Conformance&quot;);</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">                    for(Entry&lt;String, Boolean&gt; entry : owsContext.getWfsCapabilities().getFilterConformance().entrySet()) {</span>
+<span class="nc" id="L209">                        out.writeStartElement(OwsContext.FES_URI, &quot;Constraint&quot;);</span>
+<span class="nc" id="L210">                            out.writeAttribute(OwsContext.WFS_URI, &quot;name&quot;, entry.getKey());</span>
+<span class="nc" id="L211">                            out.writeEmptyElement(OwsContext.OWS_URI, &quot;NoValues&quot;);</span>
+<span class="nc" id="L212">                            out.writeStartElement(OwsContext.OWS_URI, &quot;Constraint&quot;);</span>
+<span class="nc" id="L213">                                out.writeCharacters(entry.getValue().toString().toUpperCase());</span>
+<span class="nc" id="L214">                            out.writeEndElement();</span>
+<span class="nc" id="L215">                        out.writeEndElement();</span>
+<span class="nc" id="L216">                    }</span>
+<span class="nc" id="L217">                out.writeEndElement();</span>
+<span class="nc" id="L218">            out.writeEndElement();</span>
+
+<span class="nc" id="L220">            out.writeEndElement();</span>
+<span class="nc" id="L221">            out.writeEndDocument();</span>
+<span class="nc" id="L222">        } catch (Exception e) {</span>
+<span class="nc" id="L223">            response.sendError(500, ErrorServlet.encodeMessage(ExceptionCode.OPERATION_PROCESSING_FAILED.toString(), &quot;GetCapabilities&quot;, &quot;XML Constrction of the response failed.&quot;));</span>
+<span class="nc" id="L224">        }</span>
+<span class="nc" id="L225">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

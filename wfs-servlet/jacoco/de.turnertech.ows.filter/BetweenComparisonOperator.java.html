@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BetweenComparisonOperator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.filter</a> &gt; <span class="el_source">BetweenComparisonOperator.java</span></div><h1>BetweenComparisonOperator.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.filter;
+
+import de.turnertech.ows.gml.IFeature;
+
+public class BetweenComparisonOperator implements ComparisonOperator {
+
+    private final Expression lowerBoundary;
+
+    private final Expression expression;
+
+    private final Expression upperBoundary;
+
+<span class="nc" id="L13">    public BetweenComparisonOperator(final Expression lowerBoundary, final Expression expression, final Expression upperBoundary) {</span>
+<span class="nc" id="L14">        this.lowerBoundary = lowerBoundary;</span>
+<span class="nc" id="L15">        this.expression = expression;</span>
+<span class="nc" id="L16">        this.upperBoundary = upperBoundary;</span>
+<span class="nc" id="L17">    }</span>
+
+    /**
+     * @return the expression
+     */
+    public Expression getExpression() {
+<span class="nc" id="L23">        return expression;</span>
+    }
+
+    /**
+     * @return the lowerBoundary
+     */
+    public Expression getLowerBoundary() {
+<span class="nc" id="L30">        return lowerBoundary;</span>
+    }
+
+    /**
+     * @return the upperBoundary
+     */
+    public Expression getUpperBoundary() {
+<span class="nc" id="L37">        return upperBoundary;</span>
+    }
+
+    @Override
+    public boolean test(IFeature feature) {
+<span class="nc" id="L42">        final Object testValue = expression.apply(feature);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        return BinaryComparisonName.PROPERTY_IS_GREATER_THAN_OR_EQUAL_TO.test(testValue, lowerBoundary.apply(feature)) &amp;&amp;</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">                BinaryComparisonName.PROPERTY_IS_LESS_THAN_OR_EQUAL_TO.test(testValue, upperBoundary.apply(feature));</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

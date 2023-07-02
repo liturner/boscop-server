@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LiteralDecoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WFS Servlet</a> &gt; <a href="index.source.html" class="el_package">de.turnertech.ows.filter</a> &gt; <span class="el_source">LiteralDecoder.java</span></div><h1>LiteralDecoder.java</h1><pre class="source lang-java linenums">package de.turnertech.ows.filter;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import de.turnertech.ows.common.OwsContext;
+
+/**
+ * Leaf Decoder
+ * 
+ * Note, must consume the input to its return element
+ */
+class LiteralDecoder {
+    
+    private LiteralDecoder() {
+
+    }
+
+    public static Literal decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+        
+<span class="fc" id="L21">        System.out.println(&quot;&gt;&quot; + &quot;Literal&quot;);</span>
+
+        // This consumes the element and content, moving us to the element
+<span class="fc" id="L24">        final String elementText = in.getElementText();</span>
+<span class="fc" id="L25">        Object typedObject = null;</span>
+
+        try {
+<span class="fc" id="L28">            typedObject = Long.valueOf(elementText);</span>
+<span class="fc" id="L29">        } catch (Exception e) {</span>
+            // Do Nothing
+<span class="fc" id="L31">        }</span>
+
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if(typedObject == null) {</span>
+            try {
+<span class="fc" id="L35">                typedObject = Double.valueOf(elementText);</span>
+<span class="nc" id="L36">            } catch (Exception e) {</span>
+                // Do Nothing
+<span class="fc" id="L38">            }</span>
+
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">            if(typedObject == null) {</span>
+<span class="nc" id="L41">                typedObject = elementText;</span>
+            }
+        }
+
+<span class="fc" id="L45">        final Literal returnLiteral = new Literal(typedObject);</span>
+
+<span class="fc" id="L47">        return returnLiteral;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
