@@ -3,7 +3,6 @@ package de.turnertech.ows.filter;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -24,8 +23,8 @@ public class NonIdOperatorDecoder {
     // TODO: Move to Filter?
     public static List<String> LOGICAL_OPERATORS = Arrays.asList("And", "Or", "Not");
 
-    public static boolean canDecode(final QName element) {
-        return BinarySpatialOperatorDecoder.canDecode(element);
+    public static boolean canDecode(final XMLStreamReader in) {
+        return BinarySpatialOperatorDecoder.canDecode(in);
     }
 
     public static NonIdOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
@@ -34,7 +33,7 @@ public class NonIdOperatorDecoder {
             returnOperator = ComparisonOperatorDecoder.decode(in, owsContext);
         } else if(LOGICAL_OPERATORS.contains(in.getLocalName())) {
             returnOperator = LogicalOperatorDecoder.decode(in, owsContext);
-        } else if(SpatialOperatorDecoder.canDecode(in.getName())) {
+        } else if(SpatialOperatorDecoder.canDecode(in)) {
             returnOperator = SpatialOperatorDecoder.decode(in, owsContext);
         }
         return returnOperator;

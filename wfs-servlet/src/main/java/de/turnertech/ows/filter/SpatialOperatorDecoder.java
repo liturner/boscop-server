@@ -1,6 +1,5 @@
 package de.turnertech.ows.filter;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -15,14 +14,14 @@ public class SpatialOperatorDecoder {
 
     }
 
-    public static boolean canDecode(final QName element) {
-        return BinarySpatialOperatorDecoder.canDecode(element);
+    public static boolean canDecode(final XMLStreamReader in) {
+        return BinarySpatialOperatorDecoder.canDecode(in);
     }
 
     public static SpatialOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         SpatialOperator returnSpatialOperator = null;
 
-        if(BinarySpatialOperatorDecoder.canDecode(in.getName())) {
+        if(BinarySpatialOperatorDecoder.canDecode(in)) {
             returnSpatialOperator = BinarySpatialOperatorDecoder.decode(in, owsContext);
         }
 
