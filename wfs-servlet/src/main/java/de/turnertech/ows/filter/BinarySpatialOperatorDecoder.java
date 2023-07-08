@@ -16,7 +16,7 @@ import de.turnertech.ows.srs.SpatialReferenceSystem;
 
 public class BinarySpatialOperatorDecoder implements XmlDecoder<BinarySpatialOperator> {
     
-    final static BinarySpatialOperatorDecoder I = new BinarySpatialOperatorDecoder();
+    static final BinarySpatialOperatorDecoder I = new BinarySpatialOperatorDecoder();
 
     private BinarySpatialOperatorDecoder() {}
 

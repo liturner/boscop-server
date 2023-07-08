@@ -41,6 +41,7 @@ public class Envelope implements GmlElement {
     }
 
     public boolean contains(double latitude, double longitute) {
+        if(Double.isNaN(latitude) || Double.isNaN(longitute)) return false;
         return !(latitude > upperCorner.getY() || latitude < lowerCorner.getY() || longitute > upperCorner.getX() || longitute < lowerCorner.getX());
     }
 
