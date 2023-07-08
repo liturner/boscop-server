@@ -1,23 +1,31 @@
 package de.turnertech.ows.filter;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 
-class ExpressionDecoder {
+class ExpressionDecoder implements XmlDecoder<Expression> {
 
-    private ExpressionDecoder() {
+    static final ExpressionDecoder I = new ExpressionDecoder();
 
+    private ExpressionDecoder() {}
+
+    @Override
+    public boolean canDecode(DepthXMLStreamReader in) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canDecode'");
     }
 
-    public static Expression decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+    @Override
+    public Expression decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         Expression returnExpression = null;
 
         if("Literal".equals(in.getLocalName())) {
-            returnExpression = LiteralDecoder.decode(in, owsContext);
+            returnExpression = LiteralDecoder.I.decode(in, owsContext);
         } else if("ValueReference".equals(in.getLocalName())) {
-            returnExpression = ValueReferenceDecoder.decode(in, owsContext);
+            returnExpression = ValueReferenceDecoder.I.decode(in, owsContext);
         }
         
         return returnExpression;

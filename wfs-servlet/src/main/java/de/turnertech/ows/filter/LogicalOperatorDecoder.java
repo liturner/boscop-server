@@ -1,23 +1,31 @@
 package de.turnertech.ows.filter;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 
 /**
  * Delegating Decoder
  */
-class LogicalOperatorDecoder {
+class LogicalOperatorDecoder implements XmlDecoder<LogicalOperator> {
     
-    private LogicalOperatorDecoder() {
+    static final LogicalOperatorDecoder I = new LogicalOperatorDecoder();
 
+    private LogicalOperatorDecoder() {}
+
+    @Override
+    public boolean canDecode(DepthXMLStreamReader in) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canDecode'");
     }
 
-    public static LogicalOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+    @Override
+    public LogicalOperator decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         LogicalOperator returnOperator = null;
         if("And".equals(in.getLocalName()) || "Or".equals(in.getLocalName())) {
-            returnOperator = BinaryLogicOperatorDecoder.decode(in, owsContext);
+            returnOperator = BinaryLogicOperatorDecoder.I.decode(in, owsContext);
         } else if("Not".equals(in.getLocalName())) {
             System.out.println("Go Unary Logic Operator Decoder");
         }

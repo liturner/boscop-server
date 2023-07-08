@@ -9,12 +9,12 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.junit.jupiter.api.Test;
 
 import de.turnertech.ows.common.DefaultOwsContextFactory;
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.gml.Feature;
 import de.turnertech.ows.gml.FeatureProperty;
@@ -34,9 +34,9 @@ public class FilterDecoderTests {
         String xml = "<Filter></Filter>";
         StringReader stringReader = new StringReader(xml);
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        XMLStreamReader xmlStreamReader  = xmlInputFactory.createXMLStreamReader(stringReader);
+        DepthXMLStreamReader in  = new DepthXMLStreamReader(xmlInputFactory.createXMLStreamReader(stringReader));
 
-        Filter decodedFilter = FilterDecoder.decode(xmlStreamReader, owsContext);
+        Filter decodedFilter = FilterDecoder.I.decode(in, owsContext);
     }
 
     @Test
@@ -52,9 +52,9 @@ public class FilterDecoderTests {
         OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
         StringReader stringReader = new StringReader(ID_FILTER_STRING);
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        XMLStreamReader xmlStreamReader  = xmlInputFactory.createXMLStreamReader(stringReader);
+        DepthXMLStreamReader in  = new DepthXMLStreamReader(xmlInputFactory.createXMLStreamReader(stringReader));
 
-        final Filter decodedFilter = FilterDecoder.decode(xmlStreamReader, owsContext);
+        final Filter decodedFilter = FilterDecoder.I.decode(in, owsContext);
         assertNotNull(decodedFilter);
         assertNotNull(decodedFilter.getFilter());
         assertNotNull(decodedFilter.getFilter().test(feature));
@@ -73,9 +73,9 @@ public class FilterDecoderTests {
         OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
         StringReader stringReader = new StringReader(MIXED_FILTER_STRING);
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        XMLStreamReader xmlStreamReader  = xmlInputFactory.createXMLStreamReader(stringReader);
+        DepthXMLStreamReader in  = new DepthXMLStreamReader(xmlInputFactory.createXMLStreamReader(stringReader));
 
-        final Filter decodedFilter = FilterDecoder.decode(xmlStreamReader, owsContext);
+        final Filter decodedFilter = FilterDecoder.I.decode(in, owsContext);
         assertNotNull(decodedFilter);
         assertNotNull(decodedFilter.getFilter());
 
@@ -86,7 +86,7 @@ public class FilterDecoderTests {
 
         out.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
 
-        FilterEncoder.encode(out, decodedFilter, owsContext);
+        FilterEncoder.I.encode(out, decodedFilter, owsContext);
 
         String xmlOut = outStream.toString(StandardCharsets.UTF_8);
         System.out.print(xmlOut);

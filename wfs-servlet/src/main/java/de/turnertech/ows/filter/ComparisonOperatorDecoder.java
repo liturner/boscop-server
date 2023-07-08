@@ -4,25 +4,33 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 
-public class ComparisonOperatorDecoder {
+public class ComparisonOperatorDecoder implements XmlDecoder<ComparisonOperator> {
     
+    static final ComparisonOperatorDecoder I = new ComparisonOperatorDecoder();
+
     public static List<String> COMPARISON_OPERATORS = Arrays.asList("PropertyIsEqualTo", "PropertyIsNotEqualTo", "PropertyIsLessThan", "PropertyIsGreaterThan", "PropertyIsLessThanOrEqualTo", "PropertyIsGreaterThanOrEqualTo", "PropertyIsLike", "PropertyIsNull", "PropertyIsNil", "PropertyIsBetween");
 
     public static List<String> BINARY_COMPARISON_OPERATORS = Arrays.asList("PropertyIsEqualTo", "PropertyIsNotEqualTo", "PropertyIsLessThan", "PropertyIsGreaterThan", "PropertyIsLessThanOrEqualTo", "PropertyIsGreaterThanOrEqualTo");
 
-    private ComparisonOperatorDecoder() {
-        
+    private ComparisonOperatorDecoder() {}
+
+    @Override
+    public boolean canDecode(DepthXMLStreamReader in) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canDecode'");
     }
 
-    public static ComparisonOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+    @Override
+    public ComparisonOperator decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         ComparisonOperator returnOperator = null;
 
         if(BINARY_COMPARISON_OPERATORS.contains(in.getLocalName())) {
-            returnOperator = BinaryComparisonOperatorDecoder.decode(in, owsContext);
+            returnOperator = BinaryComparisonOperatorDecoder.I.decode(in, owsContext);
         }
 
         return returnOperator;

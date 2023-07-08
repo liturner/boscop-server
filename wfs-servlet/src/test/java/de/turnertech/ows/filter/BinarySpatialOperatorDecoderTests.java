@@ -8,11 +8,11 @@ import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.junit.jupiter.api.Test;
 
 import de.turnertech.ows.common.DefaultOwsContextFactory;
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.gml.GmlDecoderContext;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
@@ -27,16 +27,16 @@ public class BinarySpatialOperatorDecoderTests {
         OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
         StringReader stringReader = new StringReader(ENVELOPE_STRING_1);
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        XMLStreamReader in  = xmlInputFactory.createXMLStreamReader(stringReader);
+        DepthXMLStreamReader in  = new DepthXMLStreamReader(xmlInputFactory.createXMLStreamReader(stringReader));
 
         // The first element is allways "Document Start". Skip it.
         in.next();
 
-        assertTrue(BinarySpatialOperatorDecoder.canDecode(in));
+        assertTrue(BinarySpatialOperatorDecoder.I.canDecode(in));
 
         final GmlDecoderContext gmlContext = new GmlDecoderContext();
         gmlContext.getSrsDeque().push(SpatialReferenceSystem.CRS84);
-        final BinarySpatialOperator filter = BinarySpatialOperatorDecoder.decode(in, owsContext);
+        final BinarySpatialOperator filter = BinarySpatialOperatorDecoder.I.decode(in, owsContext);
 
         assertNotNull(filter);
         assertNotNull(filter.operatorType);

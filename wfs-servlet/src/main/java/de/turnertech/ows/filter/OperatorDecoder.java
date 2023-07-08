@@ -1,25 +1,33 @@
 package de.turnertech.ows.filter;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 
 /**
  * Delegating Decoder
  */
-class OperatorDecoder {
+class OperatorDecoder implements XmlDecoder<Operator> {
     
-    private OperatorDecoder() {
+    static final OperatorDecoder I = new OperatorDecoder();
 
+    private OperatorDecoder() {}
+
+    @Override
+    public boolean canDecode(DepthXMLStreamReader in) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canDecode'");
     }
 
-    public static Operator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+    @Override
+    public Operator decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         Operator returnOperator = null;
         if("ResourceId".equals(in.getLocalName())) {
-            returnOperator = IdOperatorDecoder.decode(in, owsContext);
+            returnOperator = IdOperatorDecoder.I.decode(in, owsContext);
         } else {
-            returnOperator = NonIdOperatorDecoder.decode(in, owsContext);
+            returnOperator = NonIdOperatorDecoder.I.decode(in, owsContext);
         }
         return returnOperator;
     }

@@ -2,13 +2,25 @@ package de.turnertech.ows.filter;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 
-public class FilterDecoder {
+public class FilterDecoder implements XmlDecoder<Filter> {
 
-    public static Filter decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+    static final FilterDecoder I = new FilterDecoder();
+
+    private FilterDecoder() {}
+
+    @Override
+    public boolean canDecode(DepthXMLStreamReader in) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canDecode'");
+    }
+
+    @Override
+    public Filter decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         System.out.println("Filter Decoder");
         Operator filter = null;
         while(in.hasNext()) {
@@ -19,7 +31,7 @@ public class FilterDecoder {
                 System.out.println("Start Element: " + in.getLocalName());
 
                 if(!"Filter".equals(in.getLocalName())) {
-                    filter = OperatorDecoder.decode(in, owsContext);
+                    filter = OperatorDecoder.I.decode(in, owsContext);
                 }
             }
 

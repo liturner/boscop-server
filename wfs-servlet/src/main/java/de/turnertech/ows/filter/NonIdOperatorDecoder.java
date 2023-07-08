@@ -4,18 +4,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 
 /**
  * Delegating Decoder
  */
-public class NonIdOperatorDecoder {
+public class NonIdOperatorDecoder implements XmlDecoder<NonIdOperator> {
     
-    private NonIdOperatorDecoder() {
-        
-    }
+    static final NonIdOperatorDecoder I = new NonIdOperatorDecoder();
+
+    private NonIdOperatorDecoder() {}
 
     // TODO: Move to Filter?
     public static List<String> COMPARISON_OPERATORS = Arrays.asList("PropertyIsEqualTo", "PropertyIsNotEqualTo", "PropertyIsLessThan", "PropertyIsGreaterThan", "PropertyIsLessThanOrEqualTo", "PropertyIsGreaterThanOrEqualTo", "PropertyIsLike", "PropertyIsNull", "PropertyIsNil", "PropertyIsBetween");
@@ -23,18 +24,20 @@ public class NonIdOperatorDecoder {
     // TODO: Move to Filter?
     public static List<String> LOGICAL_OPERATORS = Arrays.asList("And", "Or", "Not");
 
-    public static boolean canDecode(final XMLStreamReader in) {
-        return BinarySpatialOperatorDecoder.canDecode(in);
+    @Override
+    public boolean canDecode(final DepthXMLStreamReader in) {
+        return BinarySpatialOperatorDecoder.I.canDecode(in);
     }
 
-    public static NonIdOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+    @Override
+    public NonIdOperator decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         NonIdOperator returnOperator = null;
         if(COMPARISON_OPERATORS.contains(in.getLocalName())) {
-            returnOperator = ComparisonOperatorDecoder.decode(in, owsContext);
+            returnOperator = ComparisonOperatorDecoder.I.decode(in, owsContext);
         } else if(LOGICAL_OPERATORS.contains(in.getLocalName())) {
-            returnOperator = LogicalOperatorDecoder.decode(in, owsContext);
-        } else if(SpatialOperatorDecoder.canDecode(in)) {
-            returnOperator = SpatialOperatorDecoder.decode(in, owsContext);
+            returnOperator = LogicalOperatorDecoder.I.decode(in, owsContext);
+        } else if(SpatialOperatorDecoder.I.canDecode(in)) {
+            returnOperator = SpatialOperatorDecoder.I.decode(in, owsContext);
         }
         return returnOperator;
     }

@@ -4,14 +4,16 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlEncoder;
 
-class IdOperatorEncoder {
+class IdOperatorEncoder implements XmlEncoder<IdOperator> {
     
-    private IdOperatorEncoder() {
+    final static IdOperatorEncoder I = new IdOperatorEncoder();
 
-    }
+    private IdOperatorEncoder() {}
 
-    public static void encode(final XMLStreamWriter out, final IdOperator idOperator, final OwsContext owsContext) throws XMLStreamException {
+    @Override
+    public void encode(final XMLStreamWriter out, final IdOperator idOperator, final OwsContext owsContext) throws XMLStreamException {
         out.writeEmptyElement(owsContext.getXmlNamespacePrefix(OwsContext.FES_URI), "ResourceId", OwsContext.FES_URI);
         out.writeAttribute("rid", idOperator.getId().toString());
     }

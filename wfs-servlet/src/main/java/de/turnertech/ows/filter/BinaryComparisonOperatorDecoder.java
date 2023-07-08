@@ -5,17 +5,25 @@ import java.util.List;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 
-public class BinaryComparisonOperatorDecoder {
+public class BinaryComparisonOperatorDecoder implements XmlDecoder<BinaryComparisonOperator> {
     
-    private BinaryComparisonOperatorDecoder() {
-        
+    static final BinaryComparisonOperatorDecoder I = new BinaryComparisonOperatorDecoder();
+
+    private BinaryComparisonOperatorDecoder() {}
+
+    @Override
+    public boolean canDecode(DepthXMLStreamReader in) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canDecode'");
     }
 
-    public static BinaryComparisonOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+    @Override
+    public BinaryComparisonOperator decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         final BinaryComparisonName binaryComparisonName = BinaryComparisonName.fromString(in.getLocalName());
         final List<Expression> expressions = new ArrayList<>(2);
 
@@ -29,7 +37,7 @@ public class BinaryComparisonOperatorDecoder {
             int xmlEvent = in.next();
 
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
-                expressions.add(ExpressionDecoder.decode(in, owsContext));
+                expressions.add(ExpressionDecoder.I.decode(in, owsContext));
             }
 
             if (xmlEvent == XMLStreamConstants.END_ELEMENT && binaryComparisonName.toString().equals(in.getLocalName())) {

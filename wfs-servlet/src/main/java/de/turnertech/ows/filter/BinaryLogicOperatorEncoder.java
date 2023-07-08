@@ -4,18 +4,20 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlEncoder;
 
-public class BinaryLogicOperatorEncoder {
+public class BinaryLogicOperatorEncoder implements XmlEncoder<BinaryLogicOperator> {
 
-    private BinaryLogicOperatorEncoder() {
+    static final BinaryLogicOperatorEncoder I = new BinaryLogicOperatorEncoder();
 
-    }
+    private BinaryLogicOperatorEncoder() {}
 
-    public static void encode(final XMLStreamWriter out, final BinaryLogicOperator operator, final OwsContext owsContext) throws XMLStreamException {
+    @Override
+    public void encode(final XMLStreamWriter out, final BinaryLogicOperator operator, final OwsContext owsContext) throws XMLStreamException {
         out.writeStartElement(OwsContext.FES_URI, operator.getOperatorType().toString());
 
-        OperatorEncoder.encode(out, operator.getLeftOperand(), owsContext);
-        OperatorEncoder.encode(out, operator.getRightOperand(), owsContext);
+        OperatorEncoder.I.encode(out, operator.getLeftOperand(), owsContext);
+        OperatorEncoder.I.encode(out, operator.getRightOperand(), owsContext);
 
         out.writeEndElement();
     }

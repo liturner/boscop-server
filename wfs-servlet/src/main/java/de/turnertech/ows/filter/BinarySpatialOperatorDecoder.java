@@ -5,25 +5,28 @@ import java.util.List;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 import de.turnertech.ows.gml.Envelope;
 import de.turnertech.ows.gml.EnvelopeDecoder;
 import de.turnertech.ows.gml.GmlDecoderContext;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 
-public class BinarySpatialOperatorDecoder {
+public class BinarySpatialOperatorDecoder implements XmlDecoder<BinarySpatialOperator> {
     
-    private BinarySpatialOperatorDecoder() {
+    final static BinarySpatialOperatorDecoder I = new BinarySpatialOperatorDecoder();
 
-    }
+    private BinarySpatialOperatorDecoder() {}
 
-    public static boolean canDecode(final XMLStreamReader in) {
+    @Override
+    public boolean canDecode(final DepthXMLStreamReader in) {
         return SpatialOperatorName.valueOf(in.getName()) != null;
     }
 
-    public static BinarySpatialOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+    @Override
+    public BinarySpatialOperator decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         final SpatialOperatorName spatialOperatorName = SpatialOperatorName.valueOf(in.getName());
         final List<ValueReference> valueReferences = new ArrayList<>(2);
         final GmlDecoderContext gmlContext = new GmlDecoderContext();
@@ -34,8 +37,8 @@ public class BinarySpatialOperatorDecoder {
             int xmlEvent = in.next();
 
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
-                if(ValueReferenceDecoder.canDecode(in)) {
-                    valueReferences.add(ValueReferenceDecoder.decode(in, owsContext));
+                if(ValueReferenceDecoder.I.canDecode(in)) {
+                    valueReferences.add(ValueReferenceDecoder.I.decode(in, owsContext));
                 } else if (EnvelopeDecoder.canDecode(in)) {
                     envelope = EnvelopeDecoder.decode(in, owsContext, gmlContext);
                 }

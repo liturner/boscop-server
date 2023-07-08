@@ -1,28 +1,31 @@
 package de.turnertech.ows.filter;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 
 /**
  * Leaf Decoder
  */
-public class SpatialOperatorDecoder {
+class SpatialOperatorDecoder implements XmlDecoder<SpatialOperator> {
     
-    private SpatialOperatorDecoder() {
+    static SpatialOperatorDecoder I = new SpatialOperatorDecoder();
 
+    private SpatialOperatorDecoder() {}
+
+    @Override
+    public boolean canDecode(final DepthXMLStreamReader in) {
+        return BinarySpatialOperatorDecoder.I.canDecode(in);
     }
 
-    public static boolean canDecode(final XMLStreamReader in) {
-        return BinarySpatialOperatorDecoder.canDecode(in);
-    }
-
-    public static SpatialOperator decode(final XMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+    @Override
+    public SpatialOperator decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         SpatialOperator returnSpatialOperator = null;
 
-        if(BinarySpatialOperatorDecoder.canDecode(in)) {
-            returnSpatialOperator = BinarySpatialOperatorDecoder.decode(in, owsContext);
+        if(BinarySpatialOperatorDecoder.I.canDecode(in)) {
+            returnSpatialOperator = BinarySpatialOperatorDecoder.I.decode(in, owsContext);
         }
 
         return returnSpatialOperator;

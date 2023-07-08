@@ -31,7 +31,7 @@ public class FilterEncoderTests {
 
         out.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
 
-        FilterEncoder.encode(out, outFilter, owsContext);
+        FilterEncoder.I.encode(out, outFilter, owsContext);
 
         String xmlOut = outStream.toString(StandardCharsets.UTF_8);
         System.out.print(xmlOut);
@@ -46,7 +46,7 @@ public class FilterEncoderTests {
 
         out.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
 
-        FilterEncoder.encode(out, outFilter, owsContext);
+        FilterEncoder.I.encode(out, outFilter, owsContext);
 
         String xmlOut = outStream.toString(StandardCharsets.UTF_8);
         System.out.print(xmlOut);
