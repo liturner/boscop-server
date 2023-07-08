@@ -1,5 +1,6 @@
 package de.turnertech.ows.gml;
 
+import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -14,7 +15,7 @@ import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.ows.srs.SpatialReferenceSystemConverter;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
-public class Envelope implements GmlElement {
+public class Envelope extends Rectangle2D implements GmlElement {
 
     @Deprecated
     public static final String GML_NAME = "boundedBy";
@@ -27,7 +28,7 @@ public class Envelope implements GmlElement {
 
     // Use with care! This is an inverted and unusable box!
     public Envelope() {
-        this(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        this(java.lang.Double.POSITIVE_INFINITY, java.lang.Double.POSITIVE_INFINITY, java.lang.Double.NEGATIVE_INFINITY, java.lang.Double.NEGATIVE_INFINITY);
     }
 
     public Envelope(double south, double west, double north, double east) {
@@ -41,7 +42,7 @@ public class Envelope implements GmlElement {
     }
 
     public boolean contains(double latitude, double longitute) {
-        if(Double.isNaN(latitude) || Double.isNaN(longitute)) return false;
+        if(java.lang.Double.isNaN(latitude) || java.lang.Double.isNaN(longitute)) return false;
         return !(latitude > upperCorner.getY() || latitude < lowerCorner.getY() || longitute > upperCorner.getX() || longitute < lowerCorner.getX());
     }
 
@@ -58,10 +59,10 @@ public class Envelope implements GmlElement {
     }
 
     public static Envelope from(DirectPositionList posList) {
-        double maxSouth = Double.POSITIVE_INFINITY;
-        double maxWest = Double.POSITIVE_INFINITY;
-        double maxNorth = Double.NEGATIVE_INFINITY;
-        double maxEast = Double.NEGATIVE_INFINITY;
+        double maxSouth = java.lang.Double.POSITIVE_INFINITY;
+        double maxWest = java.lang.Double.POSITIVE_INFINITY;
+        double maxNorth = java.lang.Double.NEGATIVE_INFINITY;
+        double maxEast = java.lang.Double.NEGATIVE_INFINITY;
 
         for(DirectPosition position : posList) {
             if(position.getY() > maxNorth) maxNorth = position.getY();
@@ -157,6 +158,56 @@ public class Envelope implements GmlElement {
     @Override
     public String getGmlName() {
         return GML_NAME;
+    }
+
+    @Override
+    public void setRect(double x, double y, double w, double h) {
+        upperCorner.setLocation(x + w, y);
+        lowerCorner.setLocation(x, y - h);
+    }
+
+    @Override
+    public int outcode(double x, double y) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'outcode'");
+    }
+
+    @Override
+    public Rectangle2D createIntersection(Rectangle2D r) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createIntersection'");
+    }
+
+    @Override
+    public Rectangle2D createUnion(Rectangle2D r) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createUnion'");
+    }
+
+    @Override
+    public double getX() {
+        return lowerCorner.getX();
+    }
+
+    @Override
+    public double getY() {
+        return upperCorner.getY();
+    }
+
+    @Override
+    public double getWidth() {
+        return upperCorner.getX() - lowerCorner.getX();
+    }
+
+    @Override
+    public double getHeight() {
+        return upperCorner.getY() - lowerCorner.getY();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
     }
 
 }

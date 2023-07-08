@@ -1,5 +1,8 @@
 package de.turnertech.ows.gml;
 
+import java.awt.geom.Line2D;
+import java.util.Iterator;
+
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
@@ -8,7 +11,7 @@ import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 /**
  * gml:LineString
  */
-public class LineString implements GmlElement, BoundingBoxProvider {
+public class LineString implements GmlElement, BoundingBoxProvider, Iterable<Line2D> {
     
     public static final String GML_NAME = "LineString";
 
@@ -53,5 +56,27 @@ public class LineString implements GmlElement, BoundingBoxProvider {
     public Envelope getBoundingBox() {
         return posList.getBoundingBox();
     }
+
+    @Override
+    public Iterator<Line2D> iterator() {
+        return new LineStringIterator();
+    }
+
+    class LineStringIterator implements Iterator<Line2D> {
+
+        private int index = 0;
+
+        public boolean hasNext() {
+            return getPosList().size() > index + 2;
+        }
+
+        public Line2D next() {
+            return new Line2D.Double(getPosList().get(index++), getPosList().get(index++));
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("not supported yet");
+        }
+   }
 
 }

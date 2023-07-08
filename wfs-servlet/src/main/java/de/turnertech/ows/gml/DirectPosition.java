@@ -1,5 +1,6 @@
 package de.turnertech.ows.gml;
 
+import java.awt.geom.Point2D;
 import java.util.Optional;
 
 import javax.xml.namespace.QName;
@@ -21,7 +22,7 @@ import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
  * For convenience, and to help prevent errors in axis order, X and Y getters and setters exist. This should
  * make dealing with actual position vs coordinate representation easier.
  */
-public class DirectPosition implements GmlElement {
+public class DirectPosition extends Point2D implements GmlElement {
     
     public static final String GML_NAME = "pos";
 
@@ -65,7 +66,7 @@ public class DirectPosition implements GmlElement {
 
     public void setX(double x) {
         this.pos[srs.getXIndex()] = x;
-        this.posString[srs.getXIndex()] = Double.toString(x);
+        this.posString[srs.getXIndex()] = java.lang.Double.toString(x);
     }
 
     public double getY() {
@@ -74,7 +75,13 @@ public class DirectPosition implements GmlElement {
 
     public void setY(double y) {
         this.pos[srs.getYIndex()] = y;
-        this.posString[srs.getYIndex()] = Double.toString(y);
+        this.posString[srs.getYIndex()] = java.lang.Double.toString(y);
+    }
+
+    @Override
+    public void setLocation(double x, double y) {
+        this.setX(x);
+        this.setY(y);
     }
 
     public SpatialReferenceSystem getSrs() {
