@@ -168,8 +168,12 @@ public class Envelope extends Rectangle2D implements GmlElement {
 
     @Override
     public int outcode(double x, double y) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'outcode'");
+        int returnCode = 0;
+        if(x < getWest()) returnCode = returnCode | OUT_LEFT;
+        if(x > getEast()) returnCode = returnCode | OUT_RIGHT;
+        if(y < getSouth()) returnCode = returnCode | OUT_BOTTOM;
+        if(y > getNorth()) returnCode = returnCode | OUT_TOP;
+        return returnCode;
     }
 
     @Override

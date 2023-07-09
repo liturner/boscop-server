@@ -92,7 +92,7 @@ public class BinarySpatialOperatorTests {
         assertFalse(bboxPredicate.test(pointFeature));
     }
 
-    @Test void lineContainedTests() {
+    @Test void lineTests() {
         final Feature feature = LINE_STRING_TYPE.createInstance();
         final DirectPosition p0 = new DirectPosition(0, 0);
         final DirectPosition p1 = new DirectPosition(1, 1);
@@ -100,7 +100,23 @@ public class BinarySpatialOperatorTests {
         feature.setPropertyValue(GEOMETRY, line);
 
         assertTrue(bboxPredicate.test(feature));
-
+        p0.setLocation(-5, -5);
+        assertTrue(bboxPredicate.test(feature));
+        p1.setLocation(-5, 0);
+        assertTrue(bboxPredicate.test(feature));
+        p1.setLocation(-6, -6);
+        assertTrue(bboxPredicate.test(feature));
+        p0.setLocation(-5.0000000001, 0);
+        assertFalse(bboxPredicate.test(feature));
+        p1.setLocation(6, 0);
+        assertTrue(bboxPredicate.test(feature));
+        p0.setLocation(-1000, 5);
+        p1.setLocation(1000, 5);
+        assertTrue(bboxPredicate.test(feature));
+        p1.setLocation(1000, 5.0000001);
+        assertFalse(bboxPredicate.test(feature));
+        p1.setLocation(1000, 4.9999999);
+        assertTrue(bboxPredicate.test(feature));
     }
 
     @Test
