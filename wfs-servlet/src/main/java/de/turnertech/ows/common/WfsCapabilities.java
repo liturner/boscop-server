@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.parameter.OwsServiceValue;
 import de.turnertech.ows.parameter.WfsVersionValue;
@@ -144,6 +146,15 @@ public class WfsCapabilities {
      */
     public void setKeywords(List<String> keywords) {
         this.keywords = keywords;
+    }
+
+    public FeatureType getFeatureType(final QName name) {
+        for(FeatureType featureType : featureTypes) {
+            if(featureType.getName().equals(name.getLocalPart()) && featureType.getNamespace().equals(name.getNamespaceURI())) {
+                return featureType;
+            }
+        }
+        return null;
     }
 
     public FeatureType getFeatureType(String namespace, String name) {

@@ -3,10 +3,15 @@ package de.turnertech.ows.servlet;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
+import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 
 public class Transaction extends BaseRequest {
     
+    public static final QName QNAME = new QName(OwsContext.WFS_URI, "Transaction");
+
     private final List<TransactionAction> actions;
 
     private String lockId;

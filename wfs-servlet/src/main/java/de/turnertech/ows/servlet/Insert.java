@@ -3,11 +3,16 @@ package de.turnertech.ows.servlet;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
+import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 
 public class Insert implements TransactionAction, StandardInputParameters {
     
+    public static final QName QNAME = new QName(OwsContext.WFS_URI, "Insert");
+
     private final List<IFeature> value;
 
     private String handle;

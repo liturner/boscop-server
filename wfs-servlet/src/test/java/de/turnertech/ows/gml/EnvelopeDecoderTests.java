@@ -8,11 +8,11 @@ import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.junit.jupiter.api.Test;
 
 import de.turnertech.ows.common.DefaultOwsContextFactory;
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 import jakarta.servlet.ServletException;
@@ -26,16 +26,15 @@ public class EnvelopeDecoderTests {
         OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
         StringReader stringReader = new StringReader(ENVELOPE_STRING_1);
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        XMLStreamReader in  = xmlInputFactory.createXMLStreamReader(stringReader);
+        DepthXMLStreamReader in  = new DepthXMLStreamReader(xmlInputFactory.createXMLStreamReader(stringReader));
 
         // The first element is allways "Document Start". Skip it.
         in.next();
 
-        assertTrue(EnvelopeDecoder.canDecode(in));
+        assertTrue(EnvelopeDecoder.I.canDecode(in));
 
-        final GmlDecoderContext gmlContext = new GmlDecoderContext();
-        gmlContext.getSrsDeque().push(SpatialReferenceSystem.CRS84);
-        final Envelope decodedEnvelope = EnvelopeDecoder.decode(in, owsContext, gmlContext);
+        owsContext.getGmlDecoderContext().getSrsDeque().push(SpatialReferenceSystem.CRS84);
+        final Envelope decodedEnvelope = EnvelopeDecoder.I.decode(in, owsContext);
 
         assertNotNull(decodedEnvelope);
         assertNotNull(decodedEnvelope.lowerCorner);

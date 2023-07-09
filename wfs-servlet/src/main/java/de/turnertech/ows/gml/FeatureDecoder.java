@@ -1,5 +1,6 @@
 package de.turnertech.ows.gml;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 
@@ -15,14 +16,22 @@ public class FeatureDecoder implements XmlDecoder<IFeature> {
     private FeatureDecoder() {}
 
     @Override
-    public boolean canDecode(DepthXMLStreamReader in) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'canDecode'");
+    public boolean canDecode(final DepthXMLStreamReader in) {
+        return true;
     }
 
     @Override
-    public IFeature decode(DepthXMLStreamReader in, OwsContext owsContext) throws XMLStreamException {
+    public IFeature decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         final int myDepth = in.getDepth() - 1;
+        final QName featureQname = in.getName();
+        final FeatureType featureType = owsContext.getWfsCapabilities().getFeatureType(featureQname);
+
+        if(featureType == null) {
+            throw new XMLStreamException("Cannot decode unknown Feature Type: " + featureQname.toString(), in.getLocation());
+        }
+
+        owsContext.getGmlDecoderContext().setFeatureType(featureType);
+
         Feature returnFeature = owsContext.getGmlDecoderContext().getFeatureType().createInstance();
         owsContext.getGmlDecoderContext().getSrsDeque().push(owsContext.getGmlDecoderContext().getFeatureType().getSrs());
 

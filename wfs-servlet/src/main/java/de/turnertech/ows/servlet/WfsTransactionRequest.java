@@ -25,9 +25,7 @@ import de.turnertech.ows.common.OwsRequestContext;
 import de.turnertech.ows.common.RequestHandler;
 import de.turnertech.ows.filter.OgcFilter;
 import de.turnertech.ows.filter.OgcFilterDecoder;
-import de.turnertech.ows.gml.FeatureDecoder;
 import de.turnertech.ows.gml.FeatureType;
-import de.turnertech.ows.gml.GmlDecoderContext;
 import de.turnertech.ows.gml.IFeature;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -154,7 +152,7 @@ public class WfsTransactionRequest implements RequestHandler  {
                         }
 
                         Model model = owsContext.getModelProvider().getModel(featureType);
-                        IFeature feature = FeatureDecoder.I.decode(featureEntry, new GmlDecoderContext(), featureType);
+                        IFeature feature = null;//FeatureDecoder.I.decode(featureEntry, new GmlDecoderContext(), featureType);
                         model.add(feature);
                         modelsToSave.add(model);
                     }
