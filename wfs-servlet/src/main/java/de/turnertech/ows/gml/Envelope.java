@@ -162,8 +162,8 @@ public class Envelope extends Rectangle2D implements GmlElement {
 
     @Override
     public void setRect(double x, double y, double w, double h) {
-        upperCorner.setLocation(x + w, y);
-        lowerCorner.setLocation(x, y - h);
+        upperCorner.setLocation(x + w, y + h);
+        lowerCorner.setLocation(x, y);
     }
 
     @Override
@@ -195,7 +195,7 @@ public class Envelope extends Rectangle2D implements GmlElement {
 
     @Override
     public double getY() {
-        return upperCorner.getY();
+        return lowerCorner.getY();
     }
 
     @Override

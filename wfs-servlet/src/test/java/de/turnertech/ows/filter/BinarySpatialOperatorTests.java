@@ -17,8 +17,9 @@ import de.turnertech.ows.gml.FeaturePropertyType;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.gml.LineString;
+import de.turnertech.ows.gml.LinearRing;
 import de.turnertech.ows.gml.Point;
-import de.turnertech.ows.srs.SpatialReferenceSystem;
+import de.turnertech.ows.gml.Polygon;
 
 public class BinarySpatialOperatorTests {
     
@@ -30,6 +31,8 @@ public class BinarySpatialOperatorTests {
 
     private static FeatureType LINE_STRING_TYPE;
 
+    private static FeatureType POLYGON_TYPE;
+
     @BeforeAll
     static void setup() {
         POINT_TYPE = new FeatureType("namespace", "PointType");
@@ -37,6 +40,9 @@ public class BinarySpatialOperatorTests {
 
         LINE_STRING_TYPE = new FeatureType("namespace", "LinestringType");
         LINE_STRING_TYPE.putProperty(new FeatureProperty(GEOMETRY, FeaturePropertyType.LINE_STRING));
+
+        POLYGON_TYPE = new FeatureType("namespace", "PolygonType");
+        POLYGON_TYPE.putProperty(new FeatureProperty(GEOMETRY, FeaturePropertyType.POLYGON));
     }
 
     @Test
@@ -121,11 +127,21 @@ public class BinarySpatialOperatorTests {
 
     @Test
     void polygonTests() {
-        final FeatureType polygonType = new FeatureType("namespace", "PolygonType");
-        polygonType.setSrs(SpatialReferenceSystem.CRS84);
-        polygonType.setTitle("PolygonType");
-        polygonType.putProperty(new FeatureProperty(GEOMETRY, FeaturePropertyType.POLYGON));
-        final Feature polygonFeature = polygonType.createInstance();
+        final Feature feature = POLYGON_TYPE.createInstance();
+        final DirectPosition p0 = new DirectPosition(0, 0);
+        final DirectPosition p1 = new DirectPosition(1, 1);
+        final DirectPosition p2 = new DirectPosition(0, 1);
+        final Polygon polygon = new Polygon(new LinearRing(new DirectPositionList(p0, p1, p2)));
+        feature.setPropertyValue(GEOMETRY, polygon);
+
+        assertTrue(bboxPredicate.test(feature));
+        p0.setLocation(50000, 50000);
+        assertTrue(bboxPredicate.test(feature));
+        p0.setLocation(-50000, -50000);
+        assertTrue(bboxPredicate.test(feature));
+        p1.setLocation(50000, -50000);
+        p2.setLocation(0, 50000);
+        assertTrue(bboxPredicate.test(feature));
     }
 
 }

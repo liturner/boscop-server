@@ -73,7 +73,8 @@ public class BinarySpatialOperator implements SpatialOperator {
 
         exterior.moveTo(posList.get(0).getX(), posList.get(0).getY());
         do {
-            exterior.lineTo(posList.get(i++).getX(), posList.get(i++).getY());
+            exterior.lineTo(posList.get(i).getX(), posList.get(i).getY());
+            ++i;
         } while (i < posList.size());
 
         Area area = new Area(exterior);
