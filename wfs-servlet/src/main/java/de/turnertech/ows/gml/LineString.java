@@ -67,16 +67,13 @@ public class LineString implements GmlElement, BoundingBoxProvider, Iterable<Lin
         private int index = 0;
 
         public boolean hasNext() {
-            return getPosList().size() > index + 2;
+            return getPosList().size() > index + 1;
         }
 
         public Line2D next() {
             return new Line2D.Double(getPosList().get(index++), getPosList().get(index++));
         }
 
-        public void remove() {
-            throw new UnsupportedOperationException("not supported yet");
-        }
    }
 
 }

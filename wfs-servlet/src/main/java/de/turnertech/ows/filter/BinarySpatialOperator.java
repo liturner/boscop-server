@@ -1,9 +1,12 @@
 package de.turnertech.ows.filter;
 
+import java.awt.geom.Area;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.util.List;
 import java.util.Objects;
 
+import de.turnertech.ows.gml.DirectPositionList;
 import de.turnertech.ows.gml.Envelope;
 import de.turnertech.ows.gml.FeatureProperty;
 import de.turnertech.ows.gml.IFeature;
@@ -62,7 +65,20 @@ public class BinarySpatialOperator implements SpatialOperator {
     }
 
     private boolean bbox(final Polygon polygon, final Envelope bbox) {
-        throw new UnsupportedOperationException("Unimplemented");
+        if(!bbox.intersects(polygon.getBoundingBox())) return false;
+
+        Path2D exterior = new Path2D.Double();
+        DirectPositionList posList = polygon.getExterior().getPosList();
+        int i = 1;
+
+        exterior.moveTo(posList.get(0).getX(), posList.get(0).getY());
+        do {
+            exterior.lineTo(posList.get(i++).getX(), posList.get(i++).getY());
+        } while (i < posList.size());
+
+        Area area = new Area(exterior);
+
+        return area.intersects(bbox);
     }
 
     private boolean bbox(final LineString lineString, final Envelope bbox) {

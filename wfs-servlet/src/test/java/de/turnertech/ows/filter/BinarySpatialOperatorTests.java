@@ -5,15 +5,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Predicate;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import de.turnertech.ows.gml.DirectPosition;
+import de.turnertech.ows.gml.DirectPositionList;
 import de.turnertech.ows.gml.Envelope;
 import de.turnertech.ows.gml.Feature;
 import de.turnertech.ows.gml.FeatureProperty;
 import de.turnertech.ows.gml.FeaturePropertyType;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.IFeature;
+import de.turnertech.ows.gml.LineString;
 import de.turnertech.ows.gml.Point;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 
@@ -23,13 +26,22 @@ public class BinarySpatialOperatorTests {
 
     private static final Predicate<IFeature> bboxPredicate = new BinarySpatialOperator(null, SpatialOperatorName.BBOX, new SpatialDescription(new Envelope(new DirectPosition(-5, -5), new DirectPosition(5, 5))));
 
+    private static FeatureType POINT_TYPE;
+
+    private static FeatureType LINE_STRING_TYPE;
+
+    @BeforeAll
+    static void setup() {
+        POINT_TYPE = new FeatureType("namespace", "PointType");
+        POINT_TYPE.putProperty(new FeatureProperty(GEOMETRY, FeaturePropertyType.POINT));
+
+        LINE_STRING_TYPE = new FeatureType("namespace", "LinestringType");
+        LINE_STRING_TYPE.putProperty(new FeatureProperty(GEOMETRY, FeaturePropertyType.LINE_STRING));
+    }
+
     @Test
-    void pointTests() {
-        final FeatureType pointType = new FeatureType("namespace", "PointType");
-        pointType.setSrs(SpatialReferenceSystem.CRS84);
-        pointType.setTitle("PointType");
-        pointType.putProperty(new FeatureProperty(GEOMETRY, FeaturePropertyType.POINT));
-        final Feature pointFeature = pointType.createInstance();
+    void pointXTests() {
+        final Feature pointFeature = POINT_TYPE.createInstance();
         final Point point = new Point(0, 0);
         pointFeature.setPropertyValue(GEOMETRY, point);
 
@@ -52,8 +64,13 @@ public class BinarySpatialOperatorTests {
         assertTrue(bboxPredicate.test(pointFeature));
         point.setX(Double.POSITIVE_INFINITY);
         assertFalse(bboxPredicate.test(pointFeature));
+    }
 
-        point.setX(0);
+    @Test
+    void pointYTests() {
+        final Feature pointFeature = POINT_TYPE.createInstance();
+        final Point point = new Point(0, 0);
+        pointFeature.setPropertyValue(GEOMETRY, point);
 
         point.setY(-5.0000001);
         assertFalse(bboxPredicate.test(pointFeature));
@@ -73,6 +90,17 @@ public class BinarySpatialOperatorTests {
         assertTrue(bboxPredicate.test(pointFeature));
         point.setY(Double.POSITIVE_INFINITY);
         assertFalse(bboxPredicate.test(pointFeature));
+    }
+
+    @Test void lineContainedTests() {
+        final Feature feature = LINE_STRING_TYPE.createInstance();
+        final DirectPosition p0 = new DirectPosition(0, 0);
+        final DirectPosition p1 = new DirectPosition(1, 1);
+        final LineString line = new LineString(new DirectPositionList(p0, p1));
+        feature.setPropertyValue(GEOMETRY, line);
+
+        assertTrue(bboxPredicate.test(feature));
+
     }
 
     @Test
