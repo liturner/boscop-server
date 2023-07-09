@@ -1,8 +1,10 @@
 package de.turnertech.ows.gml;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 /**
@@ -10,7 +12,10 @@ import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
  */
 public class Point implements GmlElement, BoundingBoxProvider {
     
+    @Deprecated
     public static final String GML_NAME = "Point";
+
+    public static final QName QNAME = new QName(OwsContext.GML_URI, "Point");
 
     private DirectPosition pos;
 

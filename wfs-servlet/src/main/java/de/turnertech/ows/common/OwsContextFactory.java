@@ -3,6 +3,7 @@ package de.turnertech.ows.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.turnertech.ows.gml.GmlDecoderContext;
 import jakarta.servlet.ServletException;
 
 public abstract class OwsContextFactory {
@@ -33,6 +34,8 @@ public abstract class OwsContextFactory {
         if(owsContext.getXmlNamespaceSchemaMap() == null) {
             throw new ServletException(OwsContextFactory.class.getSimpleName() + " returned null Model Encoder Provider");
         }
+
+        owsContext.setGmlDecoderContext(new GmlDecoderContext());
 
         return owsContext;
     }

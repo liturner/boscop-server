@@ -11,7 +11,6 @@ import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.common.XmlDecoder;
 import de.turnertech.ows.gml.Envelope;
 import de.turnertech.ows.gml.EnvelopeDecoder;
-import de.turnertech.ows.gml.GmlDecoderContext;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 
 public class BinarySpatialOperatorDecoder implements XmlDecoder<BinarySpatialOperator> {
@@ -29,8 +28,7 @@ public class BinarySpatialOperatorDecoder implements XmlDecoder<BinarySpatialOpe
     public BinarySpatialOperator decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
         final SpatialOperatorName spatialOperatorName = SpatialOperatorName.valueOf(in.getName());
         final List<ValueReference> valueReferences = new ArrayList<>(2);
-        final GmlDecoderContext gmlContext = new GmlDecoderContext();
-        gmlContext.getSrsDeque().push(SpatialReferenceSystem.CRS84);
+        owsContext.getGmlDecoderContext().getSrsDeque().push(SpatialReferenceSystem.CRS84);
         Envelope envelope = null;
 
         while(in.hasNext()) {
@@ -39,8 +37,8 @@ public class BinarySpatialOperatorDecoder implements XmlDecoder<BinarySpatialOpe
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
                 if(ValueReferenceDecoder.I.canDecode(in)) {
                     valueReferences.add(ValueReferenceDecoder.I.decode(in, owsContext));
-                } else if (EnvelopeDecoder.canDecode(in)) {
-                    envelope = EnvelopeDecoder.decode(in, owsContext, gmlContext);
+                } else if (EnvelopeDecoder.I.canDecode(in)) {
+                    envelope = EnvelopeDecoder.I.decode(in, owsContext);
                 }
             } else if (xmlEvent == XMLStreamConstants.END_ELEMENT && spatialOperatorName.toString().equals(in.getLocalName())) {
                 break;

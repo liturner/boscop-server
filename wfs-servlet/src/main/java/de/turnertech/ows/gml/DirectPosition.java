@@ -24,6 +24,7 @@ import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
  */
 public class DirectPosition extends Point2D implements GmlElement {
     
+    @Deprecated
     public static final String GML_NAME = "pos";
 
     public static final QName QNAME = new QName(OwsContext.GML_URI, "DirectPosition");

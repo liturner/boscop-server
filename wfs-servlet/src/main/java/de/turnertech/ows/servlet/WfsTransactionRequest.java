@@ -154,7 +154,7 @@ public class WfsTransactionRequest implements RequestHandler  {
                         }
 
                         Model model = owsContext.getModelProvider().getModel(featureType);
-                        IFeature feature = FeatureDecoder.decode(featureEntry, new GmlDecoderContext(), featureType);
+                        IFeature feature = FeatureDecoder.I.decode(featureEntry, new GmlDecoderContext(), featureType);
                         model.add(feature);
                         modelsToSave.add(model);
                     }

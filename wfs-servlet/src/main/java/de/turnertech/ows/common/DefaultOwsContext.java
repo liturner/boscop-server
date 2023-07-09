@@ -3,6 +3,7 @@ package de.turnertech.ows.common;
 import java.util.Collection;
 import java.util.Map;
 
+import de.turnertech.ows.gml.GmlDecoderContext;
 import de.turnertech.ows.parameter.WfsVersionValue;
 
 public class DefaultOwsContext implements OwsContext {
@@ -14,6 +15,8 @@ public class DefaultOwsContext implements OwsContext {
     Collection<WfsVersionValue> supportedWfsVersions;
 
     WfsCapabilities wfsCapabilities;
+
+    GmlDecoderContext gmlDecoderContext;
 
     Map<String, String> xmlNamespacePrefixMap;
 
@@ -83,6 +86,15 @@ public class DefaultOwsContext implements OwsContext {
 
     void setModelEncoderProvider(ModelEncoderProvider modelEncoderProvider) {
         this.modelEncoderProvider = modelEncoderProvider;
+    }
+
+    @Override
+    public GmlDecoderContext getGmlDecoderContext() {
+        return gmlDecoderContext;
+    }
+
+    public void setGmlDecoderContext(GmlDecoderContext gmlDecoderContext) {
+        this.gmlDecoderContext = gmlDecoderContext;
     }
 
 }

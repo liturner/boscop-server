@@ -1,39 +1,54 @@
 package de.turnertech.ows.gml;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
+import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 
-public class LinearRingDecoder implements GmlDecoder<LinearRing> {
+public class LinearRingDecoder implements XmlDecoder<LinearRing> {
+
+    public static final LinearRingDecoder I = new LinearRingDecoder();
+
+    private LinearRingDecoder() {}
 
     @Override
-    public LinearRing decode(Node root, GmlDecoderContext context) {
-        LinearRing returnElement = new LinearRing();
-        
-        Node srsNode = root.getAttributes().getNamedItem("srsName");
+    public boolean canDecode(final DepthXMLStreamReader in) {
+        return LinearRing.QNAME.equals(in.getName());
+    }
+
+    @Override
+    public LinearRing decode(final DepthXMLStreamReader in, final OwsContext owsContext) throws XMLStreamException {
+        final LinearRing returnElement = new LinearRing();
+        final int myDepth = in.getDepth() - 1;
         SpatialReferenceSystem srs = null;
-        if(srsNode != null) {
-            srs = SpatialReferenceSystem.from(srsNode.getNodeValue());
+        String srsName = in.getAttributeValue(OwsContext.GML_URI, "srsName");
+        if(srsName == null) {
+            srsName = in.getAttributeValue(null, "srsName");
+        }
+        if(srsName != null) {
+            srs = SpatialReferenceSystem.from(srsName);
             if(srs != null) {
-                context.getSrsDeque().push(srs);
+                owsContext.getGmlDecoderContext().getSrsDeque().push(srs);
             }
         }
 
-        NodeList children = root.getChildNodes();
-        for(int i = 0; i < children.getLength(); ++i) {
-            Node child = children.item(i);
-            if(child.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
-            if("posList".equals(child.getNodeName())) {
-                DirectPositionList posList = new DirectPositionListDecoder().decode(child, context);
-                returnElement.setPosList(posList);
+        while(in.hasNext()) {
+            int xmlEvent = in.next();
+
+            if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
+                if(DirectPositionListDecoder.I.canDecode(in)) {
+                    returnElement.setPosList(DirectPositionListDecoder.I.decode(in, owsContext));
+                }
+            } else if (xmlEvent == XMLStreamConstants.END_ELEMENT && in.getDepth() <= myDepth) {
+                break;
             }
         }
 
         if(srs != null) {
-            context.getSrsDeque().pop();
+            owsContext.getGmlDecoderContext().getSrsDeque().pop();
         }
 
         return returnElement;

@@ -3,9 +3,11 @@ package de.turnertech.ows.gml;
 import java.awt.geom.Line2D;
 import java.util.Iterator;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 /**
@@ -13,7 +15,10 @@ import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
  */
 public class LineString implements GmlElement, BoundingBoxProvider, Iterable<Line2D> {
     
+    @Deprecated
     public static final String GML_NAME = "LineString";
+
+    public static final QName QNAME = new QName(OwsContext.GML_URI, "LineString");
 
     private DirectPositionList posList;
 

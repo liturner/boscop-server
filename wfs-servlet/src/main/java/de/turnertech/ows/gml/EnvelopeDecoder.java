@@ -2,22 +2,25 @@ package de.turnertech.ows.gml;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
+import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 
-public class EnvelopeDecoder {
+public class EnvelopeDecoder implements XmlDecoder<Envelope> {
 
-    private EnvelopeDecoder() {
+    public static final EnvelopeDecoder I = new EnvelopeDecoder();
 
-    }
+    private EnvelopeDecoder() {}
 
-    public static boolean canDecode(final XMLStreamReader in) {
+    @Override
+    public boolean canDecode(DepthXMLStreamReader in) {
         return Envelope.QNAME.equals(in.getName());
     }
 
-    public static Envelope decode(final XMLStreamReader in, final OwsContext owsContext, final GmlDecoderContext gmlContext) throws XMLStreamException {
+    @Override
+    public Envelope decode(DepthXMLStreamReader in, OwsContext owsContext) throws XMLStreamException {
         DirectPosition lowerCorner = null;
         DirectPosition upperCorner = null;
 
@@ -29,7 +32,7 @@ public class EnvelopeDecoder {
         if(srsName != null) {
             final SpatialReferenceSystem srs = SpatialReferenceSystem.from(srsName);
             if(srs != null) {
-                gmlContext.getSrsDeque().push(srs);
+                owsContext.getGmlDecoderContext().getSrsDeque().push(srs);
             }
         }
 
@@ -38,9 +41,9 @@ public class EnvelopeDecoder {
 
             if (xmlEvent == XMLStreamConstants.START_ELEMENT) {
                 if(DirectPosition.LOWER_CORNER_QNAME.equals(in.getName())) {
-                    lowerCorner = DirectPositionDecoder.decode(in, owsContext, gmlContext);
+                    lowerCorner = DirectPositionDecoder.I.decode(in, owsContext);
                 } else if(DirectPosition.UPPER_CORNER_QNAME.equals(in.getName())) {
-                    upperCorner = DirectPositionDecoder.decode(in, owsContext, gmlContext);
+                    upperCorner = DirectPositionDecoder.I.decode(in, owsContext);
                 } 
             } else if (xmlEvent == XMLStreamConstants.END_ELEMENT && Envelope.QNAME.equals(in.getName())) {
                 break;

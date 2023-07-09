@@ -1,66 +1,62 @@
 package de.turnertech.ows.gml;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.common.DepthXMLStreamReader;
+import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.XmlDecoder;
 
-public class FeatureDecoder {
+public class FeatureDecoder implements XmlDecoder<IFeature> {
 
-    public static IFeature decode(Node xmlRootNode, GmlDecoderContext gmlContext, FeatureType featureType) {
-        Feature returnFeature = featureType.createInstance();
-        xmlRootNode.normalize();
+    public static final FeatureDecoder I = new FeatureDecoder();
 
-        gmlContext.setFeatureType(featureType);
-        gmlContext.getSrsDeque().push(featureType.getSrs());
+    private FeatureDecoder() {}
 
-        NodeList propertyNodes = xmlRootNode.getChildNodes();
-        for(int i = 0; i < propertyNodes.getLength(); ++i) {
-            Node propertyNode = propertyNodes.item(i);
-            if(propertyNode.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
+    @Override
+    public boolean canDecode(DepthXMLStreamReader in) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canDecode'");
+    }
 
-            String propertyName = propertyNode.getLocalName();
-            String propertyNamespace = propertyNode.getNamespaceURI();
+    @Override
+    public IFeature decode(DepthXMLStreamReader in, OwsContext owsContext) throws XMLStreamException {
+        final int myDepth = in.getDepth() - 1;
+        Feature returnFeature = owsContext.getGmlDecoderContext().getFeatureType().createInstance();
+        owsContext.getGmlDecoderContext().getSrsDeque().push(owsContext.getGmlDecoderContext().getFeatureType().getSrs());
 
-            //TODO: Here we need to rely on the FeatureType, and its map of FeatureProperty instances, which will
-            //contain type information needed for handling casting to the correct data type.
-            if(!featureType.hasProperty(propertyName)) {
-                // TODO: Throw Exception
-                return null;
-            }
-            
-            FeatureProperty featureProperty = featureType.getProperty(propertyName);
-            if(featureProperty.getPropertyType() == FeaturePropertyType.TEXT) {
-                returnFeature.setPropertyValue(propertyName, propertyNode.getTextContent());
-            } else if(featureProperty.getPropertyType() == FeaturePropertyType.POLYGON) {
-                Element element = (Element)propertyNode;
-                returnFeature.setPropertyValue(propertyName, new GeometryDecoder().decode(element.getElementsByTagName("Polygon").item(0), gmlContext));
-            } else if(featureProperty.getPropertyType() == FeaturePropertyType.POINT) {
-                Element element = (Element)propertyNode;
-                returnFeature.setPropertyValue(propertyName, new GeometryDecoder().decode(element.getElementsByTagName("Point").item(0), gmlContext));
-            } else if(featureProperty.getPropertyType() == FeaturePropertyType.LINE_STRING) {
-                Element element = (Element)propertyNode;
-                returnFeature.setPropertyValue(propertyName, new GeometryDecoder().decode(element.getElementsByTagName("LineString").item(0), gmlContext));
-            } else if(featureProperty.getPropertyType() == FeaturePropertyType.ID) {
-                returnFeature.setPropertyValue(propertyName, propertyNode.getTextContent());
-            } else if(featureProperty.getPropertyType() == FeaturePropertyType.GEOMETRY) {
-                NodeList children = propertyNode.getChildNodes();
-                for(int c = 0; c < children.getLength(); ++c) {
-                    Node child = children.item(c);
-                    if(child.getNodeType() == Node.ELEMENT_NODE) {
-                        returnFeature.setPropertyValue(propertyName, new GeometryDecoder().decode((Element)child, gmlContext));
-                        break;
-                    }
+        while(in.hasNext()) {
+            int xmlEvent = in.next();
+
+            // Simple Features Profile. We only care about items one element below the feature node here.
+            if (xmlEvent == XMLStreamConstants.START_ELEMENT && in.getDepth() == myDepth + 1) {
+                if(!owsContext.getGmlDecoderContext().getFeatureType().hasProperty(in.getLocalName())) {
+                    throw new XMLStreamException("Unknown property supplied in feature", in.getLocation());
                 }
-            } else {
-                Logging.LOG.severe("FeatureDecoder: Property was not decoded - " + propertyName);
+
+                FeatureProperty featureProperty = owsContext.getGmlDecoderContext().getFeatureType().getProperty(in.getLocalName());
+                if(featureProperty.getPropertyType() == FeaturePropertyType.TEXT) {
+                    returnFeature.setPropertyValue(in.getLocalName(), in.getElementText());
+                } else if(featureProperty.getPropertyType() == FeaturePropertyType.POLYGON) {
+                    returnFeature.setPropertyValue(in.getLocalName(), GeometryDecoder.I.decode(in, owsContext));
+                } else if(featureProperty.getPropertyType() == FeaturePropertyType.POINT) {
+                    returnFeature.setPropertyValue(in.getLocalName(), GeometryDecoder.I.decode(in, owsContext));
+                } else if(featureProperty.getPropertyType() == FeaturePropertyType.LINE_STRING) {
+                    returnFeature.setPropertyValue(in.getLocalName(), GeometryDecoder.I.decode(in, owsContext));
+                } else if(featureProperty.getPropertyType() == FeaturePropertyType.ID) {
+                    returnFeature.setPropertyValue(in.getLocalName(), in.getElementText());
+                } else if(featureProperty.getPropertyType() == FeaturePropertyType.GEOMETRY) {
+                    returnFeature.setPropertyValue(in.getLocalName(), GeometryDecoder.I.decode(in, owsContext));
+                } else {
+                    Logging.LOG.severe("FeatureDecoder: Property was not decoded - " + in.getLocalName());
+                }
+            } else if (xmlEvent == XMLStreamConstants.END_ELEMENT && in.getDepth() <= myDepth) {
+                break;
             }
         }
 
-        gmlContext.getFeatureIdRetriever().retrieveFeatureId(returnFeature);
+        owsContext.getGmlDecoderContext().getFeatureIdRetriever().retrieveFeatureId(returnFeature);
 
         return returnFeature;
     }

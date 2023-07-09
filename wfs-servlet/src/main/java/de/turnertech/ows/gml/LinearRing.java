@@ -4,9 +4,11 @@ import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 
 /**
@@ -15,6 +17,8 @@ import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
 public class LinearRing implements GmlElement, Iterable<DirectPosition>, BoundingBoxProvider {
     
     public static final String GML_NAME = "LinearRing";
+
+    public static final QName QNAME = new QName(OwsContext.GML_URI, "LinearRing");
 
     private DirectPositionList posList;
 

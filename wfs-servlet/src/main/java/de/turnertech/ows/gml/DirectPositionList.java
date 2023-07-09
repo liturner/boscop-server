@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.turnertech.ows.Logging;
+import de.turnertech.ows.common.OwsContext;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.ows.srs.SpatialReferenceSystemConverter;
 import de.turnertech.ows.srs.SpatialReferenceSystemRepresentation;
@@ -18,7 +20,10 @@ public class DirectPositionList extends ArrayList<DirectPosition> implements Gml
     
     private SpatialReferenceSystem srs;
 
+    @Deprecated
     public static final String GML_NAME = "posList";
+
+    public static final QName QNAME = new QName(OwsContext.GML_URI, "posList");
 
     public DirectPositionList() {
         this(10);
