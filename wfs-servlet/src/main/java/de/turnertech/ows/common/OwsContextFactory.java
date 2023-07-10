@@ -6,11 +6,20 @@ import java.util.Map;
 import de.turnertech.ows.gml.GmlDecoderContext;
 import jakarta.servlet.ServletException;
 
-public abstract class OwsContextFactory {
-    
+public class OwsContextFactory {
+
+    private WfsCapabilities wfsCapabilities;
+
+    private ModelProvider modelProvider;
+
+    public OwsContextFactory() {
+        this.wfsCapabilities = new WfsCapabilities();
+        this.modelProvider = new DefaultModelProvider();
+    }
+
     public final OwsContext createOwsContext() throws ServletException {
         DefaultOwsContext owsContext = new DefaultOwsContext();
-        owsContext.setModelProvider(createModelProvider());
+        owsContext.setModelProvider(getModelProvider());
         if(owsContext.getModelProvider() == null) {
             throw new ServletException(OwsContextFactory.class.getSimpleName() + " returned null " + ModelProvider.class.getSimpleName());
         }
@@ -40,14 +49,26 @@ public abstract class OwsContextFactory {
         return owsContext;
     }
 
-    public abstract ModelProvider createModelProvider();
+    public ModelProvider getModelProvider() {
+        return modelProvider;
+    }
+
+    public void setModelProvider(final ModelProvider modelProvider) {
+        this.modelProvider = modelProvider;
+    }
 
     public ModelEncoderProvider getModelEncoderProvider() {
         return new DefaultModelEncoderProvider();
     }
 
-    public abstract WfsCapabilities getWfsCapabilities();
+    public WfsCapabilities getWfsCapabilities() {
+        return wfsCapabilities;
+    }
 
+    public void setWfsCapabilities(final WfsCapabilities wfsCapabilities) {
+        this.wfsCapabilities = wfsCapabilities;
+    }
+    
     public Map<String, String> getNamespacePrefixMap() {
         Map<String, String> returnMap = new HashMap<>();
         returnMap.put("http://www.opengis.net/ows/1.1", "ows");

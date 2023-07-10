@@ -11,9 +11,9 @@ import javax.xml.stream.XMLStreamException;
 
 import org.junit.jupiter.api.Test;
 
-import de.turnertech.ows.common.DefaultOwsContextFactory;
 import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.OwsContextFactory;
 import de.turnertech.ows.gml.GmlDecoderContext;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 import jakarta.servlet.ServletException;
@@ -24,7 +24,7 @@ public class BinarySpatialOperatorDecoderTests {
 
     @Test
     void basicDecoderTest() throws XMLStreamException, ServletException {
-        OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
+        OwsContext owsContext = new OwsContextFactory().createOwsContext();
         StringReader stringReader = new StringReader(ENVELOPE_STRING_1);
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         DepthXMLStreamReader in  = new DepthXMLStreamReader(xmlInputFactory.createXMLStreamReader(stringReader));

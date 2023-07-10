@@ -13,9 +13,9 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.junit.jupiter.api.Test;
 
-import de.turnertech.ows.common.DefaultOwsContextFactory;
 import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.OwsContextFactory;
 import de.turnertech.ows.gml.Feature;
 import de.turnertech.ows.gml.FeatureProperty;
 import de.turnertech.ows.gml.FeaturePropertyType;
@@ -30,7 +30,7 @@ public class FilterDecoderTests {
 
     @Test
     void basicDecoderTest() throws XMLStreamException, ServletException {
-        OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
+        OwsContext owsContext = new OwsContextFactory().createOwsContext();
         String xml = "<Filter></Filter>";
         StringReader stringReader = new StringReader(xml);
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
@@ -49,7 +49,7 @@ public class FilterDecoderTests {
         feature.setPropertyValue("hazard-type", 10.0);
         feature.setPropertyValue("id", "082hf3j3");
 
-        OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
+        OwsContext owsContext = new OwsContextFactory().createOwsContext();
         StringReader stringReader = new StringReader(ID_FILTER_STRING);
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         DepthXMLStreamReader in  = new DepthXMLStreamReader(xmlInputFactory.createXMLStreamReader(stringReader));
@@ -70,7 +70,7 @@ public class FilterDecoderTests {
         feature.setPropertyValue("hazard-type", 10.0);
         feature.setPropertyValue("id", "082hf3j3");
 
-        OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
+        OwsContext owsContext = new OwsContextFactory().createOwsContext();
         StringReader stringReader = new StringReader(MIXED_FILTER_STRING);
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         DepthXMLStreamReader in  = new DepthXMLStreamReader(xmlInputFactory.createXMLStreamReader(stringReader));

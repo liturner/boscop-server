@@ -22,7 +22,7 @@ import de.turnertech.thw.cop.model.UnitModel;
 public class BoscopOwsContextFactory extends OwsContextFactory {
 
     @Override
-    public ModelProvider createModelProvider() {
+    public ModelProvider getModelProvider() {
         DefaultModelProvider modelProvider = new DefaultModelProvider();
 
         File storage = Paths.get(Settings.getDataDirectory().toString(), AreaModel.TYPENAME + ".gml").toFile();

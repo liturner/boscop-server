@@ -10,8 +10,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.junit.jupiter.api.Test;
 
-import de.turnertech.ows.common.DefaultOwsContextFactory;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.OwsContextFactory;
 import jakarta.servlet.ServletException;
 
 public class FilterEncoderTests {
@@ -27,7 +27,7 @@ public class FilterEncoderTests {
         
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         XMLStreamWriter out = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, StandardCharsets.UTF_8.name());
-        OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
+        OwsContext owsContext = new OwsContextFactory().createOwsContext();
 
         out.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
 
@@ -42,7 +42,7 @@ public class FilterEncoderTests {
         Filter outFilter = new Filter(new IdOperator(new ResourceId("082hf3j3")));
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         XMLStreamWriter out = XMLOutputFactory.newInstance().createXMLStreamWriter(outStream, StandardCharsets.UTF_8.name());
-        OwsContext owsContext = new DefaultOwsContextFactory().createOwsContext();
+        OwsContext owsContext = new OwsContextFactory().createOwsContext();
 
         out.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
 

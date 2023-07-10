@@ -5,15 +5,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringReader;
+import java.util.Arrays;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 
 import org.junit.jupiter.api.Test;
 
-import de.turnertech.ows.common.DefaultOwsContextFactory;
 import de.turnertech.ows.common.DepthXMLStreamReader;
 import de.turnertech.ows.common.OwsContext;
+import de.turnertech.ows.common.OwsContextFactory;
+import de.turnertech.ows.gml.FeatureProperty;
+import de.turnertech.ows.gml.FeaturePropertyType;
+import de.turnertech.ows.gml.FeatureType;
+import de.turnertech.ows.gml.IFeature;
+import de.turnertech.ows.srs.SpatialReferenceSystem;
 import jakarta.servlet.ServletException;
 
 public class TransactionDecoderTests {
@@ -26,7 +32,13 @@ public class TransactionDecoderTests {
         xmlInputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
         final DepthXMLStreamReader in = new DepthXMLStreamReader(xmlInputFactory.createXMLStreamReader(new StringReader(TEST1)));
 
-        final DefaultOwsContextFactory owsContextFactory = new DefaultOwsContextFactory();
+        final OwsContextFactory owsContextFactory = new OwsContextFactory();
+        final FeatureType featureType = new FeatureType("urn:ns:de:turnertech:boscop", "Hazard");
+        featureType.setSrs(SpatialReferenceSystem.CRS84);
+        featureType.putProperty(new FeatureProperty("id", FeaturePropertyType.ID));
+        featureType.putProperty(new FeatureProperty("hazardType", FeaturePropertyType.TEXT));
+        featureType.putProperty(new FeatureProperty("geometry", FeaturePropertyType.POINT));
+        owsContextFactory.getWfsCapabilities().setFeatureTypes(Arrays.asList(featureType));        
         final OwsContext owsContext = owsContextFactory.createOwsContext();
 
         // TODO: We need to add feature types to the context, or the Feature Type decoder cannot work.
@@ -37,6 +49,17 @@ public class TransactionDecoderTests {
         final Transaction transaction = TransactionDecoder.I.decode(in, owsContext);
         assertNotNull(transaction);
         assertEquals(1, transaction.getActions().size());
+
+        final TransactionAction ta0 = transaction.getActions().get(0);
+        assertTrue(ta0 instanceof Insert);
+
+        final Insert i0 = (Insert)ta0;
+        assertNotNull(i0.getValue());
+        assertEquals(1, i0.getValue().size());
+
+        final IFeature i0f0 = i0.getValue().get(0);
+        assertNotNull(i0f0);
+        assertEquals("Hazard", i0f0.getFeatureType().getName());
     }
 
 }
