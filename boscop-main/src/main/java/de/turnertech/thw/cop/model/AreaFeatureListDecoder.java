@@ -12,7 +12,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import de.turnertech.ows.common.Model;
-import de.turnertech.ows.gml.FeatureDecoder;
 import de.turnertech.ows.gml.FeatureListDecoder;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.GmlDecoderContext;
@@ -42,7 +41,7 @@ public class AreaFeatureListDecoder extends FeatureListDecoder {
             for(int i = 0; i < features.getLength(); ++i) {
                 Node feature = features.item(i);
                 
-                IFeature decodedFeature = FeatureDecoder.decode(feature, decoderContext, featureType);
+                IFeature decodedFeature = null; // FeatureDecoder.decode(feature, decoderContext, featureType);
                 if(decodedFeature == null) {
                     Logging.LOG.severe("AreaFeatureListDecoder: Could not decode feature!");
                     continue;
