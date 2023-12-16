@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
-    <servlet-mapping>
-        <servlet-name>Tracker-Servlet</servlet-name>
-        <url-pattern>/tracker</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Tracker-Update-Servlet</servlet-name>
-        <url-pattern>/tracker/update</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>/trackers</servlet-name>
-        <url-pattern>/trackers</url-pattern>
-    </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
@@ -26,19 +14,6 @@
     <servlet>
         <servlet-name>Error-Servlet</servlet-name>
         <servlet-class>de.turnertech.ows.servlet.ErrorServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Tracker-Servlet</servlet-name>
-        <servlet-class>de.turnertech.thw.cop.trackers.TrackerServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <description>Different endpoint and security to allow devices to update themselves.</description>
-        <servlet-name>Tracker-Update-Servlet</servlet-name>
-        <servlet-class>de.turnertech.thw.cop.trackers.TrackerSubServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>/trackers</servlet-name>
-        <jsp-file>/WEB-INF/jsp/trackers.jsp</jsp-file>
     </servlet>
     <servlet-mapping>
         <servlet-name>WFS-Servlet</servlet-name>

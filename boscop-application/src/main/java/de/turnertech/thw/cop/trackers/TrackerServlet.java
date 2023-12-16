@@ -4,17 +4,28 @@ import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.gml.Point;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.model.UnitModel;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+@WebServlet("/tracker")
 public class TrackerServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/tracker.jsp");
+        dispatcher.forward(request, response);
+    }
+
+    /*
+     * Once moved to JAX-RS, this entire file should be moved to views
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter writer = response.getWriter();

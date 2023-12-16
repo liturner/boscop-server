@@ -78,8 +78,8 @@
         <button id="addLine" type="button" class="btn btn-primary">Line</button>
       </div>
       <div id="map"></div>
-    <script src="ol/ol.js"></script>
-    <script type="module" src="boscop/main.js"></script>
+    <script src="./ol/ol.js"></script>
+    <script type="module" src="./boscop/main.js"></script>
     <footer></footer>
   </body>
 </html>

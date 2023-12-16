@@ -1,19 +1,20 @@
 package de.turnertech.thw.cop.trackers;
 
-import java.io.IOException;
-import java.util.Optional;
-
 import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.gml.Point;
 import de.turnertech.thw.cop.Logging;
 import de.turnertech.thw.cop.model.UnitModel;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
 
+@WebServlet("/tracker/update")
 public class TrackerSubServlet extends HttpServlet {
-    
+
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         final Optional<String> latString = Optional.ofNullable(request.getParameter("lat"));
@@ -58,7 +59,7 @@ public class TrackerSubServlet extends HttpServlet {
             trackerLocation.setX(Double.valueOf(lonString.get()));
             existingTracker.setPropertyValue(UnitModel.GEOMETRY_FIELD, trackerLocation);
         }
-        
+
         response.setStatus(HttpServletResponse.SC_OK);
         Logging.LOG.fine(() -> "TrackerSubServlet: " + opta);
     }

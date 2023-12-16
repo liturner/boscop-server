@@ -21,7 +21,7 @@
                     <a href="/">Map</a>
                 </li>
                 <li>
-                    <a href="tracker" clase="active">Trackers</a>
+                    <a href="tracker" class="active">Trackers</a>
                 </li>
                 <li>
                     <a href="api">API</a>
