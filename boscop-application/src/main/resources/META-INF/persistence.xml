@@ -3,5 +3,9 @@
     <!-- Define Persistence Unit -->
     <persistence-unit name="my_persistence_unit">
         
+        <!-- There is no JNDI reference here as we assume the special jdbc/__default -->
+        
+        <class>de.turnertech.thw.cop.trackers.Tracker</class>
+        
     </persistence-unit>
 </persistence>

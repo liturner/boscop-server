@@ -29,7 +29,7 @@
             </ul>
         </nav>
         <main>
-            <form action="/tracker" method="post">
+            <form action="./api/v1/tracker" method="post">
                 <label for="fopta">OPTA: (e.g. BUTHWND ONEB 2110)</label><br />
                 <input type="text" id="fopta" name="opta" />
                 <input type="hidden" name="lat" value="0.0" />
@@ -41,23 +41,12 @@
                     <th>OPTA</th>
                     <th>Key</th>
                 </tr>
-                <%
-                    // TODO: 
-                    /**
-                     * 
-                     * for (Entry trackerKey : TrackerToken.entrySet()) {
-                            out.writeStartElement("tr");
-                                out.writeStartElement("td");
-                                out.writeCharacters(trackerKey.getKey().toString());
-                                out.writeEndElement();
-                                out.writeStartElement("td");
-                                out.writeCharacters(trackerKey.getValue().toString());
-                                out.writeEndElement();
-                            out.writeEndElement();
-                        }
-                     * 
-                     */
-                %>
+                <%for (java.util.Map.Entry trackerKey : de.turnertech.thw.cop.trackers.TrackerToken.entrySet()){ %>
+                    <tr>
+                        <td><%= trackerKey.getKey().toString() %></td>
+                        <td><%= trackerKey.getValue().toString() %></td>
+                    </tr>
+                <%}%>
             </table>
         </main>
         <footer>
