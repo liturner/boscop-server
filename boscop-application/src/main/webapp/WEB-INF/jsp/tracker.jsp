@@ -1,10 +1,5 @@
-<%-- 
-    Document   : tracker
-    Created on : 15.12.2023, 20:32:39
-    Author     : lukei
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -41,12 +36,12 @@
                     <th>OPTA</th>
                     <th>Key</th>
                 </tr>
-                <%for (java.util.Map.Entry trackerKey : de.turnertech.thw.cop.trackers.TrackerToken.entrySet()){ %>
+                <c:forEach var="tracker" items="${trackers}">
                     <tr>
-                        <td><%= trackerKey.getKey().toString() %></td>
-                        <td><%= trackerKey.getValue().toString() %></td>
+                        <td>${tracker.opta}</td>
+                        <td>${tracker.token}</td>
                     </tr>
-                <%}%>
+                </c:forEach>
             </table>
         </main>
         <footer>

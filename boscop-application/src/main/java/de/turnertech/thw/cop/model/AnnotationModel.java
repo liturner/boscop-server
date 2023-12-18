@@ -1,12 +1,5 @@
 package de.turnertech.thw.cop.model;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 import de.turnertech.ows.common.Model;
 import de.turnertech.ows.filter.OgcFilter;
 import de.turnertech.ows.gml.Envelope;
@@ -17,9 +10,15 @@ import de.turnertech.ows.gml.IFeature;
 import de.turnertech.ows.srs.SpatialReferenceSystem;
 import de.turnertech.thw.cop.Constants;
 import de.turnertech.thw.cop.Settings;
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AnnotationModel implements Model {
-    
+
     public static final AnnotationModel INSTANCE = new AnnotationModel();
 
     public static final String NAME = "Annotation";
@@ -93,7 +92,7 @@ public class AnnotationModel implements Model {
         if(features.size() > 0) {
             IFeature firstFeature = features.get(0);
             boundingBox = Envelope.from(firstFeature.getBoundingBox());
-        } 
+        }
         for (IFeature feature : features) {
             boundingBox.expandToFit(feature.getBoundingBox());
         }
@@ -104,4 +103,15 @@ public class AnnotationModel implements Model {
     public File getStorageLocation() {
         return Paths.get(Settings.getDataDirectory().toString(), TYPENAME + ".gml").toFile();
     }
+
+    @Override
+    public void load() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void persist() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
 }

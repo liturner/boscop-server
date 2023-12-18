@@ -1,25 +1,22 @@
 package de.turnertech.thw.cop.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import de.turnertech.ows.common.Model;
 import de.turnertech.ows.gml.FeatureListDecoder;
 import de.turnertech.ows.gml.FeatureType;
 import de.turnertech.ows.gml.GmlDecoderContext;
 import de.turnertech.ows.gml.IFeature;
 import de.turnertech.thw.cop.Logging;
+import java.io.File;
+import java.io.FileInputStream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class AreaFeatureListDecoder extends FeatureListDecoder {
-    
+
     @Override
     public Model decode(File file) {
 
@@ -40,7 +37,7 @@ public class AreaFeatureListDecoder extends FeatureListDecoder {
 
             for(int i = 0; i < features.getLength(); ++i) {
                 Node feature = features.item(i);
-                
+
                 IFeature decodedFeature = null; // FeatureDecoder.decode(feature, decoderContext, featureType);
                 if(decodedFeature == null) {
                     Logging.LOG.severe("AreaFeatureListDecoder: Could not decode feature!");

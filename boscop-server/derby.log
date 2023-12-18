@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Dec 18 19:38:27 CET 2023:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-018c-7e38-e763-000005121df0 
+on database directory C:\Users\lukei\AppData\Local\Temp\gfembed14491088508289096139tmp\lib\databases\embedded_default with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@73d16e93 
+Loaded from file:/C:/Users/lukei/.m2/repository/org/glassfish/main/extras/glassfish-embedded-all/7.0.11/glassfish-embedded-all-7.0.11.jar
+java.vendor=Eclipse Adoptium
+java.runtime.version=17.0.8.1+1
+user.dir=C:\Users\lukei\Source\THW\BOSCOP\boscop-server\boscop-server
+os.name=Windows 11
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

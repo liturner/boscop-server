@@ -13,6 +13,7 @@
     <modules>
         <module>wfs-servlet</module>
         <module>boscop-application</module>
+        <module>boscop-server</module>
     </modules>
     
     <organization>
